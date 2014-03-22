@@ -11,3 +11,15 @@
 *.lai
 *.la
 *.a
+*.vcxproj
+*.sdf
+*.sln
+/Debug
+*.suo
+*.log
+*.filters
+*.cache
+*.tlog
+*.obj
+*.idb
+*.pdb
