@@ -4,6 +4,7 @@
 //include used standard libraries, alphabetically ordened
 
 #include <algorithm>
+#include <deque>
 #include <fstream>
 #include <map>
 #include <string>

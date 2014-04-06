@@ -3,6 +3,8 @@
 
 //include boost-related headers, sorted roughly per subject
 
+#include "platform.h"
+
 //CURRENT BOOST VERSION: 1.55.0
 #include <boost/log/attributes.hpp>
 #include <boost/log/common.hpp>
@@ -16,6 +18,8 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <boost/smart_ptr/shared_ptr.hpp>
+
+#include <boost/asio/io_service.hpp>
 
 #include <boost/thread/thread.hpp>
 #include <boost/thread/barrier.hpp>

@@ -7,13 +7,14 @@
 // Boost does the heavy lifting, here we declare a somewhat improved wrapper 
 // for the usage macros (the default BOOST_LOG_SEV is a bit unwieldy)
 
-// the named severity levels are put in the main overdrive namespace for easier access
+// the named severity levels should be put in a namespace, but all sorts of things break when
+// you do that. Also, when attempting to make the enum an enum class, lots of stuff breaks.
 enum eLogSeverity {
-	DEBUG,
-	INFO,
-	WARNING,
-	ERROR,
-	FATAL
+	LOG_DEBUG,
+	LOG_INFO,
+	LOG_WARNING,
+	LOG_ERROR,
+	LOG_FATAL
 };
 
 // add a stream conversion from loglevel to string 
@@ -34,9 +35,9 @@ inline std::basic_ostream<C, T>& operator<< (std::basic_ostream<C, T>& stream, e
 	return stream;
 }
 
-// create shorthand for boost macros
-#define gLog			BOOST_LOG_SEV(::overdrive::core::__gLogObject::get(), eLogSeverity::INFO)
-#define gLogSev(level)	BOOST_LOG_SEV(::overdrive::core::__gLogObject::get(), eLogSeverity::##level)
+// create shorthand for boost macros (with mild preprocessor trickery)
+#define gLog			BOOST_LOG_SEV(::overdrive::core::__gLogObject::get(), eLogSeverity::LOG_INFO)
+#define gLogSev(level)	BOOST_LOG_SEV(::overdrive::core::__gLogObject::get(), eLogSeverity::LOG_##level)
 
 namespace overdrive {
 	namespace core {
