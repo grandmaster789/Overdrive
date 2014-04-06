@@ -1,11 +1,12 @@
 #ifndef OVERDRIVE_BOOST_H
 #define OVERDRIVE_BOOST_H
 
-//include boost-related headers, sorted roughly per subject
+// include boost-related headers, sorted roughly per subject
 
+// some of the boost libraries need platform-specific defines
 #include "platform.h"
 
-//CURRENT BOOST VERSION: 1.55.0
+// CURRENT BOOST VERSION: 1.55.0
 #include <boost/log/attributes.hpp>
 #include <boost/log/common.hpp>
 #include <boost/log/expressions.hpp>
@@ -20,6 +21,7 @@
 #include <boost/smart_ptr/shared_ptr.hpp>
 
 #include <boost/asio/io_service.hpp>
+#include <boost/asio/deadline_timer.hpp>
 
 #include <boost/thread/thread.hpp>
 #include <boost/thread/barrier.hpp>

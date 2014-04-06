@@ -4,6 +4,11 @@
 #include "task.h"
 
 namespace overdrive {
+	// typedefs for timing tasks
+	typedef boost::asio::deadline_timer::time_type Time;
+	typedef boost::asio::deadline_timer::duration_type Duration;
+	
+
 	namespace core {
 		// Task processing singleton
 		class TaskProcessor:
@@ -15,10 +20,7 @@ namespace overdrive {
 			void start();
 			void stop();
 
-			template <typename tFunctor>
-			inline void addTask(const tFunctor& fn) {
-				mIOService.post(detail::make_wrapped(fn));
-			}
+			void addTask(std::function<void()> fn);
 
 		protected:
 			TaskProcessor();

@@ -23,9 +23,9 @@ enum eLogSeverity {
 template <typename C, typename T>
 inline std::basic_ostream<C, T>& operator<< (std::basic_ostream<C, T>& stream, eLogSeverity level) {
 	static const char* const translation[] = {
+		":dbg:",
 		"",
-		":info:",
-		"[warning]",
+		"[wrn]",
 		"** ERROR **",
 		"<===  FATAL  ===>"
 	};

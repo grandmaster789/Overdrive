@@ -20,5 +20,9 @@ namespace overdrive {
 		void TaskProcessor::stop() {
 			mIOService.stop();
 		}
+
+		void TaskProcessor::addTask(std::function<void()> fn) {
+			mIOService.post(detail::make_wrapped(fn));
+		}
 	}
 }
