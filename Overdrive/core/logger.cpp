@@ -1,11 +1,15 @@
 #include "logger.h"
-#include "std.h"
+#include <fstream>
+#include <iostream>
+#include <boost/log/expressions.hpp>
+#include <boost/log/support/date_time.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
+#include <boost/utility/empty_deleter.hpp>
 
 namespace overdrive {
 	namespace core {
 		LogHelper::LogHelper(bool echo, const std::string& filename) {
-			std::cout << "Configuring logger\n";
-
 			namespace expr = boost::log::expressions;
 			
 			auto core = boost::log::core::get();
@@ -57,8 +61,6 @@ namespace overdrive {
 				mFileSink->stop();
 				mFileSink->flush();
 			}
-
-			std::cout << "Log flushed" << std::endl;
 		}
 	}
 }

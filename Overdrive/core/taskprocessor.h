@@ -2,32 +2,47 @@
 #define OVERDRIVE_CORE_TASKPROCESSOR_H
 
 #include "task.h"
+#include "util/concurrent_queue.h"
+
+#include <cstdint>
+#include <boost/thread.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace overdrive {
-	// typedefs for timing tasks
-	typedef boost::asio::deadline_timer::time_type Time;
-	typedef boost::asio::deadline_timer::duration_type Duration;
-	
-
 	namespace core {
-		// Task processing singleton
 		class TaskProcessor:
-			private boost::noncopyable
+			public boost::noncopyable
 		{
-		public:
-			static TaskProcessor& get();
+		private:
+			typedef util::ConcurrentQueue<detail::WrappedTask> TaskQueue;
 
+		public:
+			TaskProcessor(size_t numWorkers = 0); //use 0 for autodetect
+			~TaskProcessor();
+
+			void add(
+				Task t, 
+				bool repeating = false, 
+				bool threadsafe = false, 
+				bool framesynced = false
+			);
+
+			void add(detail::WrappedTask t); //places the task in the appropriate queue
+			
 			void start();
 			void stop();
 
-			void addTask(std::function<void()> fn);
-
-		protected:
-			TaskProcessor();
-
 		private:
-			boost::asio::io_service mIOService;
-			boost::asio::io_service::work mWork;
+			void execute(detail::WrappedTask t);
+
+			TaskQueue mMainTasks;		//executed in this thread
+			TaskQueue mSynchedTasks;	//launched when a new frame is started; frame waits for these to complete
+			TaskQueue mBackgroundTasks;	//launched in a separate thread (use this for lengthy operations, such as I/O)
+
+			uint32_t mIsRunning : 1;
+			size_t mNumWorkers;
+
+			boost::thread_group mBackgroundWorkers;
 		};
 	}
 }

@@ -1,8 +1,11 @@
 #ifndef OVERDRIVE_CORE_LOGGER_H
 #define OVERDRIVE_CORE_LOGGER_H
 
-#include "../boost.h"
-#include "../std.h"
+#include <boost/log/attributes.hpp>
+#include <boost/log/sinks.hpp>
+#include <boost/log/common.hpp>
+#include <boost/log/sources/severity_logger.hpp>
+#include <boost/log/utility/record_ordering.hpp>
 
 // Boost does the heavy lifting, here we declare a somewhat improved wrapper 
 // for the usage macros (the default BOOST_LOG_SEV is a bit unwieldy)

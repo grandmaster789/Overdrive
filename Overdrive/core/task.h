@@ -1,33 +1,53 @@
 #ifndef OVERDRIVE_CORE_TASK_H
 #define OVERDRIVE_CORE_TASK_H
 
-#include "../boost.h"
-#include "../std.h"
-
+#include <cstdint>
+#include <functional>
 
 namespace overdrive {
+	// The main Task typedef
+	typedef std::function<void()> Task;
+
 	namespace core {
 		namespace detail {
 			/*
 			 * Helper class for wrapping a 'task', mainly makes sure that exceptions are properly caught
 			 * (exceptions and improper thread interruptions are logged as error messages)
 			 *
-			 * For passing arguments or composing a more complex function, use bind
+			 * Also adds an interface that tells the processor how to schedule the tasks' execution
+			 *
+			 * For passing arguments or composing a more complex function, use std::bind / boost::bind
 			 */
 			
 			struct WrappedTask {
 			public:
-				explicit WrappedTask(std::function<void()> task);
+				explicit WrappedTask();
+				explicit WrappedTask(Task t, bool repeating, bool threadsafe, bool framesynced);
 
 				void operator()() const;
+				
+				bool isRepeating() const;
+				bool isThreadsafe() const;
+				bool isFrameSynced() const;
+
+				friend class TaskProcessor;
 
 			private:
-				std::function<void()> mUnwrappedTask;
+				Task mUnwrappedTask;
+				uint32_t mIsRepeating : 1;
+				uint32_t mIsThreadsafe : 1;
+				uint32_t mIsFrameSynced : 1;
 			};
-
-			WrappedTask make_wrapped(std::function<void()> task);
 		}
 	}
+
+	//in the end, this became a trivial function
+	core::detail::WrappedTask make_wrapped(
+		Task task, 
+		bool repeating = false, 
+		bool threadsafe = false, 
+		bool framesync = false
+	);
 }
 
 #endif

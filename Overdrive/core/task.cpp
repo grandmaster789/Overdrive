@@ -4,9 +4,15 @@
 namespace overdrive {
 	namespace core {
 		namespace detail {
-			WrappedTask::WrappedTask(std::function<void()> task) :
-				mUnwrappedTask(task)
+			/*** WrappedTask ***/
+			WrappedTask::WrappedTask() {}
+
+			WrappedTask::WrappedTask(Task task, bool repeating, bool threadsafe, bool framesynced):
+				mUnwrappedTask(std::move(task))
 			{
+				mIsRepeating = repeating;
+				mIsThreadsafe = threadsafe;
+				mIsFrameSynced = framesynced;
 			}
 
 			void WrappedTask::operator()() const {
@@ -23,17 +29,31 @@ namespace overdrive {
 				catch (const std::exception& ex) {
 					gLogSev(ERROR) << "Exception: " << ex.what();
 				}
-				catch (const boost::thread_interrupted&) {
-					gLogSev(ERROR) << "Thread interrupted";
-				}
 				catch (...) {
 					gLogSev(ERROR) << "Unknown exception";
 				}
 			}
 
-			WrappedTask make_wrapped(std::function<void()> task) {
-				return WrappedTask(task);
+			bool WrappedTask::isRepeating() const {
+				return mIsRepeating;
+			}
+
+			bool WrappedTask::isThreadsafe() const {
+				return mIsThreadsafe;
+			}
+
+			bool WrappedTask::isFrameSynced() const {
+				return mIsFrameSynced;
 			}
 		}
+	}
+
+	core::detail::WrappedTask make_wrapped(
+		Task task, 
+		bool repeating, 
+		bool threadsafe, 
+		bool framesync
+	) {
+		return core::detail::WrappedTask(task, repeating, threadsafe, framesync);
 	}
 }

@@ -22,4 +22,12 @@
 	#include <winsdkver.h> // this defines the _WIN32_WINNT value (relevant for boost::asio)
 #endif
 
+#ifdef min
+	#undef min
+#endif
+
+#ifdef max
+	#undef max
+#endif
+
 #endif

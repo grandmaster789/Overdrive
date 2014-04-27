@@ -1,7 +1,5 @@
 #include <iostream>
-
-#include "std.h"
-#include "boost.h"
+#include <exception>
 #include "opengl.h"
 
 #include "core/logger.h"
@@ -10,25 +8,31 @@
 #include "test/test.h"
 
 int value = 0;
+int bgValue = 0;
+
+overdrive::core::TaskProcessor proc;
 
 void test() {
 	if (++value < 10) {
 		gLog << "task " << value;
-		overdrive::core::TaskProcessor::get().addTask(&test);
 		throw std::runtime_error("exception test!");
 	}
 	else
-		overdrive::core::TaskProcessor::get().stop();
+		proc.stop();
+}
+
+void testBG() {
+	gLog << "BG: " << ++bgValue;
 }
 
 int main() {
 	overdrive::core::LogHelper initLog;
 
-	overdrive::test::runAllTests();
+	//overdrive::test::runAllTests();
+	proc.add(&test, true);
+	proc.add(&testBG, true, true);
 
-	auto& proc = overdrive::core::TaskProcessor::get();
+	proc.start();
 
-	proc.addTask(&test);
-	
-	proc.start(); //this will block until one of the tasks calls 'stop'
+//	boost::this_thread::sleep_for(boost::chrono::seconds(5));
 }
