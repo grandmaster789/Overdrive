@@ -26,21 +26,16 @@ namespace overdrive {
 		void TaskProcessor::add(
 			Task t, 
 			bool repeating, 
-			bool threadsafe, 
-			bool framesynced
+			bool background
 		) {
 			add(
-				make_wrapped(t, repeating, threadsafe, framesynced)
+				make_wrapped(t, repeating, background)
 			);
 		}
 
 		void TaskProcessor::add(detail::WrappedTask t) {
-			if (t.isThreadsafe()) {
-				if (t.isFrameSynced())
-					mSynchedTasks.push(std::move(t));
-				else
-					mBackgroundTasks.push(std::move(t));
-			}
+			if (t.isBackground())
+				mBackgroundTasks.push(std::move(t));
 			else
 				mMainTasks.push(std::move(t));
 		}
@@ -64,10 +59,7 @@ namespace overdrive {
 				TaskQueue mainTasks;
 				mainTasks.swap(mMainTasks);
 
-				TaskQueue syncTasks;
-				syncTasks.swap(mSynchedTasks);
-
-				//fetch tasks and execute directly from the internal queue (no locking required)
+				//fetch tasks and execute directly from the internal queue (no popping/locking required)
 				for (const auto& task: mainTasks.mInternalQueue) 
 					execute(task);
 			}
@@ -77,7 +69,6 @@ namespace overdrive {
 			mIsRunning = false;
 
 			mMainTasks.stop();
-			mSynchedTasks.stop();
 			mBackgroundTasks.stop();
 		}
 

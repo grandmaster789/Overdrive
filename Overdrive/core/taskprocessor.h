@@ -23,8 +23,7 @@ namespace overdrive {
 			void add(
 				Task t, 
 				bool repeating = false, 
-				bool threadsafe = false, 
-				bool framesynced = false
+				bool background = false
 			);
 
 			void add(detail::WrappedTask t); //places the task in the appropriate queue
@@ -36,12 +35,11 @@ namespace overdrive {
 			void execute(detail::WrappedTask t);
 
 			TaskQueue mMainTasks;		//executed in this thread
-			TaskQueue mSynchedTasks;	//launched when a new frame is started; frame waits for these to complete
 			TaskQueue mBackgroundTasks;	//launched in a separate thread (use this for lengthy operations, such as I/O)
 
 			uint32_t mIsRunning : 1;
+			
 			size_t mNumWorkers;
-
 			boost::thread_group mBackgroundWorkers;
 		};
 	}

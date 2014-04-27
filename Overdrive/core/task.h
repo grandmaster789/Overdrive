@@ -22,21 +22,19 @@ namespace overdrive {
 			struct WrappedTask {
 			public:
 				explicit WrappedTask();
-				explicit WrappedTask(Task t, bool repeating, bool threadsafe, bool framesynced);
+				explicit WrappedTask(Task t, bool repeating, bool background);
 
 				void operator()() const;
 				
 				bool isRepeating() const;
-				bool isThreadsafe() const;
-				bool isFrameSynced() const;
+				bool isBackground() const;
 
 				friend class TaskProcessor;
 
 			private:
 				Task mUnwrappedTask;
 				uint32_t mIsRepeating : 1;
-				uint32_t mIsThreadsafe : 1;
-				uint32_t mIsFrameSynced : 1;
+				uint32_t mIsBackground : 1;
 			};
 		}
 	}
@@ -45,8 +43,7 @@ namespace overdrive {
 	core::detail::WrappedTask make_wrapped(
 		Task task, 
 		bool repeating = false, 
-		bool threadsafe = false, 
-		bool framesync = false
+		bool isBackground = false
 	);
 }
 

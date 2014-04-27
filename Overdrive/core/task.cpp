@@ -7,12 +7,11 @@ namespace overdrive {
 			/*** WrappedTask ***/
 			WrappedTask::WrappedTask() {}
 
-			WrappedTask::WrappedTask(Task task, bool repeating, bool threadsafe, bool framesynced):
+			WrappedTask::WrappedTask(Task task, bool repeating, bool background):
 				mUnwrappedTask(std::move(task))
 			{
 				mIsRepeating = repeating;
-				mIsThreadsafe = threadsafe;
-				mIsFrameSynced = framesynced;
+				mIsBackground = background;
 			}
 
 			void WrappedTask::operator()() const {
@@ -38,12 +37,8 @@ namespace overdrive {
 				return mIsRepeating;
 			}
 
-			bool WrappedTask::isThreadsafe() const {
-				return mIsThreadsafe;
-			}
-
-			bool WrappedTask::isFrameSynced() const {
-				return mIsFrameSynced;
+			bool WrappedTask::isBackground() const {
+				return mIsBackground;
 			}
 		}
 	}
@@ -51,9 +46,8 @@ namespace overdrive {
 	core::detail::WrappedTask make_wrapped(
 		Task task, 
 		bool repeating, 
-		bool threadsafe, 
-		bool framesync
+		bool background
 	) {
-		return core::detail::WrappedTask(task, repeating, threadsafe, framesync);
+		return core::detail::WrappedTask(task, repeating, background);
 	}
 }
