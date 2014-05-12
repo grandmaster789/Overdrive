@@ -58,7 +58,8 @@ namespace overdrive {
 			typedef boost::log::sinks::text_ostream_backend Backend;
 			typedef boost::log::attribute_value_ordering<unsigned int, std::less<unsigned int>> OrderingAttribute;
 			typedef boost::log::sinks::unbounded_ordering_queue<OrderingAttribute> Ordering;
-			typedef boost::log::sinks::asynchronous_sink<Backend, Ordering> Sink;
+			//typedef boost::log::sinks::asynchronous_sink<Backend, Ordering> Sink;
+			typedef boost::log::sinks::synchronous_sink<Backend> Sink;
 
 			boost::shared_ptr<Sink> mConsoleSink;
 			boost::shared_ptr<Sink> mFileSink;

@@ -46,8 +46,10 @@ namespace overdrive {
 			//start the workers
 			for (size_t i = 0; i < mNumWorkers; ++i)
 				mBackgroundWorkers.create_thread([this] {
+					detail::WrappedTask task;
+					
 					while (mIsRunning) {
-						auto task = mBackgroundTasks.pop();
+						mBackgroundTasks.pop(task);
 
 						if (mIsRunning)
 							execute(task);
@@ -56,11 +58,10 @@ namespace overdrive {
 
 			while (mIsRunning) {
 				//create a snapshot of the main task queue and the synced tasks
-				TaskQueue mainTasks;
-				mainTasks.swap(mMainTasks);
+				auto mainTasks = mMainTasks.toVectorAndClear();
 
 				//fetch tasks and execute directly from the internal queue (no popping/locking required)
-				for (const auto& task: mainTasks.mInternalQueue) 
+				for (const auto& task: mainTasks) 
 					execute(task);
 			}
 		}
@@ -68,8 +69,9 @@ namespace overdrive {
 		void TaskProcessor::stop() {
 			mIsRunning = false;
 
-			mMainTasks.stop();
-			mBackgroundTasks.stop();
+			//mMainTasks.stop();
+			//mBackgroundTasks.stop();
+			
 		}
 
 		void TaskProcessor::execute(detail::WrappedTask t) {

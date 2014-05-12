@@ -23,7 +23,8 @@ namespace overdrive {
 			
 			if (echo) {
 				auto consoleBackend = boost::make_shared<Backend>();
-				mConsoleSink = boost::make_shared<Sink>(consoleBackend, boost::log::keywords::order = recordOrdering);
+				//mConsoleSink = boost::make_shared<Sink>(consoleBackend, boost::log::keywords::order = recordOrdering);
+				mConsoleSink = boost::make_shared<Sink>(consoleBackend);
 
 				boost::shared_ptr<std::ostream> consoleStream(&std::clog, boost::empty_deleter());
 
@@ -34,7 +35,8 @@ namespace overdrive {
 			}
 	
 			auto fileBackend = boost::make_shared<Backend>();
-			mFileSink = boost::make_shared<Sink>(fileBackend, boost::log::keywords::order = recordOrdering);
+			//mFileSink = boost::make_shared<Sink>(fileBackend, boost::log::keywords::order = recordOrdering);
+			mFileSink = boost::make_shared<Sink>(fileBackend);
 
 			auto fileStream = boost::make_shared<std::ofstream>(filename.c_str());
 			if (!fileStream->good())
@@ -53,12 +55,12 @@ namespace overdrive {
 
 		LogHelper::~LogHelper() {
 			if (mConsoleSink) {
-				mConsoleSink->stop();
+				//mConsoleSink->stop();
 				mConsoleSink->flush();
 			}
 
 			if (mFileSink) {
-				mFileSink->stop();
+				//mFileSink->stop();
 				mFileSink->flush();
 			}
 		}

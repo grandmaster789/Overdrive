@@ -7,8 +7,13 @@
 namespace overdrive {
 	namespace test {
 		inline void runAllTests() {
+			std::cout << "Running core tests\n";
 			runCoreTest();
+			std::cout << "Done\n";
+
+			std::cout << "Running util tests\n";
 			runUtilTest();
+			std::cout << "Done\n";
 		}
 	}
 }

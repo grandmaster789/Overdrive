@@ -5,12 +5,14 @@ namespace overdrive {
 	namespace test {
 		namespace core {
 			void testLogger();
+			void testChannel();
 		}
 
 		inline void runCoreTest() {
 			using namespace core;
 
 			testLogger();
+			testChannel();
 		}
 	}
 }
