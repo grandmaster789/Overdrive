@@ -1,5 +1,6 @@
 #include "task.h"
 #include "logger.h"
+#include <boost/thread.hpp>
 
 namespace overdrive {
 	namespace core {
@@ -26,10 +27,10 @@ namespace overdrive {
 					mUnwrappedTask();
 				}
 				catch (const std::exception& ex) {
-					gLogSev(ERROR) << "Exception: " << ex.what();
+					gLog.error() << "Exception: " << ex.what();
 				}
 				catch (...) {
-					gLogSev(ERROR) << "Unknown exception";
+					gLog.error() << "Unknown exception";
 				}
 			}
 

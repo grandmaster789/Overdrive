@@ -21,7 +21,7 @@ namespace overdrive {
 			ifs.sync_with_stdio(false);
 
 			if (!ifs.good()) {
-				gLogSev(ERROR) << "Failed to open config file: " << filename;
+				gLog.error() << "Failed to open config file: " << filename;
 				return false;
 			}
 			else {

@@ -1,68 +1,112 @@
 #include "logger.h"
-#include <fstream>
+#include "preprocessor.h"
+#include <chrono>
+#include <ctime>
 #include <iostream>
-#include <boost/log/expressions.hpp>
-#include <boost/log/support/date_time.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/smart_ptr/shared_ptr.hpp>
-#include <boost/utility/empty_deleter.hpp>
 
 namespace overdrive {
 	namespace core {
-		LogHelper::LogHelper(bool echo, const std::string& filename) {
-			namespace expr = boost::log::expressions;
-			
-			auto core = boost::log::core::get();
-			auto recordOrdering = boost::log::make_attr_ordering("RecordID", std::less<unsigned int>());
-			auto formatter = (
-				expr::format("%1% %2%\t%3%")
-				% expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%H:%M:%S")
-				% expr::attr<eLogSeverity>("Severity")
-				% expr::smessage
-			);
-			
-			if (echo) {
-				auto consoleBackend = boost::make_shared<Backend>();
-				//mConsoleSink = boost::make_shared<Sink>(consoleBackend, boost::log::keywords::order = recordOrdering);
-				mConsoleSink = boost::make_shared<Sink>(consoleBackend);
-
-				boost::shared_ptr<std::ostream> consoleStream(&std::clog, boost::empty_deleter());
-
-				mConsoleSink->locked_backend()->add_stream(consoleStream);			
-				mConsoleSink->set_formatter(formatter);
-
-				core->add_sink(mConsoleSink);
-			}
-	
-			auto fileBackend = boost::make_shared<Backend>();
-			//mFileSink = boost::make_shared<Sink>(fileBackend, boost::log::keywords::order = recordOrdering);
-			mFileSink = boost::make_shared<Sink>(fileBackend);
-
-			auto fileStream = boost::make_shared<std::ofstream>(filename.c_str());
-			if (!fileStream->good())
-				throw std::runtime_error("Failed to open log file");
-
-			fileStream->sync_with_stdio(false); //disable synchronization with printf and the like
-
-			mFileSink->locked_backend()->add_stream(fileStream);
-			mFileSink->set_formatter(formatter);
-
-			core->add_sink(mFileSink);
-			
-			core->add_global_attribute("TimeStamp", boost::log::attributes::local_clock());
-			core->add_global_attribute("RecordID", boost::log::attributes::counter<unsigned int>());
+		Logger::Logger(std::string filename):
+			mOutputFile(std::move(filename))
+		{
+			mOutputFile.sync_with_stdio(false);
 		}
 
-		LogHelper::~LogHelper() {
-			if (mConsoleSink) {
-				//mConsoleSink->stop();
-				mConsoleSink->flush();
-			}
+		Logger::LogHelper Logger::operator << (std::ostream& (*fn)(std::ostream& os)) {
+			LogHelper helper(this);
 
-			if (mFileSink) {
-				//mFileSink->stop();
-				mFileSink->flush();
+			fn(helper.mBuffer);
+
+			return helper;
+		}
+
+		std::string clockString(const std::chrono::system_clock::time_point& tp) {
+			auto timeStruct = std::chrono::system_clock::to_time_t(tp);
+
+			#pragma warning(push)
+			#pragma warning(disable: 4996)
+				std::string result = std::ctime(&timeStruct); // it's a little verbose, but it's also easy
+			#pragma warning(pop)
+
+			result.resize(result.size() - 1); //get rid of the trailing newline
+
+			return result;
+		}
+
+		Logger::LogHelper::LogHelper(Logger* parent):
+			mParent(parent)
+		{
+			mBuffer.sync_with_stdio(false);
+			mBuffer << clockString(std::chrono::system_clock::now());
+		}
+
+		Logger::LogHelper::LogHelper(LogHelper&& lh):
+			mParent(std::move(lh.mParent)),
+			mBuffer(std::move(lh.mBuffer))
+		{
+			lh.mParent = nullptr; // the old one doesn't have to flush anymore
+		}
+
+		Logger::LogHelper::~LogHelper() {
+			if (mParent) {
+				mBuffer << "\n";	// automatically add a newline
+				mParent->flush(mBuffer.str());
 			}
+		}
+
+		Logger::LogHelper& Logger::LogHelper::operator << (std::ostream& (*fn)(std::ostream& os)) {
+			fn(mBuffer);
+			return *this;
+		}
+
+		void Logger::flush(std::string message) {
+			std::lock_guard<std::mutex> lock(mMutex);
+
+			mOutputFile << message;
+
+			#ifdef OVERDRIVE_DEBUG
+				std::clog << message;
+			#endif
+		}
+
+		Logger::LogHelper Logger::debug() {
+			LogHelper helper(this);
+
+			helper << " [dbg] ";
+
+			return helper;
+		}
+
+		Logger::LogHelper Logger::info() {
+			LogHelper helper(this);
+
+			helper << "       ";
+
+			return helper;
+		}
+
+		Logger::LogHelper Logger::warning() {
+			LogHelper helper(this);
+
+			helper << " [wrn] ";
+
+			return helper;
+		}
+
+		Logger::LogHelper Logger::error() {
+			LogHelper helper(this);
+
+			helper << " [** ERROR **] ";
+
+			return helper;
+		}
+
+		Logger::LogHelper Logger::fatal() {
+			LogHelper helper(this);
+
+			helper << " [<=== FATAL ===>] ";
+
+			return helper;
 		}
 	}
 }

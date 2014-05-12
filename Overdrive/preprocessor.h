@@ -1,5 +1,5 @@
-#ifndef OVERDRIVE_PLATFORM_H
-#define OVERDRIVE_PLATFORM_H
+#ifndef OVERDRIVE_PREPROCESSOR_H
+#define OVERDRIVE_PREPROCESSOR_H
 
 // first lay down some constants
 #define OVERDRIVE_PLATFORM_WINDOWS 1
@@ -20,6 +20,11 @@
 
 	#include <windows.h>
 	#include <winsdkver.h> // this defines the _WIN32_WINNT value (relevant for boost::asio)
+#endif
+
+// with MSVC we can figure out wheter this is a debug build
+#ifdef _DEBUG
+	#define OVERDRIVE_DEBUG
 #endif
 
 #ifdef min

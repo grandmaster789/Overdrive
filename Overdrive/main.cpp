@@ -12,7 +12,7 @@ int value = 0;
 int bgValue = 0;
 
 int main() {
-	overdrive::core::LogHelper initLog;
+	//overdrive::core::LogHelper initLog;
 
 	overdrive::test::runAllTests();
 }
