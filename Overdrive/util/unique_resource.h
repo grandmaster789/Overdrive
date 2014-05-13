@@ -21,16 +21,16 @@ namespace overdrive {
 			tDeleteFn&& deleter,
 			bool useDeleter = true
 		):
-			mResource(std::move(resource)),
-			mDeleter(std::move(deleter)),
-			mInvokeDeleterOnDestruction(useDeleter)
+			mResource{ std::move(resource) },
+			mDeleter{ std::move(deleter) },
+			mInvokeDeleterOnDestruction{ useDeleter }
 		{
 		}
 
 		UniqueResource(UniqueResource&& ur) :
-			mResource(std::move(ur.mResource)),
-			mDeleter(std::move(ur.mDeleter)),
-			mInvokeDeleterOnDestruction(ur.mInvokeDeleterOnDestruction)
+			mResource{ std::move(ur.mResource) },
+			mDeleter{ std::move(ur.mDeleter) },
+			mInvokeDeleterOnDestruction{ ur.mInvokeDeleterOnDestruction }
 		{
 			ur.release();
 		}
@@ -110,11 +110,11 @@ namespace overdrive {
 		tResource&& resource,	// move the resource
 		tDeleterFn deleter		// copy the deleter when appropriate
 	) {
-		return UniqueResource<tResource, tDeleterFn>(
+		return UniqueResource<tResource, tDeleterFn>{
 			std::move(resource),
 			std::move(deleter),
 			true
-		);
+		};
 	}
 
 	template <typename tResource, typename tDeleterFn>
@@ -125,11 +125,11 @@ namespace overdrive {
 	) {
 		bool useDeleter = !(resource == invalidState);
 
-		return UniqueResource<tResource, tDeleterFn>(
+		return UniqueResource<tResource, tDeleterFn>{
 			std::move(resource),	//at this point we're working with a local copy, which *can* be moved
 			std::move(deleter),
 			useDeleter
-		);
+		};
 	}
 }
 

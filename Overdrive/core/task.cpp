@@ -9,7 +9,7 @@ namespace overdrive {
 			WrappedTask::WrappedTask() {}
 
 			WrappedTask::WrappedTask(Task task, bool repeating, bool background):
-				mUnwrappedTask(std::move(task))
+				mUnwrappedTask{ std::move(task) }
 			{
 				mIsRepeating = repeating;
 				mIsBackground = background;
@@ -49,6 +49,6 @@ namespace overdrive {
 		bool repeating, 
 		bool background
 	) {
-		return core::detail::WrappedTask(task, repeating, background);
+		return core::detail::WrappedTask{ task, repeating, background };
 	}
 }

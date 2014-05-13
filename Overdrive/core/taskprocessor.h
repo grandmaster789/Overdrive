@@ -37,7 +37,7 @@ namespace overdrive {
 			TaskQueue mMainTasks;		//executed in this thread
 			TaskQueue mBackgroundTasks;	//launched in a separate thread (use this for lengthy operations, such as I/O)
 
-			uint32_t mIsRunning : 1;
+			bool mIsRunning;
 			
 			size_t mNumWorkers;
 			boost::thread_group mBackgroundWorkers;

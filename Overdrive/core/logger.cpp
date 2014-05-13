@@ -7,7 +7,7 @@
 namespace overdrive {
 	namespace core {
 		Logger::Logger(std::string filename):
-			mOutputFile(std::move(filename))
+			mOutputFile{ std::move(filename) }
 		{
 			mOutputFile.sync_with_stdio(false);
 		}

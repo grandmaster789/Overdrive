@@ -4,7 +4,7 @@
 namespace overdrive {
 	namespace core {
 		TaskProcessor::TaskProcessor(size_t numWorkers):
-			mIsRunning(false)
+			mIsRunning{ false }
 		{
 			if (numWorkers == 0) {
 				mNumWorkers = boost::thread::hardware_concurrency();
@@ -68,10 +68,6 @@ namespace overdrive {
 
 		void TaskProcessor::stop() {
 			mIsRunning = false;
-
-			//mMainTasks.stop();
-			//mBackgroundTasks.stop();
-			
 		}
 
 		void TaskProcessor::execute(detail::WrappedTask t) {

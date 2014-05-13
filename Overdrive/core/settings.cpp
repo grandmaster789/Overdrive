@@ -8,7 +8,7 @@ namespace overdrive {
 		namespace po = boost::program_options;
 
 		Settings::Settings():
-			util::Named("Settings")
+			util::Named{ "Settings" }
 		{
 		}
 

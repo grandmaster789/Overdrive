@@ -13,14 +13,14 @@ namespace overdrive {
 		struct ScopeGuard {
 		public:
 			explicit ScopeGuard(tDeleteFn&& fn) :
-				mDeleter(std::move(fn)),
-				mInvokeOnDestruction(true)
+				mDeleter{ std::move(fn) },
+				mInvokeOnDestruction{ true }
 			{
 			}
 
 			ScopeGuard(ScopeGuard&& sg) :
-				mDeleter(std::move(sg.mDeleter)),
-				mInvokeOnDestruction(sg.mInvokeOnDestruction)
+				mDeleter{ std::move(sg.mDeleter) },
+				mInvokeOnDestruction{ sg.mInvokeOnDestruction }
 			{
 				sg.mInvokeOnDestruction = false;
 			}
