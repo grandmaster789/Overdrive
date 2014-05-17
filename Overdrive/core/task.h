@@ -32,6 +32,9 @@ namespace overdrive {
 				friend class TaskProcessor;
 
 			private:
+				void setRepeating(bool enabled);
+				void setBackground(bool enabled); // modifying the background status does not change the execution style immediately - it only affects future executions of this task
+
 				Task mUnwrappedTask;
 				uint32_t mIsRepeating : 1;
 				uint32_t mIsBackground : 1;

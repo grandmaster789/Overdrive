@@ -6,13 +6,10 @@
 
 #include <cstdint>
 #include <boost/thread.hpp>
-#include <boost/noncopyable.hpp>
 
 namespace overdrive {
 	namespace core {
-		class TaskProcessor:
-			public boost::noncopyable
-		{
+		class TaskProcessor {
 		private:
 			typedef util::ConcurrentQueue<detail::WrappedTask> TaskQueue;
 
@@ -20,12 +17,14 @@ namespace overdrive {
 			TaskProcessor(size_t numWorkers = 0); //use 0 for autodetect
 			~TaskProcessor();
 
+			TaskProcessor(const TaskProcessor&) = delete;
+			TaskProcessor& operator= (const TaskProcessor&) = delete;
+
 			void add(
 				Task t, 
 				bool repeating = false, 
 				bool background = false
 			);
-
 			void add(detail::WrappedTask t); //places the task in the appropriate queue
 			
 			void start();

@@ -41,6 +41,14 @@ namespace overdrive {
 			bool WrappedTask::isBackground() const {
 				return mIsBackground;
 			}
+
+			void WrappedTask::setRepeating(bool enabled) {
+				mIsRepeating = enabled;
+			}
+
+			void WrappedTask::setBackground(bool enabled) {
+				mIsBackground = enabled;
+			}
 		}
 	}
 

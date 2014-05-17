@@ -23,14 +23,8 @@ namespace overdrive {
 			mBackgroundWorkers.join_all();
 		}
 
-		void TaskProcessor::add(
-			Task t, 
-			bool repeating, 
-			bool background
-		) {
-			add(
-				make_wrapped(t, repeating, background)
-			);
+		void TaskProcessor::add(Task t, bool repeating, bool background) {
+			add(make_wrapped(t, repeating, background));
 		}
 
 		void TaskProcessor::add(detail::WrappedTask t) {

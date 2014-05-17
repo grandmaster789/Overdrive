@@ -23,3 +23,6 @@
 *.obj
 *.idb
 *.pdb
+/*.opensdf
+/Overdrive/Overdrive.vcxproj.user
+/Release/*.exe
