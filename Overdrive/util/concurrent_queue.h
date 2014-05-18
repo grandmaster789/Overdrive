@@ -69,7 +69,7 @@ namespace overdrive {
 			std::vector<T> toVectorAndClear() {
 				ScopedLock lock(mMutex);
 				
-				std::vector<T> result(mInternalQueue.size());	
+				std::vector<T> result;
 
 				while (!mInternalQueue.empty()) {
 					auto item = std::move(mInternalQueue.front());

@@ -4,12 +4,12 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include "channel.h"
+#include "taskprocessor.h"
 
 namespace overdrive {
 	namespace core {
 		class System;
-		class Channel;
-		class TaskProcessor;
 
 		class Engine {
 		public:
@@ -26,12 +26,15 @@ namespace overdrive {
 			void run();
 			void stop();
 
+			void updateSystem(System* system, bool repeating = false, bool background = false);
+
 		private:
 			void initializeSystems();
 			void shutdownSystems();
 
 			SystemList mSystems;
 			SystemMapping mSystemLookup;
+			TaskProcessor mTaskProcessor;
 		};
 	}
 }

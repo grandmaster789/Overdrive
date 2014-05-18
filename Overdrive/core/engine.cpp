@@ -16,6 +16,8 @@ namespace overdrive {
 			auto it = mSystemLookup.find(system->getName());
 			
 			if (it == mSystemLookup.end()) {
+				system->mEngine = this;
+
 				mSystemLookup[system->getName()] = system.get();
 				mSystems.emplace_back(std::move(system));
 			}
@@ -33,9 +35,13 @@ namespace overdrive {
 		}
 
 		void Engine::run() {
+			initializeSystems();
+			mTaskProcessor.start();
+			shutdownSystems();
 		}
 		
 		void Engine::stop() {
+			mTaskProcessor.stop();
 		}
 
 		void Engine::initializeSystems() {
@@ -51,6 +57,18 @@ namespace overdrive {
 				gLog << "Shutting down: " << system->getName();
 				system->shutdown();
 			}
+		}
+
+		void Engine::updateSystem(System* system, bool repeating, bool background) {
+			assert(system);
+
+			mTaskProcessor.add(
+				make_wrapped(
+					[system] { system->update(); }, 
+					repeating, 
+					background
+				)
+			);
 		}
 	}
 }

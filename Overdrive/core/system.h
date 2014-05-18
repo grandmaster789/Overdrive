@@ -14,6 +14,10 @@ namespace overdrive {
 			public util::Named
 		{
 		public:
+			friend class Engine;
+
+			typedef boost::program_options::options_description Settings;
+
 			System(std::string name);
 
 			System(const System&) = delete;
@@ -29,7 +33,7 @@ namespace overdrive {
 		protected:
 			Channel mChannel;
 			Engine* mEngine;
-			boost::program_options::options_description mSettings;
+			Settings mSettings;
 		};
 
 		template <typename T>

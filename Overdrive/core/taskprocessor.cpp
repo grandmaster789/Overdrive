@@ -62,12 +62,15 @@ namespace overdrive {
 
 		void TaskProcessor::stop() {
 			mIsRunning = false;
+			
+			for (size_t i = 0; i < mNumWorkers; ++i)
+				add([this] { mIsRunning = false; });
 		}
 
 		void TaskProcessor::execute(detail::WrappedTask t) {
 			t();
 
-			if (t.isRepeating())
+			if (t.isRepeating() && mIsRunning)
 				add(t);
 		}
 	}
