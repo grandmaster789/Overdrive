@@ -2,6 +2,8 @@
 #include <exception>
 #include "opengl.h"
 
+#include <future>
+
 #include "core/channel.h"
 #include "core/logger.h"
 #include "core/taskprocessor.h"
@@ -9,6 +11,7 @@
 #include "core/system.h"
 
 #include "util/named.h"
+#include "util/concurrent.h"
 
 #include "test/test.h"
 
@@ -46,8 +49,34 @@ private:
 	int mCounter = 0;
 };
 
+struct TestConcurrent {
+	void foo() {
+		gLog << "FOO";
+	}
+
+	int gimme() {
+		return 5;
+	}
+};
+
+void baz() {
+	gLog << "BAZ";
+}
+
 int main() {
 	//overdrive::test::runAllTests();
+
+	overdrive::util::Concurrent<TestConcurrent> bar;
+	//bar.lambda([](TestConcurrent& obj) { obj.foo(); });
+	//std::future<int> i = bar.lambda([](TestConcurrent& obj) { return obj.gimme(); });
+	//bar.call(&TestConcurrent::foo);
+	auto i = bar.call(&TestConcurrent::gimme);
+
+	gLog << "Gimme: " << i.get();
+
+	std::packaged_task<void()> task(&baz);
+	auto fut = task.get_future();
+	task();
 
 	overdrive::core::Engine engine;
 

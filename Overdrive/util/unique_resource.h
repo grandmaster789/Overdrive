@@ -6,7 +6,7 @@
 namespace overdrive {
 	//based on isocpp paper 3949 (slightly modified)
 	//TODO: once msvc actually supports nothrow, add it where appropriate to this class (almost everywhere)
-
+	//TODO: figure out a way to do a make_unique_resource (I foresee problems with the constructor arguments)
 	template <typename tResource, typename tDeleteFn>
 	class UniqueResource {
 	private:

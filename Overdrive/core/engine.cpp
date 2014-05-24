@@ -34,6 +34,40 @@ namespace overdrive {
 				return it->second;
 		}
 
+		void Engine::remove(std::string systemName) {
+			System* s = get(systemName);
+
+			if (s)
+				remove(s);
+			else
+				gLog.error() << "Cannot remove system '" << systemName << "', not currently registered";
+		}
+
+		void Engine::remove(System* s) {
+			// first scan the systemlist for the given system
+			auto it = std::remove_if(
+				mSystems.begin(), 
+				mSystems.end(), 
+				[s] (const SystemPtr& ptr) {
+					return ptr.get() == s;
+				}
+			);
+
+			if (it != mSystems.end()) {
+				// the system was found, perform a clean shutdown and remove it from the active registry/list
+				s->shutdown();
+
+				mSystems.erase(it);
+
+				for (auto jt = mSystemLookup.begin(); jt != mSystemLookup.end(); ++jt) {
+					if (jt->second == s) {
+						mSystemLookup.erase(jt);
+						break;
+					}
+				}
+			}
+		}
+
 		void Engine::run() {
 			initializeSystems();
 			mTaskProcessor.start();
@@ -46,17 +80,17 @@ namespace overdrive {
 
 		void Engine::initializeSystems() {
 			for (auto& system : mSystems) {
-				gLog << "Initializing: " << system->getName();
 				if (!system->initialize())
-					gLog.error() << "Failed to initialize";
+					gLog.error() << "Failed to initialize subsystem: " << system->getName();
 			}
 		}
 
 		void Engine::shutdownSystems() {
-			for (auto& system : mSystems) {
-				gLog << "Shutting down: " << system->getName();
+			for (auto& system : mSystems)
 				system->shutdown();
-			}
+
+			mSystems.clear();
+			mSystemLookup.clear();
 		}
 
 		void Engine::updateSystem(System* system, bool repeating, bool background) {

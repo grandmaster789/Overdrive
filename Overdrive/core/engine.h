@@ -22,6 +22,8 @@ namespace overdrive {
 			void add(System* system); //note that the Engine will take ownership of the system added
 			void add(std::unique_ptr<System>&& system);
 			System* get(std::string systemName) const;
+			void remove(std::string systemName);
+			void remove(System* system);
 
 			void run();
 			void stop();
@@ -36,6 +38,9 @@ namespace overdrive {
 			SystemMapping mSystemLookup;
 			TaskProcessor mTaskProcessor;
 		};
+
+		// Note -- if systems are removed regularly, from non-main threads this needs to become threadsafe as well
+		//		   I don't expect this to be the typical use case, so I'll leave it for later
 	}
 }
 

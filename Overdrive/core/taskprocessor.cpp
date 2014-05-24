@@ -52,11 +52,12 @@ namespace overdrive {
 
 			while (mIsRunning) {
 				//create a snapshot of the main task queue and the synced tasks
-				auto mainTasks = mMainTasks.toVectorAndClear();
+				TaskQueue mainTasks;
+				mMainTasks.swap(mainTasks);
 
-				//fetch tasks and execute directly from the internal queue (no popping/locking required)
-				for (const auto& task: mainTasks) 
-					execute(task);
+				//fetch tasks and execute directly from the internal queue (no popping/locking required, so use the unsafe methods)
+				while (!mainTasks.isEmpty_unsafe())
+					execute(mainTasks.pop_unsafe());
 			}
 		}
 
@@ -70,7 +71,7 @@ namespace overdrive {
 		void TaskProcessor::execute(detail::WrappedTask t) {
 			t();
 
-			if (t.isRepeating() && mIsRunning)
+			if (t.isRepeating())
 				add(t);
 		}
 	}
