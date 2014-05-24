@@ -26,7 +26,7 @@ public:
 
 	bool initialize() override {
 		System::initialize();
-		mEngine->updateSystem(this, true, false);
+		mEngine->updateSystem(this, true, true);
 
 		return true;
 	}
@@ -36,7 +36,7 @@ public:
 
 		gLog << "Count: " << mCounter;
 
-		if (mCounter > 10)
+		if (mCounter >= 10)
 			mEngine->stop();
 	}
 

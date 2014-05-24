@@ -96,12 +96,10 @@ namespace overdrive {
 		void Engine::updateSystem(System* system, bool repeating, bool background) {
 			assert(system);
 
-			mTaskProcessor.add(
-				make_wrapped(
-					[system] { system->update(); }, 
-					repeating, 
-					background
-				)
+			mTaskProcessor.addWork(
+				[system] { system->update(); }, 
+				repeating, 
+				background
 			);
 		}
 	}

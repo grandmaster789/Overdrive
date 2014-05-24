@@ -23,15 +23,27 @@ namespace overdrive {
 			mBackgroundWorkers.join_all();
 		}
 
-		void TaskProcessor::add(Task t, bool repeating, bool background) {
-			add(make_wrapped(t, repeating, background));
+		void TaskProcessor::addWork(Task t, bool repeating, bool background) {
+			addWork(make_wrapped(t, repeating, background));
 		}
 
-		void TaskProcessor::add(detail::WrappedTask t) {
+		void TaskProcessor::addWork(detail::WrappedTask t) {
 			if (t.isBackground())
 				mBackgroundTasks.push(std::move(t));
 			else
 				mMainTasks.push(std::move(t));
+		}
+
+		void TaskProcessor::addRepeatingWork(Task t, bool background) {
+			addWork(make_wrapped(t, true, background));
+		}
+		
+		void TaskProcessor::addBackgroundWork(Task t, bool repeating) {
+			addWork(make_wrapped(t, repeating, true));
+		}
+
+		void TaskProcessor::addRepeatingBackgroundWork(Task t) {
+			addWork(make_wrapped(t, true, true));
 		}
 
 		void TaskProcessor::start() {
@@ -65,14 +77,14 @@ namespace overdrive {
 			mIsRunning = false;
 			
 			for (size_t i = 0; i < mNumWorkers; ++i)
-				add([this] { mIsRunning = false; });
+				addBackgroundWork([this] { mIsRunning = false; });
 		}
 
 		void TaskProcessor::execute(detail::WrappedTask t) {
 			t();
 
 			if (t.isRepeating())
-				add(t);
+				addWork(t);
 		}
 	}
 }

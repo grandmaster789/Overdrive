@@ -20,17 +20,19 @@ namespace overdrive {
 			TaskProcessor(const TaskProcessor&) = delete;
 			TaskProcessor& operator= (const TaskProcessor&) = delete;
 
-			void add(
-				Task t, 
-				bool repeating = false, 
-				bool background = false
-			);
-			void add(detail::WrappedTask t); //places the task in the appropriate queue
+			void addWork(Task t, bool repeating = false, bool background = false);
+			
+			// explicit aliases for various types of work
+			void addRepeatingWork(Task t, bool background = false);
+			void addBackgroundWork(Task t, bool repeating = false);
+			void addRepeatingBackgroundWork(Task t);
 			
 			void start();
 			void stop();
 
 		private:
+			void addWork(detail::WrappedTask t);	//places the task in the appropriate queue
+
 			void execute(detail::WrappedTask t);
 
 			TaskQueue mMainTasks;		//executed in this thread
