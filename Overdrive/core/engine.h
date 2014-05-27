@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 #include <map>
-#include "channel.h"
-#include "taskprocessor.h"
+#include "core/channel.h"
+#include "core/taskprocessor.h"
 
 namespace overdrive {
 	namespace core {

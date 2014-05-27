@@ -1,5 +1,5 @@
-#include "taskprocessor.h"
-#include "logger.h"
+#include "core/taskprocessor.h"
+#include "core/logger.h"
 
 namespace overdrive {
 	namespace core {

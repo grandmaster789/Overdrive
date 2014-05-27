@@ -1,5 +1,5 @@
-#include "task.h"
-#include "logger.h"
+#include "core/task.h"
+#include "core/logger.h"
 #include <boost/thread.hpp>
 
 namespace overdrive {

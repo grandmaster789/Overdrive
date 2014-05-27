@@ -7,7 +7,6 @@
 #include <utility>
 #include <vector>
 
-
 namespace overdrive {
 	namespace core {
 		class Channel;

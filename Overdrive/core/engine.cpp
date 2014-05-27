@@ -1,7 +1,7 @@
-#include "engine.h"
-#include "channel.h"
-#include "logger.h"
-#include "system.h"
+#include "core/engine.h"
+#include "core/channel.h"
+#include "core/logger.h"
+#include "core/system.h"
 
 namespace overdrive {
 	namespace core {

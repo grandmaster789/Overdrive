@@ -1,7 +1,7 @@
 #ifndef OVERDRIVE_CORE_TASKPROCESSOR_H
 #define OVERDRIVE_CORE_TASKPROCESSOR_H
 
-#include "task.h"
+#include "core/task.h"
 #include "util/concurrent_queue.h"
 
 #include <cstdint>

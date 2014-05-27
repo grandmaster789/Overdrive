@@ -8,8 +8,8 @@
 #include <thread>
 #include <future>
 
-#include "move_on_copy.h"
-#include "concurrent_queue.h"
+#include "util/move_on_copy.h"
+#include "util/concurrent_queue.h"
 
 // Lightweight active object wrapper, mostly inspired by Herb Sutter's presentation
 //		 http://channel9.msdn.com/Shows/Going+Deep/C-and-Beyond-2012-Herb-Sutter-Concurrency-and-Parallelism

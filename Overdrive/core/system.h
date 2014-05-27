@@ -2,7 +2,7 @@
 #define OVERDRIVE_CORE_SYSTEM_H
 
 #include "util/named.h"
-#include "channel.h"
+#include "core/channel.h"
 #include <boost/program_options.hpp>
 
 namespace overdrive {

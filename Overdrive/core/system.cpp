@@ -1,5 +1,5 @@
-#include "system.h"
-#include "logger.h"
+#include "core/system.h"
+#include "core/logger.h"
 
 namespace overdrive {
 	namespace core {

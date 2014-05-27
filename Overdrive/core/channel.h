@@ -1,7 +1,7 @@
 #ifndef OVERDRIVE_CORE_CHANNEL_H
 #define OVERDRIVE_CORE_CHANNEL_H
 
-#include "channelqueue.h"
+#include "core/channelqueue.h"
 #include "util/unique_resource.h"
 
 namespace overdrive {
