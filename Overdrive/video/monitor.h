@@ -17,7 +17,7 @@ namespace overdrive {
 		public:
 			typedef std::pair<int, int> Dimension; // in approximate millimeters (mm)
 
-			explicit Monitor(GLFWmonitor* mon);
+			Monitor(GLFWmonitor* mon);
 			GLFWmonitor* getHandle() const;
 
 			const std::string& getName() const;
