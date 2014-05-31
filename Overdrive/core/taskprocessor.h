@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <boost/thread.hpp>
+#include <boost/lockfree/queue.hpp>
 
 namespace overdrive {
 	namespace core {

@@ -44,7 +44,7 @@ namespace overdrive {
 			void createFullscreen(Monitor* m);
 			void destroy();
 			
-			void swapBuffers(); //note that this both swaps buffers and handles basic input
+			void swapBuffers() const;
 			bool shouldClose() const;
 
 			// Signals

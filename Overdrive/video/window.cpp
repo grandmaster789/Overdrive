@@ -80,6 +80,16 @@ namespace overdrive {
 			return mHeight;
 		}
 
+		void Window::setTitle(std::string title) {
+			if (title == mTitle)
+				return;
+
+			mTitle = std::move(title);
+
+			if (mHandle)
+				glfwSetWindowTitle(mHandle, mTitle.c_str());
+		}
+
 		const std::string& Window::getTitle() const {
 			return mTitle;
 		}
@@ -148,7 +158,7 @@ namespace overdrive {
 			}
 		}
 
-		void Window::swapBuffers() {
+		void Window::swapBuffers() const {
 			glfwSwapBuffers(mHandle);
 		}
 
