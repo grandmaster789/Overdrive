@@ -30,6 +30,12 @@ namespace overdrive {
 
 			void updateSystem(System* system, bool repeating = false, bool background = false);
 
+			// Signals
+			struct OnStop {};
+
+			// Handlers
+			void operator()(const OnStop&);
+
 		private:
 			void initializeSystems();
 			void shutdownSystems();

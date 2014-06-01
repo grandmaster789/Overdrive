@@ -6,6 +6,7 @@
 namespace overdrive {
 	namespace core {
 		Engine::Engine() {
+			Channel::add<OnStop>(this);
 		}
 
 		void Engine::add(System* system) {
@@ -101,6 +102,10 @@ namespace overdrive {
 				repeating, 
 				background
 			);
+		}
+
+		void Engine::operator()(const OnStop&) {
+			stop();
 		}
 	}
 }

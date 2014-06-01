@@ -65,11 +65,11 @@ namespace overdrive {
 		}
 
 		void Window::setWidth(int width) {
-			mWidth = width;
+			setSize(width, mHeight);
 		}
 
 		void Window::setHeight(int height) {
-			mHeight = height;
+			setSize(mWidth, height);
 		}
 
 		int Window::getWidth() const {
@@ -80,14 +80,8 @@ namespace overdrive {
 			return mHeight;
 		}
 
-		void Window::setTitle(std::string title) {
-			if (title == mTitle)
-				return;
-
-			mTitle = std::move(title);
-
-			if (mHandle)
-				glfwSetWindowTitle(mHandle, mTitle.c_str());
+		bool Window::isFullscreen() const {
+			return mIsFullscreen;
 		}
 
 		const std::string& Window::getTitle() const {
@@ -123,6 +117,8 @@ namespace overdrive {
 				glfwSetFramebufferSizeCallback(mHandle, onWindowFrameBufferSizeFn);
 
 				gLog.info() << "Created window " << getWidth() << "x" << getHeight() << " " << getTitle();
+
+				core::Channel::broadcast(OnCreate{ this });
 			}
 		}
 		
@@ -140,7 +136,7 @@ namespace overdrive {
 				mTitle.c_str(),
 				m->getHandle(),
 				nullptr		//no shared context
-				);
+			);
 
 			if (mHandle) {
 				mHandleRegistry[mHandle] = this;
@@ -158,12 +154,184 @@ namespace overdrive {
 			}
 		}
 
+		void Window::destroy() {
+			assert(mHandle);
+
+			// first remove this window from the handle registry
+			mHandleRegistry.erase(mHandle);
+
+			// then actually destroy the window
+			glfwDestroyWindow(mHandle);
+		}
+
 		void Window::swapBuffers() const {
+			assert(mHandle);
+
 			glfwSwapBuffers(mHandle);
 		}
 
 		bool Window::shouldClose() const {
-			return false;
+			if (mHandle)
+				return (glfwWindowShouldClose(mHandle) != 0);
+			else
+				return false;
+		}
+
+		bool Window::isFocused() const {
+			assert(mHandle);
+			return (glfwGetWindowAttrib(mHandle, GLFW_FOCUSED) != 0);
+		}
+
+		bool Window::isIconified() const {
+			assert(mHandle);
+			return (glfwGetWindowAttrib(mHandle, GLFW_ICONIFIED) != 0);
+		}
+
+		bool Window::isVisible() const {
+			assert(mHandle);
+			return (glfwGetWindowAttrib(mHandle, GLFW_VISIBLE) != 0);
+		}
+
+		bool Window::isResizable() const {
+			assert(mHandle);
+			return (glfwGetWindowAttrib(mHandle, GLFW_RESIZABLE) != 0);
+		}
+
+		bool Window::isDecorated() const {
+			assert(mHandle);
+			return (glfwGetWindowAttrib(mHandle, GLFW_DECORATED) != 0);
+		}
+
+		void Window::getPosition(int& x, int& y) const {
+			assert(mHandle);
+			glfwGetWindowPos(mHandle, &x, &y);
+		}
+
+		void Window::getSize(int& width, int& height) const {
+			assert(mHandle);
+			glfwGetWindowSize(mHandle, &width, &height);
+		}
+
+		void Window::getFramebufferSize(int& width, int& height) const {
+			assert(mHandle);
+			glfwGetFramebufferSize(mHandle, &width, &height);
+		}
+
+		Window::eClientAPI Window::getClientAPI() const {
+			assert(mHandle);
+
+			switch (glfwGetWindowAttrib(mHandle, GLFW_CLIENT_API)) {
+			case GLFW_OPENGL_API:
+				return eClientAPI::OPENGL;
+
+			case GLFW_OPENGL_ES_API:
+				return eClientAPI::OPENGL_ES;
+
+			default:
+				return eClientAPI::UNKNOWN;
+			}
+		}
+
+		int Window::getContextVersionMajor() const {
+			assert(mHandle);
+			return glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_VERSION_MAJOR);
+		}
+
+		int Window::getContextVersionMinor() const {
+			assert(mHandle);
+			return glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_VERSION_MINOR);
+		}
+
+		int Window::getContextRevision() const {
+			assert(mHandle);
+			return glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_REVISION);
+		}
+
+		bool Window::isOpenGLForwardCompatible() const {
+			assert(mHandle);
+			return (glfwGetWindowAttrib(mHandle, GLFW_OPENGL_FORWARD_COMPAT) == GL_TRUE);
+		}
+
+		bool Window::isOpenGLDebugContext() const {
+			assert(mHandle);
+			return (glfwGetWindowAttrib(mHandle, GLFW_OPENGL_DEBUG_CONTEXT) == GL_TRUE);
+		}
+
+		Window::eContextRobustness Window::getContextRobustness() const {
+			assert(mHandle);
+			switch (glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_ROBUSTNESS)) {
+			case GLFW_LOSE_CONTEXT_ON_RESET:
+				return eContextRobustness::LOSE_CONTEXT_ON_RESET;
+
+			case GLFW_NO_RESET_NOTIFICATION:
+				return eContextRobustness::NO_RESET_NOTIFICATION;
+
+			case GLFW_NO_ROBUSTNESS:
+				return eContextRobustness::NO_ROBUSTNESS;
+
+			default:
+				return eContextRobustness::UNKNOWN;
+			}
+		}
+
+		Window::eOpenGLProfile Window::getOpenGLProfile() const {
+			assert(mHandle);
+			switch (glfwGetWindowAttrib(mHandle, GLFW_OPENGL_PROFILE)) {
+			case GLFW_OPENGL_CORE_PROFILE:
+				return eOpenGLProfile::CORE;
+
+			case GLFW_OPENGL_COMPAT_PROFILE:
+				return eOpenGLProfile::COMPATIBILITY;
+
+			case GLFW_OPENGL_ANY_PROFILE:
+				return eOpenGLProfile::ANY;
+
+			default:
+				return eOpenGLProfile::UNKNOWN;
+			}
+		}
+
+		void Window::setTitle(std::string title) {
+			if (title == mTitle)
+				return;
+
+			mTitle = std::move(title);
+
+			if (mHandle)
+				glfwSetWindowTitle(mHandle, mTitle.c_str());
+		}
+
+		void Window::setPosition(int x, int y) {
+			assert(mHandle);
+			glfwSetWindowPos(mHandle, x, y);
+		}
+
+		void Window::setSize(int width, int height) {
+			mWidth = width;
+			mHeight = height;
+
+			if (mHandle)
+				glfwSetWindowSize(mHandle, mWidth, mHeight);
+		}
+
+		void Window::iconify() {
+			assert(mHandle);
+			glfwIconifyWindow(mHandle);
+		}
+
+		void Window::restore() {
+			assert(mHandle);
+			glfwRestoreWindow(mHandle);
+		}
+
+		void Window::show() {
+			assert(mHandle);
+			glfwShowWindow(mHandle);
+		}
+
+		void Window::hide() {
+			assert(mHandle);
+			glfwHideWindow(mHandle);
 		}
 
 		void Window::setDefaultCreationHints() {
@@ -211,11 +379,11 @@ namespace overdrive {
 			glfwWindowHint(GLFW_SRGB_CAPABLE, mSRGB ? GL_TRUE : GL_FALSE);
 
 			switch (mClientAPI) {
-			case eClientAPI::OPENGL_API:
+			case eClientAPI::OPENGL:
 				glfwWindowHint(GLFW_OPENGL_API, GLFW_OPENGL_API);
 				break;
 
-			case eClientAPI::OPENGL_ES_API:
+			case eClientAPI::OPENGL_ES:
 				glfwWindowHint(GLFW_OPENGL_API, GLFW_OPENGL_ES_API);
 				break;
 
@@ -248,21 +416,25 @@ namespace overdrive {
 			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, mOpenGLDebugContext ? GL_TRUE : GL_FALSE);
 			
 			switch (mOpenGLProfile) {
-			case eOpenGLProfile::OPENGL_ANY_PROFILE:
+			case eOpenGLProfile::ANY:
 				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
 				break;
 
-			case eOpenGLProfile::OPENGL_COMPATIBILITY_PROFILE:
+			case eOpenGLProfile::COMPATIBILITY:
 				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 				break;
 
-			case eOpenGLProfile::OPENGL_CORE_PROFILE:
+			case eOpenGLProfile::CORE:
 				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 				break;
 
 			default:
 				gLog.warning() << "Unsupported openGL profile requested: " << mOpenGLProfile;
 			}
+		}
+
+		GLFWwindow* Window::getHandle() const {
+			return mHandle;
 		}
 
 		Window* Window::getFromHandle(GLFWwindow* handle) {
@@ -278,14 +450,15 @@ namespace overdrive {
 
 std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eClientAPI& api) {
 	switch (api) {
-	case overdrive::video::Window::eClientAPI::OPENGL_API:
+	case overdrive::video::Window::eClientAPI::OPENGL:
 		os << "openGL";
 		break;
 
-	case overdrive::video::Window::eClientAPI::OPENGL_ES_API:
+	case overdrive::video::Window::eClientAPI::OPENGL_ES:
 		os << "openGLES";
 		break;
 
+	case overdrive::video::Window::eClientAPI::UNKNOWN:
 	default:
 		os << "unknown";
 	}
@@ -307,6 +480,7 @@ std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eCo
 		os << "lose context on reset";
 		break;
 
+	case overdrive::video::Window::eContextRobustness::UNKNOWN:
 	default:
 		os << "unknown";
 	}
@@ -316,18 +490,19 @@ std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eCo
 
 std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eOpenGLProfile& profile) {
 	switch (profile) {
-	case overdrive::video::Window::eOpenGLProfile::OPENGL_ANY_PROFILE:
+	case overdrive::video::Window::eOpenGLProfile::ANY:
 		os << "any";
 		break;
 
-	case overdrive::video::Window::eOpenGLProfile::OPENGL_COMPATIBILITY_PROFILE:
+	case overdrive::video::Window::eOpenGLProfile::COMPATIBILITY:
 		os << "compatibility";
 		break;
 
-	case overdrive::video::Window::eOpenGLProfile::OPENGL_CORE_PROFILE:
+	case overdrive::video::Window::eOpenGLProfile::CORE:
 		os << "core";
 		break;
-
+		
+	case overdrive::video::Window::eOpenGLProfile::UNKNOWN:
 	default:
 		os << "unknown";
 	}

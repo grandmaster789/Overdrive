@@ -25,6 +25,7 @@ namespace overdrive {
 			void detectMonitors();
 
 			void addWindow(Window&& w); //adding a window to the video subsystem assigns ownership
+			const std::vector<Window>& getWindows() const;
 
 		private:
 			// Settings read from config file

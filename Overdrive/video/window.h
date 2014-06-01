@@ -13,20 +13,23 @@ namespace overdrive {
 		class Window {
 		public:
 			enum class eClientAPI {
-				OPENGL_API,
-				OPENGL_ES_API
+				OPENGL,
+				OPENGL_ES,
+				UNKNOWN
 			};
 
 			enum class eContextRobustness {
 				NO_ROBUSTNESS,
 				NO_RESET_NOTIFICATION,
-				LOSE_CONTEXT_ON_RESET
+				LOSE_CONTEXT_ON_RESET,
+				UNKNOWN
 			};
 
 			enum class eOpenGLProfile {
-				OPENGL_ANY_PROFILE,
-				OPENGL_COMPATIBILITY_PROFILE,
-				OPENGL_CORE_PROFILE
+				ANY,
+				COMPATIBILITY,
+				CORE,
+				UNKNOWN
 			};
 
 			Window();
@@ -66,10 +69,9 @@ namespace overdrive {
 			bool isResizable() const;
 			bool isDecorated() const;
 			
-			std::string getWindowTitle() const;
-			void getWindowPosition(int& x, int& y) const;
-			void getWindowSize(int& width, int& height) const;
-			void getFramebufferSize(int& width, int& height);
+			void getPosition(int& x, int& y) const;
+			void getSize(int& width, int& height) const;
+			void getFramebufferSize(int& width, int& height) const;
 
 			// Context Attributes
 			eClientAPI getClientAPI() const;
@@ -83,6 +85,8 @@ namespace overdrive {
 
 			// Triggers
 			void setTitle(std::string title);
+			void setPosition(int x, int y);
+			void setSize(int width, int height);
 			void iconify();
 			void restore();
 			void show();
@@ -116,7 +120,7 @@ namespace overdrive {
 
 				bool mSRGB = false;
 
-				eClientAPI mClientAPI = eClientAPI::OPENGL_API;
+				eClientAPI mClientAPI = eClientAPI::OPENGL;
 
 				int mContextVersionMajor = 1;	
 				int mContextVersionMinor = 0;
@@ -127,12 +131,13 @@ namespace overdrive {
 				bool mOpenGLForwardCompatible = false;
 				bool mOpenGLDebugContext = false;
 
-				eOpenGLProfile mOpenGLProfile = eOpenGLProfile::OPENGL_ANY_PROFILE;
+				eOpenGLProfile mOpenGLProfile = eOpenGLProfile::ANY;
 			};
 
 			void setDefaultCreationHints();
 			static CreationHints mCreationHints; // this should be done better I guess
 
+			GLFWwindow* getHandle() const;
 			static Window* getFromHandle(GLFWwindow* handle);
 
 		private:

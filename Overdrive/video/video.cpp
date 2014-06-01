@@ -39,7 +39,7 @@ namespace overdrive {
 			//go for openGL 4.0 core by default
 			mainWindow.mCreationHints.mContextVersionMajor = 4;
 			mainWindow.mCreationHints.mContextVersionMinor = 0;
-			mainWindow.mCreationHints.mOpenGLProfile = Window::eOpenGLProfile::OPENGL_CORE_PROFILE;
+			mainWindow.mCreationHints.mOpenGLProfile = Window::eOpenGLProfile::CORE;
 
 			if (mMainWindowFullscreen) {
 				if (mMonitors.empty()) {
@@ -87,6 +87,10 @@ namespace overdrive {
 
 		void Video::addWindow(Window&& w) {
 			mWindows.emplace_back(std::move(w));
+		}
+
+		const std::vector<Window>& Video::getWindows() const {
+			return mWindows;
 		}
 	}
 }

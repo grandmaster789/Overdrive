@@ -19,7 +19,7 @@ namespace overdrive {
 			}
 
 			template <typename tEvent>
-			void broadcast(const tEvent& message) const { // could be static as well
+			static void broadcast(const tEvent& message) {
 				detail::ChannelQueue<tEvent>::instance().broadcast(message);
 			}
 		};
