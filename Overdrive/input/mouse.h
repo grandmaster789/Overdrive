@@ -72,9 +72,11 @@ namespace overdrive {
 
 			void setButtonState(eButton button, bool pressed);
 			void setPosition(double x, double y, bool setCursor = true); // if setCursor is true, the pointer will be moved to the indicated position
+			void setInsideClientArea(bool isInside);
 
 			bool operator[](eButton button) const; // usage -- bool pressed = (mouse[Mouse::MOUSE_BUTTON_LEFT]);
 			void getPosition(double& x, double& y) const;
+			bool isInsideClientArea() const;
 
 			bool isAssociatedWith(const video::Window* window) const;
 
@@ -84,7 +86,8 @@ namespace overdrive {
 			double mX = 0;
 			double mY = 0;
 
-			bool mHidden = false;
+			bool mIsHidden = false;
+			bool mIsInsideClientArea = false;
 
 			const video::Window* mAssociatedWindow;
 		};

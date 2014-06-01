@@ -67,6 +67,32 @@ namespace {
 		else
 			gLog.warning() << "received mouse press from unregistered window";
 	}
+
+	void onMouseEnter(GLFWwindow* handle, int enter) {
+		using namespace overdrive;
+
+		if (auto w = video::Window::getFromHandle(handle)) {
+			auto it = mMouseRegistry.find(w);
+			assert(it != mMouseRegistry.end());
+			it->second->setInsideClientArea(enter == GL_TRUE);
+
+			if (enter == GL_TRUE)
+				core::Channel::broadcast(input::Mouse::OnEnter{ w });
+			else
+				core::Channel::broadcast(input::Mouse::OnLeave{ w });
+		}
+		else
+			gLog.warning() << "received mouse event from unregistered window";
+	}
+
+	void onMouseScroll(GLFWwindow* handle, double xScroll, double yScroll) {
+		using namespace overdrive;
+
+		if (auto w = video::Window::getFromHandle(handle))
+			core::Channel::broadcast(input::Mouse::OnScroll{ xScroll, yScroll, w }); // scroll doesn't set state, so just pass the offsets
+		else
+			gLog.warning() << "received mouse event from unregistered window";
+	}
 }
 
 namespace overdrive {
@@ -81,6 +107,8 @@ namespace overdrive {
 
 			glfwSetMouseButtonCallback(associatedWindow->getHandle(), &onMouseButton);
 			glfwSetCursorPosCallback(associatedWindow->getHandle(), &onMouseMove);
+			glfwSetCursorEnterCallback(associatedWindow->getHandle(), &onMouseEnter);
+			glfwSetScrollCallback(associatedWindow->getHandle(), &onMouseScroll);
 		}
 
 		void Mouse::setButtonState(eButton button, bool pressed) {
@@ -95,6 +123,10 @@ namespace overdrive {
 				glfwSetCursorPos(mAssociatedWindow->getHandle(), mX, mY);
 		}
 
+		void Mouse::setInsideClientArea(bool isInside) {
+			mIsInsideClientArea = isInside;
+		}
+
 		bool Mouse::operator[](Mouse::eButton button) const {
 			return mButtonState[button];
 		}
@@ -102,6 +134,10 @@ namespace overdrive {
 		void Mouse::getPosition(double& x, double& y) const {
 			x = mX;
 			y = mY;
+		}
+
+		bool Mouse::isInsideClientArea() const {
+			return mIsInsideClientArea;
 		}
 
 		bool Mouse::isAssociatedWith(const video::Window* window) const {

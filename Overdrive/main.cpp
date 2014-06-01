@@ -11,7 +11,10 @@
 struct KeyRecv :
 	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyPress>,
 	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnButtonPress>,
-	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnMove>
+	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnMove>,
+	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnEnter>,
+	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnLeave>,
+	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnScroll>
 {
 	void operator()(const overdrive::input::Keyboard::OnKeyPress& kp) {
 		gLog << "received key: " << kp.mKey;
@@ -28,6 +31,18 @@ struct KeyRecv :
 		gLog << "move: " << 
 			" (" << mm.mX << ", " << mm.mY << ") "
 			" (" << mm.mDeltaX << ", " << mm.mDeltaY << ")";
+	}
+
+	void operator()(const overdrive::input::Mouse::OnEnter&) {
+		gLog << "mouse entered";
+	}
+
+	void operator()(const overdrive::input::Mouse::OnLeave& ) {
+		gLog << "mouse left";
+	}
+
+	void operator()(const overdrive::input::Mouse::OnScroll& scr) {
+		gLog << "mouse scroll " << scr.mXOffset << ", " << scr.mYOffset;
 	}
 };
 
