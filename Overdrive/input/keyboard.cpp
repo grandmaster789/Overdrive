@@ -28,11 +28,11 @@ namespace {
 
 			switch (action) {
 			case GLFW_PRESS:
-				core::Channel::broadcast(input::Keyboard::KeyPress{ keyCode, modifiers, w });
+				core::Channel::broadcast(input::Keyboard::OnKeyPress{ keyCode, modifiers, w });
 				break;
 
 			case GLFW_RELEASE:
-				core::Channel::broadcast(input::Keyboard::KeyRelease{ keyCode, modifiers, w });
+				core::Channel::broadcast(input::Keyboard::OnKeyRelease{ keyCode, modifiers, w });
 				break;
 			}
 		}

@@ -9,6 +9,7 @@
 namespace overdrive {
 	namespace input {
 		class Keyboard;
+		class Mouse;
 
 		class Input:
 			public core::System,
@@ -23,12 +24,14 @@ namespace overdrive {
 			virtual void shutdown() override;
 
 			void addKeyboard(Keyboard&& kb); //this takes ownership of the keyboard
+			void addMouse(Mouse&& m); //again, takes ownership of the mouse
 
 			void operator()(const video::Window::OnCreate& onCreate);
 			void operator()(const video::Window::OnClose& onClose);
 
 		private:
 			std::vector<Keyboard> mKeyboards; //one keyboard object per window is maintaned
+			std::vector<Mouse> mMice; //one mouse object per window is maintained
 		};
 	}
 }
