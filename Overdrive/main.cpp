@@ -10,6 +10,7 @@
 
 struct KeyRecv :
 	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyPress>,
+	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyRelease>,
 	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnButtonPress>,
 	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnMove>,
 	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnEnter>,
@@ -21,6 +22,10 @@ struct KeyRecv :
 
 		if (kp.mKey == GLFW_KEY_ESCAPE)
 			overdrive::core::Channel::broadcast(overdrive::core::Engine::OnStop());
+	}
+	
+	void operator()(const overdrive::input::Keyboard::OnKeyRelease& kr) {
+		gLog << "key released: " << kr.mKey;
 	}
 
 	void operator()(const overdrive::input::Mouse::OnButtonPress& mbp) {
