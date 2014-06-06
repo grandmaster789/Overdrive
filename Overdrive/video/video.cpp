@@ -8,9 +8,9 @@ namespace overdrive {
 		Video::Video() :
 			System("Video")
 		{
-			registerSetting("width", &mMainWindowWidth);
-			registerSetting("height", &mMainWindowHeight);
-			registerSetting("fullscreen", &mMainWindowFullscreen);
+			registerSetting("Width", &mMainWindowWidth);
+			registerSetting("Height", &mMainWindowHeight);
+			registerSetting("Fullscreen", &mMainWindowFullscreen);
 		}
 
 		bool Video::initialize() {

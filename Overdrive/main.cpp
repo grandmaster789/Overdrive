@@ -9,13 +9,13 @@
 #include "test/test.h"
 
 struct KeyRecv :
-	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyPress>,
-	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyRelease>,
-	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnButtonPress>,
-	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnMove>,
-	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnEnter>,
-	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnLeave>,
-	public overdrive::core::MessageHandler<overdrive::input::Mouse::OnScroll>
+	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyPress>
+	//public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyRelease>,
+	//public overdrive::core::MessageHandler<overdrive::input::Mouse::OnButtonPress>,
+	//public overdrive::core::MessageHandler<overdrive::input::Mouse::OnMove>,
+	//public overdrive::core::MessageHandler<overdrive::input::Mouse::OnEnter>,
+	//public overdrive::core::MessageHandler<overdrive::input::Mouse::OnLeave>,
+	//public overdrive::core::MessageHandler<overdrive::input::Mouse::OnScroll>
 {
 	void operator()(const overdrive::input::Keyboard::OnKeyPress& kp) {
 		gLog << "received key: " << kp.mKey;

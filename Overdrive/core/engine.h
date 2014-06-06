@@ -6,6 +6,7 @@
 #include <map>
 #include "core/channel.h"
 #include "core/taskprocessor.h"
+#include "core/config.h"
 
 namespace overdrive {
 	namespace core {
@@ -43,6 +44,7 @@ namespace overdrive {
 			SystemList mSystems;
 			SystemMapping mSystemLookup;
 			TaskProcessor mTaskProcessor;
+			Config mConfig;
 		};
 
 		// Note -- if systems are removed regularly, from non-main threads this needs to become threadsafe as well

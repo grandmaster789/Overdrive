@@ -80,6 +80,14 @@ namespace overdrive {
 		}
 
 		void Engine::initializeSystems() {
+			// first, consolidate all settings from all registered subsystems
+			for (const auto& system: mSystems)
+				mConfig.settings().add(system->mSettings);
+
+			// try and load a config file
+			mConfig.load("overdrive.cfg");
+
+			// now perform per-system initialization
 			for (auto& system : mSystems) {
 				if (!system->initialize())
 					gLog.error() << "Failed to initialize subsystem: " << system->getName();

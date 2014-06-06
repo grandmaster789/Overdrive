@@ -2,7 +2,8 @@
 #define OVERDRIVE_VIDEO_WINDOW_H
 
 #include <string>
-#include <unordered_map>
+#include <vector>
+#include <utility>
 
 #include "opengl.h"
 
@@ -143,7 +144,7 @@ namespace overdrive {
 		private:
 			GLFWwindow* mHandle;
 
-			static std::unordered_map<GLFWwindow*, Window*> mHandleRegistry;
+			static std::vector<std::pair<GLFWwindow*, Window*>> mHandleRegistry;
 
 			std::string mTitle = "Default Window";
 
