@@ -56,8 +56,8 @@ int main() {
 	
 	KeyRecv recv;
 
-	engine.add(new overdrive::input::Input);
 	engine.add(new overdrive::video::Video);
+	engine.add(new overdrive::input::Input);
 	
 	engine.run();
 }

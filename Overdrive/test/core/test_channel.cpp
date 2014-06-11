@@ -27,29 +27,27 @@ namespace overdrive {
 			void testChannel() {
 				FooHandler a;
 				a.prefix = "a";
-				overdrive::core::Channel chan;
-
-				chan.broadcast(5);
-				chan.broadcast(123);
+				overdrive::core::Channel::broadcast(5);
+				overdrive::core::Channel::broadcast(123);
 
 				{
 					FooHandler b;
 					b.prefix = "b";
-					chan.broadcast(1000);
+					overdrive::core::Channel::broadcast(1000);
 				}
 
 				{
 					FooHandler c(a);
 					c.prefix = "c";
-					chan.broadcast(999);
+					overdrive::core::Channel::broadcast(999);
 				}
 
 				{
 					FooHandler d = createFoo("d");
-					chan.broadcast(777);
+					overdrive::core::Channel::broadcast(777);
 				}
 
-				chan.broadcast(12345);
+				overdrive::core::Channel::broadcast(12345);
 			}
 		}
 	}

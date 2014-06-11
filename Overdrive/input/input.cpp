@@ -56,7 +56,7 @@ namespace overdrive {
 			unregisterKeyboard(onClose.window);
 			unregisterMouse(onClose.window);
 
-			std::remove_if(
+			auto it = std::remove_if(
 				mKeyboards.begin(), 
 				mKeyboards.end(), 
 				[onClose](const Keyboard& kb) { 
@@ -64,13 +64,19 @@ namespace overdrive {
 				}
 			);
 
-			std::remove_if(
+			if (it != mKeyboards.end())
+				mKeyboards.erase(it);
+
+			auto jt = std::remove_if(
 				mMice.begin(),
 				mMice.end(),
 				[onClose](const Mouse& m) {
 					return m.isAssociatedWith(onClose.window);
 				}
 			);
+
+			if (jt != mMice.end())
+				mMice.erase(jt);
 		}
 	}
 }

@@ -17,9 +17,6 @@ namespace overdrive {
 			private:					// entire class is private
 				friend class Channel;	// only to be used by Channel
 
-				typedef std::function<void(const tEvent&)> HandlerType;
-				typedef std::pair<HandlerType, void*> HandlerPair; // 
-				
 				typedef std::mutex Mutex;	// I'm actually expecting low contention, so this is a candidate for replacement with spinlocks
 				typedef std::lock_guard<Mutex> ScopedLock;
 
@@ -62,7 +59,10 @@ namespace overdrive {
 					
 					{
 						ScopedLock lock(mMutex);
-						handlers = mHandlers;	//make a local copy so that we have a non-mutable structure to iterate over
+
+						// make a local copy so that we have a non-mutable structure to iterate over
+						// this should be pretty fast, as it only contains PODs 
+						handlers = mHandlers;	
 					}
 
 					for (const auto& handler: handlers)
@@ -70,8 +70,11 @@ namespace overdrive {
 				}
 
 			private:
-				std::vector<HandlerPair> mHandlers;
 				mutable std::mutex mMutex;
+
+				typedef std::function<void(const tEvent&)> HandlerType;
+				typedef std::pair<HandlerType, void*> HandlerPair; // store both the function object and the pointer to the actual handler (for removal)
+				std::vector<HandlerPair> mHandlers;
 			};
 		}
 	}
