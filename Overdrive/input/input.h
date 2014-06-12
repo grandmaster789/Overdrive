@@ -10,6 +10,7 @@ namespace overdrive {
 	namespace input {
 		class Keyboard;
 		class Mouse;
+		class Joystick;
 
 		class Input:
 			public core::System,
@@ -32,6 +33,7 @@ namespace overdrive {
 		private:
 			std::vector<Keyboard> mKeyboards; //one keyboard object per window is maintaned
 			std::vector<Mouse> mMice; //one mouse object per window is maintained
+			std::vector<Joystick> mJoysticks;
 		};
 	}
 }

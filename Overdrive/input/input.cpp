@@ -1,6 +1,7 @@
 #include "input/input.h"
 #include "input/keyboard.h"
 #include "input/mouse.h"
+#include "input/joystick.h"
 #include "core/engine.h"
 #include "video/video.h"
 #include "opengl.h"
@@ -10,6 +11,8 @@ namespace overdrive {
 		Input::Input():
 			System("Input")
 		{
+			for (int i = 0; i < GLFW_JOYSTICK_LAST; ++i)
+				mJoysticks.emplace_back(Joystick(-1));
 		}
 
 		bool Input::initialize() {
@@ -32,6 +35,24 @@ namespace overdrive {
 		}
 
 		void Input::update() {
+			//continually see if joysticks have connected/disconnected
+			for (int i = 0; i < GLFW_JOYSTICK_LAST; ++i) {
+				if (glfwJoystickPresent(i)) {
+					if (mJoysticks[i].getJoystickID() == -1) {
+						mJoysticks[i] = Joystick(i);
+						core::Channel::broadcast(Joystick::OnConnect{ i });
+					}
+
+					mJoysticks[i].update();
+				}
+				else {
+					if (mJoysticks[i].getJoystickID() != -1) {
+						core::Channel::broadcast(Joystick::OnDisconnect{ i });
+						mJoysticks[i] = Joystick(-1);
+					}
+				}
+			}
+
 			glfwPollEvents();
 		}
 

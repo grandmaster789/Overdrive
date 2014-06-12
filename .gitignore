@@ -26,3 +26,4 @@
 /*.opensdf
 /Overdrive/Overdrive.vcxproj.user
 /Release/*.exe
+/Overdrive/Debug/*.xml

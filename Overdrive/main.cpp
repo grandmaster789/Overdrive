@@ -5,11 +5,17 @@
 #include "input/input.h"
 #include "input/keyboard.h"
 #include "input/mouse.h"
+#include "input/joystick.h"
 
 #include "test/test.h"
 
+#include <sstream>
+
 struct KeyRecv :
-	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyPress>
+	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyPress>,
+	public overdrive::core::MessageHandler<overdrive::input::Joystick::OnButtonPress>,
+	public overdrive::core::MessageHandler<overdrive::input::Joystick::OnMove>
+
 	//public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyRelease>,
 	//public overdrive::core::MessageHandler<overdrive::input::Mouse::OnButtonPress>,
 	//public overdrive::core::MessageHandler<overdrive::input::Mouse::OnMove>,
@@ -48,6 +54,19 @@ struct KeyRecv :
 
 	void operator()(const overdrive::input::Mouse::OnScroll& scr) {
 		gLog << "mouse scroll " << scr.mXOffset << ", " << scr.mYOffset;
+	}
+
+	void operator()(const overdrive::input::Joystick::OnButtonPress& bp) {
+		gLog << "joystick button: " << bp.mButtonID;
+	}
+
+	void operator()(const overdrive::input::Joystick::OnMove& jm) {
+		std::stringstream sstr;
+
+		for (const auto& val : jm.mPosition)
+			sstr << val << ", ";
+
+		gLog << "joystick " << jm.mJoystickID << " move: " << sstr.str();
 	}
 };
 
