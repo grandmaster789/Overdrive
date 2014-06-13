@@ -14,7 +14,8 @@
 struct KeyRecv :
 	public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyPress>,
 	public overdrive::core::MessageHandler<overdrive::input::Joystick::OnButtonPress>,
-	public overdrive::core::MessageHandler<overdrive::input::Joystick::OnMove>
+	public overdrive::core::MessageHandler<overdrive::input::Joystick::OnMove>,
+	public overdrive::core::MessageHandler<overdrive::input::Joystick::OnConnect>
 
 	//public overdrive::core::MessageHandler<overdrive::input::Keyboard::OnKeyRelease>,
 	//public overdrive::core::MessageHandler<overdrive::input::Mouse::OnButtonPress>,
@@ -67,6 +68,10 @@ struct KeyRecv :
 			sstr << val << ", ";
 
 		gLog << "joystick " << jm.mJoystickID << " move: " << sstr.str();
+	}
+
+	void operator()(const overdrive::input::Joystick::OnConnect& jc) {
+		gLog << "Joystick " << jc.mJoystickID << " connected: " << jc.mJoystickName;
 	}
 };
 
