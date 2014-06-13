@@ -28,13 +28,14 @@ namespace overdrive {
 
 			struct OnConnect {
 				int mJoystickID;
+				std::string mJoystickName;
 			};
 
 			struct OnDisconnect {
 				int mJoystickID;
 			};
 
-			Joystick(int id, float deadZone = 0.05f); // the deadzone is a threshold value for broadcasting axis movement
+			Joystick(int id, float deadZone = 0.1f); // the deadzone is a threshold value for broadcasting axis movement
 			
 			void update();
 

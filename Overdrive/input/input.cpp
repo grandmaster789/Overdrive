@@ -40,7 +40,7 @@ namespace overdrive {
 				if (glfwJoystickPresent(i)) {
 					if (mJoysticks[i].getJoystickID() == -1) {
 						mJoysticks[i] = Joystick(i);
-						core::Channel::broadcast(Joystick::OnConnect{ i });
+						core::Channel::broadcast(Joystick::OnConnect{ i, glfwGetJoystickName(i) });
 					}
 
 					mJoysticks[i].update();
