@@ -49,6 +49,7 @@ namespace overdrive {
 			void destroy();
 			
 			void swapBuffers() const;
+			void makeCurrent() const;
 			bool shouldClose() const;
 
 			// Signals

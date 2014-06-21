@@ -175,6 +175,12 @@ namespace overdrive {
 			glfwSwapBuffers(mHandle);
 		}
 
+		void Window::makeCurrent() const {
+			assert(mHandle);
+
+			glfwMakeContextCurrent(mHandle);
+		}
+
 		bool Window::shouldClose() const {
 			if (mHandle)
 				return (glfwWindowShouldClose(mHandle) != 0);

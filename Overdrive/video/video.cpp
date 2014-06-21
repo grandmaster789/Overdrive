@@ -55,6 +55,20 @@ namespace overdrive {
 
 			addWindow(std::move(mainWindow));
 
+			mainWindow.makeCurrent();
+
+			// initialize GLEW (must be done after activating an openGL context)
+			glewExperimental = GL_TRUE; // this must be set to true for latest openGL extensions
+			
+			GLenum err = glewInit();
+			if (err != GLEW_OK) {
+				gLog.error() << "Failed to initialize GLEW: " << glewGetErrorString(err);
+				return false;
+			}
+
+			gLog.info() << "GLEW v" << glewGetString(GLEW_VERSION);
+
+			// notify engine that this subsystem should be continuously updated on the main thread
 			mEngine->updateSystem(this, true, false);
 
 			return true;
