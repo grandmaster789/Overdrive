@@ -29,7 +29,7 @@ namespace overdrive {
 			gLog.info() << "GLFW v" << glfwMajor << "." << glfwMinor << "r" << glfwRevision << " initialized";
 
 			detectMonitors();
-
+			
 			Window mainWindow;
 
 			mainWindow.setWidth(mMainWindowWidth);
@@ -53,9 +53,9 @@ namespace overdrive {
 			if (!mMainWindowFullscreen)
 				mainWindow.create();
 
-			addWindow(std::move(mainWindow));
-
 			mainWindow.makeCurrent();
+
+			addWindow(std::move(mainWindow));
 
 			// initialize GLEW (must be done after activating an openGL context)
 			glewExperimental = GL_TRUE; // this must be set to true for latest openGL extensions

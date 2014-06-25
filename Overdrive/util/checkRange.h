@@ -12,7 +12,7 @@ namespace overdrive {
 			const T& value, 
 			const T& minimum, 
 			const T& maximum, 
-			typename std::enable_if<std::is_arithmetic<T>::value>::type* = nullptr
+			typename std::enable_if<std::is_arithmetic<T>::value>::type* = nullptr	//only provide this function for arithmetic types
 		) {
 			if (value < minimum) {
 				gLog << "Value outside of range<" << minimum << ".." << maximum << ">: " << value;

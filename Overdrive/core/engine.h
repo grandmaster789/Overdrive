@@ -9,6 +9,10 @@
 #include "core/config.h"
 
 namespace overdrive {
+	namespace app {
+		class Application;
+	}
+
 	namespace core {
 		class System;
 
@@ -20,8 +24,9 @@ namespace overdrive {
 
 			Engine();
 
+			void setApplication(app::Application* application); // the Engine will take ownership of the application
+
 			void add(System* system); //note that the Engine will take ownership of the system added
-			void add(std::unique_ptr<System>&& system);
 			System* get(std::string systemName) const;
 			void remove(std::string systemName);
 			void remove(System* system);
@@ -38,6 +43,9 @@ namespace overdrive {
 			void operator()(const OnStop&);
 
 		private:
+			void setApplication(std::unique_ptr<app::Application>&& application);
+			void add(std::unique_ptr<System>&& system);
+
 			void initializeSystems();
 			void shutdownSystems();
 
@@ -45,6 +53,8 @@ namespace overdrive {
 			SystemMapping mSystemLookup;
 			TaskProcessor mTaskProcessor;
 			Config mConfig;
+
+			std::unique_ptr<app::Application> mApplication;
 		};
 
 		// Note -- if systems are removed regularly, from non-main threads this needs to become threadsafe as well

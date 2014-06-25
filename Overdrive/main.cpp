@@ -1,3 +1,5 @@
+#include "app/application.h"
+
 #include "core/engine.h"
 #include "core/logger.h"
 
@@ -75,6 +77,30 @@ struct KeyRecv :
 	}
 };
 
+class TestApp :
+	public overdrive::app::Application
+{
+public:
+	TestApp():
+		Application("TestApplication")
+	{
+	}
+
+	bool initialize() {
+		System::initialize();
+		mEngine->updateSystem(this, true, false);
+		return true;
+	}
+
+	void update() {
+		gLog << ".";
+	}
+
+	void shutdown() {
+		System::shutdown();
+	}
+};
+
 int main() {
 	overdrive::core::Engine engine;
 	
@@ -82,6 +108,8 @@ int main() {
 
 	engine.add(new overdrive::video::Video);
 	engine.add(new overdrive::input::Input);
+
+	engine.setApplication(new TestApp);
 	
 	engine.run();
 }

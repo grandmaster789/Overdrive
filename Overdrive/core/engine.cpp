@@ -2,11 +2,25 @@
 #include "core/channel.h"
 #include "core/logger.h"
 #include "core/system.h"
+#include "app/application.h"
 
 namespace overdrive {
 	namespace core {
 		Engine::Engine() {
 			Channel::add<OnStop>(this);
+		}
+
+		void Engine::setApplication(app::Application* application) {
+			setApplication(std::unique_ptr<app::Application>(application));
+		}
+
+		void Engine::setApplication(std::unique_ptr<app::Application>&& application) {
+			mApplication = std::move(application);
+
+			if (mApplication) {
+				mApplication->mEngine = this;
+				gLog << "Application set: " << mApplication->getName();
+			}
 		}
 
 		void Engine::add(System* system) {
@@ -92,9 +106,17 @@ namespace overdrive {
 				if (!system->initialize())
 					gLog.error() << "Failed to initialize subsystem: " << system->getName();
 			}
+
+			// if an application was set, initialize it as well
+			if (mApplication)
+				if (!mApplication->initialize())
+					gLog.error() << "Failed to initialize application: " << mApplication->getName();
 		}
 
 		void Engine::shutdownSystems() {
+			if (mApplication)
+				mApplication->shutdown();
+
 			for (auto& system : mSystems)
 				system->shutdown();
 
