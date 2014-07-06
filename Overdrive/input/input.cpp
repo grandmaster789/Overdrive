@@ -12,7 +12,7 @@ namespace overdrive {
 			System("Input")
 		{
 			for (int i = 0; i < GLFW_JOYSTICK_LAST; ++i)
-				mJoysticks.emplace_back(Joystick(-1));
+				mJoysticks.emplace_back(Joystick::NOT_PRESENT);
 		}
 
 		bool Input::initialize() {
@@ -36,22 +36,20 @@ namespace overdrive {
 			//continually see if joysticks have connected/disconnected
 			for (int i = 0; i < GLFW_JOYSTICK_LAST; ++i) {
 				if (glfwJoystickPresent(i)) {
-					if (mJoysticks[i].getJoystickID() == -1) {
-						mJoysticks[i] = Joystick(i);
+					if (mJoysticks[i].getJoystickID() == Joystick::NOT_PRESENT) {
+						mJoysticks[i].setJoystickID(i);
 						core::Channel::broadcast(Joystick::OnConnect{ i, glfwGetJoystickName(i) });
 					}
 
 					mJoysticks[i].update();
 				}
 				else {
-					if (mJoysticks[i].getJoystickID() != -1) {
+					if (mJoysticks[i].getJoystickID() != Joystick::NOT_PRESENT) {
 						core::Channel::broadcast(Joystick::OnDisconnect{ i });
-						mJoysticks[i] = Joystick(-1);
+						mJoysticks[i].setJoystickID(Joystick::NOT_PRESENT);
 					}
 				}
 			}
-
-			glfwPollEvents();
 		}
 
 		void Input::shutdown() {

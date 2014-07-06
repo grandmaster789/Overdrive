@@ -26,7 +26,7 @@ namespace overdrive {
 			int glfwRevision;
 
 			glfwGetVersion(&glfwMajor, &glfwMinor, &glfwRevision);
-			gLog.info() << "GLFW v" << glfwMajor << "." << glfwMinor << "r" << glfwRevision << " initialized";
+			gLog << "GLFW v" << glfwMajor << "." << glfwMinor << "r" << glfwRevision << " initialized";
 
 			detectMonitors();
 			
@@ -77,6 +77,8 @@ namespace overdrive {
 		void Video::update() {
 			for (const auto& w : mWindows)
 				w.swapBuffers();
+
+			glfwPollEvents();
 		}
 
 		void Video::shutdown() {
@@ -90,7 +92,7 @@ namespace overdrive {
 			GLFWmonitor** detected = glfwGetMonitors(&numMonitors); 
 			GLFWmonitor* primary = glfwGetPrimaryMonitor();
 
-			gLog.info() << "Detected " << numMonitors << " monitors";
+			gLog << "Detected " << numMonitors << " monitors";
 
 			mMonitors.emplace_back(Monitor(primary));
 

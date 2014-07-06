@@ -9,42 +9,18 @@ namespace overdrive {
 			mJoystickID(id),
 			mDeadZone(deadZone)
 		{
-			int numButtons = 0;
-			int numAxes = 0;
-
-			auto buttons = glfwGetJoystickButtons(mJoystickID, &numButtons);
-			auto axes = glfwGetJoystickAxes(mJoystickID, &numAxes);
-
-			if (id >= 0)
-				mJoystickName = glfwGetJoystickName(mJoystickID);
-
-			if (numButtons > 0) {
-				mButtonStates.reserve(numButtons);
-
-				std::copy(
-					buttons,
-					buttons + numButtons,
-					std::back_inserter(mButtonStates)
-				);
-			}
-
-			if (numAxes > 0) {
-				mAxisStates.reserve(numAxes);
-				
-				std::copy(
-					axes,
-					axes + numAxes,
-					std::back_inserter(mAxisStates)
-				);
-			}
+			setJoystickID(id);
 		}
 
 		void Joystick::update() {
-			auto oldAxes = mAxisStates;
-			auto oldButtons = mButtonStates;
+			std::vector<float> oldAxes;
+			std::vector<unsigned char> oldButtons;
 
-			mAxisStates.clear();
+			std::swap(mAxisStates, oldAxes);
+			std::swap(mButtonStates, oldButtons);
+			
 			mButtonStates.clear();
+			mAxisStates.clear();
 
 			int numAxes;
 			int numButtons;
@@ -52,45 +28,59 @@ namespace overdrive {
 			auto newAxes = glfwGetJoystickAxes(mJoystickID, &numAxes);
 			auto newButtons = glfwGetJoystickButtons(mJoystickID, &numButtons);
 
-			if (numButtons > 0)
+			if ((numButtons > 0) && (newButtons != nullptr))
 				std::copy(
 					newButtons,
-					newButtons + numButtons,
+					newButtons + numButtons - 1,
 					std::back_inserter(mButtonStates)
 				);
 
-			if (numButtons > 0)
+			if ((numAxes > 0) && (newAxes != nullptr))
 				std::copy(
 					newAxes,
-					newAxes + numAxes,
+					newAxes + numAxes - 1,
 					std::back_inserter(mAxisStates)
 				);
 
-			for (int i = 0; i < numAxes; ++i) {
-				if (std::abs(oldAxes[i] - newAxes[i]) > mDeadZone) {
-					OnMove mv;
-					
-					mv.mJoystickID = mJoystickID;
-					mv.mPosition = mAxisStates;
-					mv.mDelta.resize(numAxes);
-					
-					for (int j = 0; j < numAxes; ++j)
-						mv.mDelta[j] = mAxisStates[j] - oldAxes[j];
+			if (oldAxes.size() == static_cast<size_t>(numAxes)) {
+				for (int i = 0; i < numAxes; ++i) {
+					if (std::abs(oldAxes[i] - newAxes[i]) > mDeadZone) {
+						OnMove mv;
 
-					core::Channel::broadcast(mv);
+						mv.mJoystickID = mJoystickID;
+						mv.mPosition = mAxisStates;
+						mv.mDelta.resize(numAxes);
 
-					break; // only send one move message per update
+						for (int j = 0; j < numAxes; ++j)
+							mv.mDelta[j] = mAxisStates[j] - oldAxes[j];
+
+						core::Channel::broadcast(mv);
+
+						break; // only send one move message per update
+					}
 				}
 			}
 
-			for (int i = 0; i < numButtons; ++i) {
-				if (mButtonStates[i] != oldButtons[i]) {
-					if (isPressed(i))
-						core::Channel::broadcast(OnButtonPress{ mJoystickID, i });
-					else
-						core::Channel::broadcast(OnButtonRelease{ mJoystickID, i });
+			if (oldButtons.size() == static_cast<size_t>(numButtons)) {
+				for (int i = 0; i < numButtons; ++i) {
+					if (mButtonStates[i] != oldButtons[i]) {
+						if (isPressed(i))
+							core::Channel::broadcast(OnButtonPress{ mJoystickID, i });
+						else
+							core::Channel::broadcast(OnButtonRelease{ mJoystickID, i });
+					}
 				}
 			}
+		}
+
+		void Joystick::setJoystickID(int id) {
+			mJoystickID = id;
+
+			mButtonStates.clear();
+			mAxisStates.clear();
+
+			if (id >= 0)
+				mJoystickName = glfwGetJoystickName(mJoystickID);
 		}
 
 		int Joystick::getJoystickID() const {

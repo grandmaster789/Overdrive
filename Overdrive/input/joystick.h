@@ -35,10 +35,15 @@ namespace overdrive {
 				int mJoystickID;
 			};
 
+			enum eInvalid {
+				NOT_PRESENT = -1
+			};
+
 			Joystick(int id, float deadZone = 0.1f); // the deadzone is a threshold value for broadcasting axis movement
 			
 			void update();
 
+			void setJoystickID(int id); // as a side effect, this clears previous axis/button states
 			int getJoystickID() const;
 			const std::string& getJoystickName() const;
 

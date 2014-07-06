@@ -60,7 +60,7 @@ namespace overdrive {
 		}
 
 		void SpinningCube::update() {
-			mModel *= glm::rotate(mAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+			mModel *= glm::rotate(mAngle, glm::vec3(0.1f, 1.0f, 0.0f));
 
 			glm::mat4 modelView = mView * mModel;
 			
