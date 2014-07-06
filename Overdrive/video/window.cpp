@@ -61,6 +61,8 @@ namespace overdrive {
 		Window::CreationHints Window::mCreationHints;
 		std::vector<std::pair<GLFWwindow*, Window*>> Window::mHandleRegistry;
 
+		
+
 		Window::Window() {
 		}
 

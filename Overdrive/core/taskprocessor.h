@@ -2,7 +2,8 @@
 #define OVERDRIVE_CORE_TASKPROCESSOR_H
 
 #include "core/task.h"
-#include "util/concurrent_queue.h"
+//#include "util/concurrent_queue.h"
+#include "util/concurrent_vector.h"
 
 #include <cstdint>
 #include <boost/thread.hpp>
@@ -12,7 +13,7 @@ namespace overdrive {
 	namespace core {
 		class TaskProcessor {
 		private:
-			typedef util::ConcurrentQueue<detail::WrappedTask> TaskQueue;
+			typedef util::ConcurrentVector<detail::WrappedTask> TaskQueue;
 
 		public:
 			TaskProcessor(size_t numWorkers = 0); //use 0 for autodetect

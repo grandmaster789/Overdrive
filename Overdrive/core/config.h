@@ -2,7 +2,10 @@
 #define OVERDRIVE_CORE_CONFIG_H
 
 #include <string>
-#include <boost/program_options.hpp>
+#pragma warning(push)
+#pragma warning(disable: 4512) // cannot generate assignment
+	#include <boost/program_options.hpp>
+#pragma warning(pop)
 
 #include "core/logger.h"
 
@@ -11,6 +14,8 @@ namespace overdrive {
 		class Config {
 		public:
 			Config();
+
+			Config& operator = (const Config&) = delete;
 
 			bool load(const std::string& filename);
 			void parseCommandLine(int argc, char* argv[]);

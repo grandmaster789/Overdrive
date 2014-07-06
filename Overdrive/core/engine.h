@@ -68,9 +68,12 @@ namespace overdrive {
 		T* Engine::get() const {
 			T* result = nullptr;
 
-			for (const auto& system: mSystems)
-				if (result = dynamic_cast<T*>(system.get()))
+			for (const auto& system : mSystems) {
+				result = dynamic_cast<T*>(system.get());
+				
+				if (result)
 					return result;
+			}
 
 			return nullptr;
 		}

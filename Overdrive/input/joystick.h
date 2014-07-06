@@ -8,6 +8,10 @@ namespace overdrive {
 	namespace input {
 		class Joystick {
 		public:
+			enum eInvalid {
+				NOT_PRESENT = -1
+			};
+
 			// Signals
 			struct OnMove {
 				int mJoystickID;
@@ -33,10 +37,6 @@ namespace overdrive {
 
 			struct OnDisconnect {
 				int mJoystickID;
-			};
-
-			enum eInvalid {
-				NOT_PRESENT = -1
 			};
 
 			Joystick(int id, float deadZone = 0.1f); // the deadzone is a threshold value for broadcasting axis movement

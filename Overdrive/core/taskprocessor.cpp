@@ -29,9 +29,9 @@ namespace overdrive {
 
 		void TaskProcessor::addWork(detail::WrappedTask t) {
 			if (t.isBackground())
-				mBackgroundTasks.push(std::move(t));
+				mBackgroundTasks.push_back(std::move(t));
 			else
-				mMainTasks.push(std::move(t));
+				mMainTasks.push_back(std::move(t));
 		}
 
 		void TaskProcessor::addRepeatingWork(Task t, bool background) {
@@ -55,9 +55,11 @@ namespace overdrive {
 					detail::WrappedTask task;
 					
 					while (mIsRunning) {
-						mBackgroundTasks.pop(task);
+						TaskQueue myTasks;
 
-						if (mIsRunning)
+						mBackgroundTasks.swap(myTasks);
+
+						for (const auto& task: myTasks.getInternalsUnsafe())
 							execute(task);
 					}
 				});
@@ -68,8 +70,8 @@ namespace overdrive {
 				mMainTasks.swap(mainTasks);
 
 				//fetch tasks and execute directly from the internal queue (no popping/locking required, so use the unsafe methods)
-				while (!mainTasks.isEmpty_unsafe())
-					execute(mainTasks.pop_unsafe());
+				for (const auto& task : mainTasks.getInternalsUnsafe())
+					execute(task);
 			}
 		}
 

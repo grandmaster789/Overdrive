@@ -143,6 +143,8 @@ namespace overdrive {
 			static Window* getFromHandle(GLFWwindow* handle);
 
 		private:
+			friend class Video;
+
 			GLFWwindow* mHandle;
 
 			static std::vector<std::pair<GLFWwindow*, Window*>> mHandleRegistry;

@@ -15,7 +15,9 @@ namespace overdrive {
 
 		bool Video::initialize() {
 			System::initialize();
-			
+
+			Window::mHandleRegistry.clear();
+
 			if (glfwInit() == GL_FALSE) {
 				gLog.error() << "Failed to initialize GLFW";
 				return false;
