@@ -27,7 +27,10 @@ namespace overdrive {
 			void setApplication(app::Application* application); // the Engine will take ownership of the application
 
 			void add(System* system); //note that the Engine will take ownership of the system added
-			System* get(std::string systemName) const;
+			
+			template <typename T>
+			T* get() const;
+
 			void remove(std::string systemName);
 			void remove(System* system);
 
@@ -59,6 +62,18 @@ namespace overdrive {
 
 		// Note -- if systems are removed regularly, from non-main threads this needs to become threadsafe as well
 		//		   I don't expect this to be the typical use case, so I'll leave it for later
+
+
+		template <typename T>
+		T* Engine::get() const {
+			T* result = nullptr;
+
+			for (const auto& system: mSystems)
+				if (result = dynamic_cast<T*>(system.get()))
+					return result;
+
+			return nullptr;
+		}
 	}
 }
 

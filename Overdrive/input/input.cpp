@@ -20,12 +20,10 @@ namespace overdrive {
 
 			mEngine->updateSystem(this, true, false); 
 
-			auto vid = mEngine->get("Video");
+			auto vid = mEngine->get<video::Video>();
 			
 			if (vid) {
-				auto vidSystem = static_cast<overdrive::video::Video*>(vid);
-
-				for (auto& w : vidSystem->getWindows()) {
+				for (auto& w : vid->getWindows()) {
 					addKeyboard(Keyboard(&w));
 					addMouse(Mouse(&w));
 				}
