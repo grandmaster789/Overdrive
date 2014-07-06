@@ -47,6 +47,17 @@ namespace overdrive {
 			return *this;
 		}
 
+		// allow a unique resource to aquire and manage a raw resource (explicly use move-assign)
+		UniqueResource& operator = (tResource&& resource) {
+			invokeDeleter(eInvokationStrategy::INVOKE_ONCE);
+
+			mResource = std::move(resource);
+
+			mInvokeDeleterOnDestruction = true;
+
+			return *this;
+		}
+
 		~UniqueResource() {
 			invokeDeleter(eInvokationStrategy::INVOKE_ONCE);
 		}
