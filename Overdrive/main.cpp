@@ -88,17 +88,21 @@ public:
 
 	bool initialize() {
 		System::initialize();
+		glClearColor(0.1f, 0.0f, 0.0f, 0.0f);
+
 		mEngine->updateSystem(this, true, false);
 		return true;
 	}
 
 	void update() {
-		gLog << ".";
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void shutdown() {
 		System::shutdown();
 	}
+
+protected:
 };
 
 int main() {

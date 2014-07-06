@@ -5,7 +5,7 @@
 
 namespace overdrive {
 	//based on isocpp paper 3949 (slightly modified)
-	//TODO: once msvc actually supports nothrow, add it where appropriate to this class (almost everywhere)
+	//TODO: once msvc actually supports noexcept, add it where appropriate to this class (almost everywhere)
 	//TODO: figure out a way to do a make_unique_resource (I foresee problems with the constructor arguments)
 	template <typename tResource, typename tDeleteFn>
 	class UniqueResource {
@@ -66,16 +66,16 @@ namespace overdrive {
 			return mResource;
 		}
 
-		operator const tResource& () const {
+		operator const tResource& () const { // implicit cast to underlying resource
 			return mResource;
 		}
 
-		tResource operator ->() const {
+		tResource operator ->() const { // dereferencing will create a copy
 			return mResource;
 		}
 
 		std::add_lvalue_reference_t<std::remove_pointer_t<tResource>> operator *() const {
-			return *mResource; // This will only work if the resource is a pointer. Then again, if it isn't a pointer, why attemt to call the * operator?
+			return *mResource; // This will only work if the resource is a pointer. Then again, if it isn't a pointer, why attempt to call the * operator?
 		}
 
 		// deleter access

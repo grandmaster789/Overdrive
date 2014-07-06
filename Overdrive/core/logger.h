@@ -35,7 +35,7 @@ namespace overdrive {
 			LogHelper operator << (std::ostream& (*fn)(std::ostream& os)); //overloading this allows std::iomanip functions to operate on a Logger
 
 			LogHelper debug();		// [dbg]
-			LogHelper info();		// this is the default
+			LogHelper info();		// this is the default (empty prefix)
 			LogHelper warning();	// [wrn]
 			LogHelper error();		// [** ERROR **]
 			LogHelper fatal();		// [<=== FATAL ===>]
