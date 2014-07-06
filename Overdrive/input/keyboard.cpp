@@ -59,6 +59,10 @@ namespace overdrive {
 			return mKeyState[button];
 		}
 
+		bool Keyboard::operator == (const Keyboard& kb) const {
+			return mAssociatedWindow == kb.mAssociatedWindow;
+		}
+
 		void Keyboard::setButtonState(int button, bool pressed) {
 			assert(button >= 0);
 			assert(button < GLFW_KEY_LAST);

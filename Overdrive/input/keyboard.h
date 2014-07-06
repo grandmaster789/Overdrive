@@ -29,7 +29,8 @@ namespace overdrive {
 				video::Window* mAssociatedWindow;
 			};
 
-			bool operator[](int button) const; // usage -- (keyboard[GLFW_BUTTON_ESCAPE] == true)
+			bool operator [] (int button) const; // usage -- (keyboard[GLFW_BUTTON_ESCAPE] == true)
+			bool operator == (const Keyboard& kb) const;
 
 			void setButtonState(int button, bool pressed);
 			

@@ -3,28 +3,73 @@
 
 namespace overdrive {
 	namespace core {
-		TaskProcessor::TaskProcessor(size_t numWorkers):
-			mIsRunning{ false }
+		TaskProcessor::TaskProcessor(size_t numWorkers) :
+			mNumWorkers(numWorkers),
+			mIsRunning(false)
 		{
-			if (numWorkers == 0) {
-				mNumWorkers = boost::thread::hardware_concurrency();
-				
-				//make sure there is at least 1 worker, otherwise background tasks may not be executed at all
-				if (mNumWorkers == 0)
-					mNumWorkers = 1;
-			}
-			else
-				mNumWorkers = numWorkers;
-		}
-
-		TaskProcessor::~TaskProcessor() {
-			stop();
-
-			mBackgroundWorkers.join_all();
+			if (mNumWorkers == 0)
+				mNumWorkers = boost::thread::hardware_concurrency() - 1; // look at the available number of hardware threads, but leave one for the main thread
+			
+			if (mNumWorkers < 1)
+				mNumWorkers = 1; // keep at least 1 background thread
 		}
 
 		void TaskProcessor::addWork(Task t, bool repeating, bool background) {
-			addWork(make_wrapped(t, repeating, background));
+			addWork(make_wrapped(std::move(t), repeating, background));
+		}
+		
+		void TaskProcessor::addRepeatingWork(Task t, bool background) {
+			addWork(std::move(t), true, background);
+		}
+
+		void TaskProcessor::addBackgroundWork(Task t, bool repeating) {
+			addWork(std::move(t), repeating, true);
+		}
+
+		void TaskProcessor::addRepeatingBackgroundWork(Task t) {
+			addWork(std::move(t), true, true);
+		}
+
+		void TaskProcessor::start() {
+			if (mIsRunning)
+				return; // already started
+
+			mIsRunning = true;
+
+			gLog << "Starting " << mNumWorkers << " background threads";
+
+			// start the workers
+			for (size_t i = 0; i < mNumWorkers; ++i) {
+				mBackgroundWorkers.create_thread([&] {
+					while (mIsRunning) {
+						detail::WrappedTask t;
+
+						mBackgroundTasks.pop_back(t);
+
+						if (mIsRunning)
+							execute(t);
+					}
+				});
+			}
+
+			// start the main executor
+			while (mIsRunning) {
+				TaskQueue localQueue;
+				mMainTasks.swap(localQueue);
+
+				const auto& taskList = localQueue.getInternalsUnsafe();
+				for (const auto& task: taskList)
+					execute(task);
+			}
+		}
+
+		void TaskProcessor::stop() {
+			mIsRunning = false;
+
+			for (size_t i = 0; i < mNumWorkers; ++i)
+				addBackgroundWork([&] { mIsRunning = false; });
+
+			mBackgroundWorkers.join_all();
 		}
 
 		void TaskProcessor::addWork(detail::WrappedTask t) {
@@ -34,59 +79,11 @@ namespace overdrive {
 				mMainTasks.push_back(std::move(t));
 		}
 
-		void TaskProcessor::addRepeatingWork(Task t, bool background) {
-			addWork(make_wrapped(t, true, background));
-		}
-		
-		void TaskProcessor::addBackgroundWork(Task t, bool repeating) {
-			addWork(make_wrapped(t, repeating, true));
-		}
-
-		void TaskProcessor::addRepeatingBackgroundWork(Task t) {
-			addWork(make_wrapped(t, true, true));
-		}
-
-		void TaskProcessor::start() {
-			mIsRunning = true;
-
-			//start the workers
-			for (size_t i = 0; i < mNumWorkers; ++i)
-				mBackgroundWorkers.create_thread([this] {
-					detail::WrappedTask task;
-					
-					while (mIsRunning) {
-						TaskQueue myTasks;
-
-						mBackgroundTasks.swap(myTasks);
-
-						for (const auto& task: myTasks.getInternalsUnsafe())
-							execute(task);
-					}
-				});
-
-			while (mIsRunning) {
-				//create a snapshot of the main task queue and the synced tasks
-				TaskQueue mainTasks;
-				mMainTasks.swap(mainTasks);
-
-				//fetch tasks and execute directly from the internal queue (no popping/locking required, so use the unsafe methods)
-				for (const auto& task : mainTasks.getInternalsUnsafe())
-					execute(task);
-			}
-		}
-
-		void TaskProcessor::stop() {
-			mIsRunning = false;
-			
-			for (size_t i = 0; i < mNumWorkers; ++i)
-				addBackgroundWork([this] { mIsRunning = false; });
-		}
-
 		void TaskProcessor::execute(detail::WrappedTask t) {
 			t();
 
 			if (t.isRepeating())
-				addWork(t);
+				addWork(std::move(t));
 		}
 	}
 }

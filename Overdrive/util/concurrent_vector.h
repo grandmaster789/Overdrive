@@ -39,10 +39,7 @@ namespace overdrive {
 			}
 
 			void swap(ConcurrentVector& other) {
-				UniqueLock lockSelf(mMutex);
-
-				mCondition.wait(lockSelf, [&] { return !mInternalVector.empty(); });
-
+				ScopedLock lockSelf(mMutex);
 				ScopedLock lockOther(other.mMutex);
 
 				std::swap(mInternalVector, other.mInternalVector);

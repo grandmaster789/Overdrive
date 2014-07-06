@@ -17,10 +17,6 @@ namespace overdrive {
 
 		public:
 			TaskProcessor(size_t numWorkers = 0); //use 0 for autodetect
-			~TaskProcessor();
-
-			TaskProcessor(const TaskProcessor&) = delete;
-			TaskProcessor& operator= (const TaskProcessor&) = delete;
 
 			void addWork(Task t, bool repeating = false, bool background = false);
 			
@@ -34,7 +30,6 @@ namespace overdrive {
 
 		private:
 			void addWork(detail::WrappedTask t);	//places the task in the appropriate queue
-
 			void execute(detail::WrappedTask t);
 
 			TaskQueue mMainTasks;		//executed in this thread

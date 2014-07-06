@@ -21,7 +21,12 @@ namespace {
 
 		if (auto w = video::Window::getFromHandle(handle)) {
 			auto it = mMouseRegistry.find(w);
-			assert(it != mMouseRegistry.end());
+			
+			if (it == mMouseRegistry.end()) {
+				gLog.warning() << "received mouse press from unregistered window";
+				return;
+			}
+
 			it->second->setButtonState((input::Mouse::eButton)button, (action == GLFW_PRESS));
 
 			switch (action) {
@@ -50,7 +55,12 @@ namespace {
 
 		if (auto w = video::Window::getFromHandle(handle)) {
 			auto it = mMouseRegistry.find(w);
-			assert(it != mMouseRegistry.end());
+			
+			if (it == mMouseRegistry.end()) {
+				gLog.warning() << "received mouse press from unregistered window";
+				return;
+			}
+			
 			it->second->setPosition(x, y, false); // just update the internals
 
 			core::Channel::broadcast(input::Mouse::OnMove{
@@ -73,7 +83,12 @@ namespace {
 
 		if (auto w = video::Window::getFromHandle(handle)) {
 			auto it = mMouseRegistry.find(w);
-			assert(it != mMouseRegistry.end());
+			
+			if (it == mMouseRegistry.end()) {
+				gLog.warning() << "received mouse press from unregistered window";
+				return;
+			}
+
 			it->second->setInsideClientArea(enter == GL_TRUE);
 
 			if (enter == GL_TRUE)
@@ -129,6 +144,10 @@ namespace overdrive {
 
 		bool Mouse::operator[](Mouse::eButton button) const {
 			return mButtonState[button];
+		}
+
+		bool Mouse::operator == (const Mouse& m) const {
+			return mAssociatedWindow == m.mAssociatedWindow;
 		}
 
 		void Mouse::getPosition(double& x, double& y) const {

@@ -57,10 +57,18 @@ namespace overdrive {
 		}
 
 		void Input::addKeyboard(Keyboard&& kb) {
+			for (const auto& keyboard: mKeyboards)
+				if (keyboard == kb)
+					return;
+
 			mKeyboards.emplace_back(std::move(kb));
 		}
 
 		void Input::addMouse(Mouse&& m) {
+			for (const auto& mouse: mMice)
+				if (mouse == m)
+					return;
+
 			mMice.emplace_back(std::move(m));
 		}
 

@@ -74,7 +74,9 @@ namespace overdrive {
 			void setPosition(double x, double y, bool setCursor = true); // if setCursor is true, the pointer will be moved to the indicated position
 			void setInsideClientArea(bool isInside);
 
-			bool operator[](eButton button) const; // usage -- bool pressed = (mouse[Mouse::MOUSE_BUTTON_LEFT]);
+			bool operator [] (eButton button) const; // usage -- bool pressed = (mouse[Mouse::MOUSE_BUTTON_LEFT]);
+			bool operator == (const Mouse& m) const;
+
 			void getPosition(double& x, double& y) const;
 			bool isInsideClientArea() const;
 
