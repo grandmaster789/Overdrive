@@ -68,6 +68,6 @@ namespace overdrive {
 	}
 }
 
-static overdrive::core::Logger gLog("overdrive.log");
+extern overdrive::core::Logger gLog;
 
 #endif

@@ -8,6 +8,8 @@ namespace {
 	using namespace overdrive::video;
 	overdrive::core::Channel chan;
 
+	std::vector<std::pair<GLFWwindow*, Window*>> sHandleRegistry;
+
 	void onWindowPosFn(GLFWwindow* handle, int x, int y) {
 		if (auto w = Window::getFromHandle(handle))
 			chan.broadcast(Window::OnMove { w, x, y });
@@ -59,7 +61,6 @@ namespace {
 namespace overdrive {
 	namespace video {
 		Window::CreationHints Window::mCreationHints;
-		std::vector<std::pair<GLFWwindow*, Window*>> Window::mHandleRegistry;
 
 		Window::Window() {
 		}
@@ -105,7 +106,7 @@ namespace overdrive {
 			);
 
 			if (mHandle) {
-				mHandleRegistry.push_back(std::make_pair(mHandle, this));
+				sHandleRegistry.push_back(std::make_pair(mHandle, this));
 
 				//set all callbacks
 				glfwSetWindowCloseCallback(mHandle, onWindowCloseFn);
@@ -139,7 +140,7 @@ namespace overdrive {
 			);
 
 			if (mHandle) {
-				mHandleRegistry.push_back(std::make_pair(mHandle, this));
+				sHandleRegistry.push_back(std::make_pair(mHandle, this));
 
 				//set all callbacks
 				glfwSetWindowCloseCallback(mHandle, onWindowCloseFn);
@@ -158,9 +159,9 @@ namespace overdrive {
 			assert(mHandle);
 
 			// first remove this window from the handle registry
-			for (auto it = mHandleRegistry.begin(); it != mHandleRegistry.end(); ++it) {
+			for (auto it = sHandleRegistry.begin(); it != sHandleRegistry.end(); ++it) {
 				if (it->second == this) {
-					mHandleRegistry.erase(it);
+					sHandleRegistry.erase(it);
 					break;
 				}
 			}
@@ -449,13 +450,11 @@ namespace overdrive {
 		}
 
 		Window* Window::getFromHandle(GLFWwindow* handle) {
-			for (const auto& pair : mHandleRegistry)
+			for (const auto& pair : sHandleRegistry)
 				if (pair.first == handle)
 					return pair.second;
 
 			throw std::runtime_error("Handle not found in window registry");
-
-			return nullptr;
 		}
 	}
 }

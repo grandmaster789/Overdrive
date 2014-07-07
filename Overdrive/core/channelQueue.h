@@ -3,78 +3,66 @@
 
 #include <algorithm>
 #include <functional>
-#include <mutex>
+#include <iostream>
 #include <utility>
-#include <vector>
+#include "util/concurrent_vector.h"
 
 namespace overdrive {
 	namespace core {
 		class Channel;
 
 		namespace detail {
-			template <typename tEvent>
+			template <typename tMessage>
 			class ChannelQueue {
-			private:					// entire class is private
-				friend class Channel;	// only to be used by Channel
-
-				typedef std::mutex Mutex;	// I'm actually expecting low contention, so this is a candidate for replacement with spinlocks
-				typedef std::lock_guard<Mutex> ScopedLock;
+			public:
+				typedef std::function<void(const tMessage&)> Handler;
+				typedef std::pair<void*, Handler> HandlerPair;
 
 				static ChannelQueue& instance() {
-					static ChannelQueue aSpecificInstance;
-					return aSpecificInstance;
+					static ChannelQueue anInstance;
+					
+					return anInstance;
 				}
 
 				template <typename tHandler>
-				void add(tHandler* handlerObject) {
-					ScopedLock lock(mMutex);
-
-					mHandlers.push_back(
+				void add(tHandler* handler) {
+					mInternalVector.push_back(
 						std::make_pair(
-							[handlerObject] (const tEvent& message) { 
-								(*handlerObject)(message); 
-							},
-							handlerObject
+							(void*)handler,
+							createHandler(handler)
 						)
 					);
 				}
 
-				void remove(void* objectPtr) {
-					ScopedLock lock(mMutex);
-
-					auto it = std::remove_if(
-						mHandlers.begin(),
-						mHandlers.end(),
-						[objectPtr](const HandlerPair& handlerPair) {
-							return handlerPair.second == objectPtr;
+				template <typename tHandler>
+				void remove(tHandler* handler) {
+					mInternalVector.remove_if(
+						[handler] (const HandlerPair& pair) {
+							return (handler == pair.first);
 						}
 					);
-
-					if (it != mHandlers.end())
-						mHandlers.erase(it);
 				}
 
-				void broadcast(const tEvent& message) const {
-					std::vector<HandlerPair> handlers;
+				void broadcast(const tMessage& message) {
+					auto localVector = mInternalVector.copyInternals();
 					
-					{
-						ScopedLock lock(mMutex);
-
-						// make a local copy so that we have a non-mutable structure to iterate over
-						// this should be pretty fast, as it only contains PODs 
-						handlers = mHandlers;	
-					}
-
-					for (const auto& handler: handlers)
-						handler.first(message);
+					for (const auto& pair: localVector)
+						pair.second(message);
 				}
 
 			private:
-				mutable std::mutex mMutex;
+				ChannelQueue() {
+				}
 
-				typedef std::function<void(const tEvent&)> HandlerType;
-				typedef std::pair<HandlerType, void*> HandlerPair; // store both the function object and the pointer to the actual handler (for removal)
-				std::vector<HandlerPair> mHandlers;
+				template <typename tHandler>
+				Handler createHandler(tHandler* handler) {
+					return [handler](const tMessage& message) { (*handler)(message); };
+				}
+
+				typedef std::function<void(const tMessage&)> Handler;
+				typedef std::pair<void*, Handler> HandlerPair;
+
+				util::ConcurrentVector<HandlerPair> mInternalVector;
 			};
 		}
 	}

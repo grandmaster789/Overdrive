@@ -7,10 +7,7 @@
 #include <unordered_map>
 
 namespace {
-	static std::unordered_map<
-		const overdrive::video::Window*, 
-		overdrive::input::Keyboard*
-	> mKeyboardRegistry;
+	std::unordered_map<const overdrive::video::Window*, overdrive::input::Keyboard*> mKeyboardRegistry;
 
 	void onKey(
 		GLFWwindow* handle, 

@@ -4,6 +4,8 @@
 #include <ctime>
 #include <iostream>
 
+overdrive::core::Logger gLog("overdrive.log"); // ze global
+
 namespace overdrive {
 	namespace core {
 		Logger::Logger(std::string filename):

@@ -49,13 +49,27 @@ namespace overdrive {
 				return mInternalVector;
 			}
 
-			void notify() {
-				mCondition.notify_all();
+			std::vector<T> copyInternals() const {
+				ScopedLock lock(mMutex);
+				return mInternalVector;
+			}
+
+			void remove_if(std::function<bool(const T& value)> condition) {
+				ScopedLock lock(mMutex);
+				
+				auto it = std::remove_if(
+					mInternalVector.begin(), 
+					mInternalVector.end(), 
+					condition
+				);
+
+				if (it != mInternalVector.end())
+					mInternalVector.erase(it);
 			}
 
 		private:
 			std::vector<T> mInternalVector;
-			Mutex mMutex;
+			mutable Mutex mMutex;
 			Condition mCondition;
 		};
 	}

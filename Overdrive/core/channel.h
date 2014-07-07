@@ -33,7 +33,7 @@ namespace overdrive {
 				Channel::add<tMessage>(this);
 			}
 
-			MessageHandler(const MessageHandler& mh) {
+			MessageHandler(const MessageHandler& ) {
 				Channel::add<tMessage>(this); 
 			}
 

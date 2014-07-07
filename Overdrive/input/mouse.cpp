@@ -6,10 +6,7 @@
 #include <unordered_map>
 
 namespace {
-	static std::unordered_map<
-		const overdrive::video::Window*,
-		overdrive::input::Mouse*
-	> mMouseRegistry;
+	std::unordered_map<const overdrive::video::Window*, overdrive::input::Mouse*> mMouseRegistry;
 
 	void onMouseButton(
 		GLFWwindow* handle, 

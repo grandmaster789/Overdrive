@@ -147,8 +147,6 @@ namespace overdrive {
 
 			GLFWwindow* mHandle;
 
-			static std::vector<std::pair<GLFWwindow*, Window*>> mHandleRegistry;
-
 			std::string mTitle = "Default Window";
 
 			int mWidth = 800;
