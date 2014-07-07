@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="core\logger.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\task.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="test\core\test_logger.cpp">
+      <Filter>test\core</Filter>
+    </ClCompile>
+    <ClCompile Include="util\named.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="test\util\test_named.cpp">
+      <Filter>test\util</Filter>
+    </ClCompile>
+    <ClCompile Include="core\taskprocessor.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\settings.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="test\core\test_channel.cpp">
+      <Filter>test\core</Filter>
+    </ClCompile>
+    <ClCompile Include="util\timer.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="core\system.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\engine.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="video\video.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\monitor.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\window.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="input\input.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="input\keyboard.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="input\mouse.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="core\config.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="input\joystick.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="app\application.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="render\drawable.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shaderprogram.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="util\glinfo.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shape\cube.cpp">
+      <Filter>render\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="app\spinningcube.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="test\input\test_key_recv.cpp">
+      <Filter>test\input</Filter>
+    </ClCompile>
+    <ClCompile Include="test\input\test_mouse_recv.cpp">
+      <Filter>test\input</Filter>
+    </ClCompile>
+    <ClCompile Include="test\input\test_joy_recv.cpp">
+      <Filter>test\input</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="opengl.h" />
+    <ClInclude Include="core\logger.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\task.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="test\test.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="test\core\core_test.h">
+      <Filter>test\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\system.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="util\named.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="test\util\util_test.h">
+      <Filter>test\util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\concurrent_queue.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="core\taskprocessor.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\settings.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\channel.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="util\scope_guard.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="core\channelQueue.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="util\unique_resource.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="preprocessor.h" />
+    <ClInclude Include="util\timer.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="core\engine.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="util\move_on_copy.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="video\video.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="video\window.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="video\monitor.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="util\checkRange.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="input\input.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="input\keyboard.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="input\mouse.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="core\config.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="input\joystick.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="math\frustum.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="app\application.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="render\drawable.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shaderprogram.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="util\glinfo.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shape\cube.h">
+      <Filter>render\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="app\spinningcube.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="test\input\input_test.h">
+      <Filter>test\input</Filter>
+    </ClInclude>
+    <ClInclude Include="math\conversions.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="util\concurrent_vector.h">
+      <Filter>util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{fc78e2a9-8933-47da-a27c-c06d46150142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{35e7b45c-8e3f-4603-b1f5-a62fd3977876}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{cbdaaf25-d8d9-4eb0-bf57-5e3b85812913}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\core">
+      <UniqueIdentifier>{41fcca05-7d8d-4419-af86-9e16eea67c8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform">
+      <UniqueIdentifier>{173c91ae-ef98-4aa7-928e-e7aa4977e9e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\util">
+      <UniqueIdentifier>{c4e9136f-639e-4e3c-b538-dd54a968be00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{6dd33015-887b-4c00-a6e2-320e53e400c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application">
+      <UniqueIdentifier>{ab1b483f-aebb-4f63-b445-3674f05e8ffe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="video">
+      <UniqueIdentifier>{14523ece-37e0-4f21-8396-807b24767368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{85e5e9e0-73ff-454e-a698-a6fa75789f9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{a2516a21-cd2a-45e9-93d0-2a0839710cd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\shape">
+      <UniqueIdentifier>{dee0fe2f-7228-4d7a-90e9-c202b3c1b739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\input">
+      <UniqueIdentifier>{6896295e-c6ad-4a4f-bbc6-876ff64081fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{b89a9cb2-9ec8-446c-ab5e-8279aa705147}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\diffuse.vs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\diffuse.fs">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6BB84A96-5106-4D65-8FFC-D4F0B82DECE2}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Overdrive</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..;.;F:\SDK\3rd party\include;F:\SDK\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glfw3d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.;F:\SDK\3rd party\include;F:\SDK\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="app\application.cpp" />
+    <ClCompile Include="app\spinningcube.cpp" />
+    <ClCompile Include="core\config.cpp" />
+    <ClCompile Include="core\engine.cpp" />
+    <ClCompile Include="core\logger.cpp" />
+    <ClCompile Include="core\settings.cpp" />
+    <ClCompile Include="core\system.cpp" />
+    <ClCompile Include="core\task.cpp" />
+    <ClCompile Include="core\taskprocessor.cpp" />
+    <ClCompile Include="input\input.cpp" />
+    <ClCompile Include="input\joystick.cpp" />
+    <ClCompile Include="input\keyboard.cpp" />
+    <ClCompile Include="input\mouse.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="render\drawable.cpp" />
+    <ClCompile Include="render\shaderprogram.cpp" />
+    <ClCompile Include="render\shape\cube.cpp" />
+    <ClCompile Include="test\core\test_channel.cpp" />
+    <ClCompile Include="test\core\test_logger.cpp" />
+    <ClCompile Include="test\input\test_joy_recv.cpp" />
+    <ClCompile Include="test\input\test_key_recv.cpp" />
+    <ClCompile Include="test\input\test_mouse_recv.cpp" />
+    <ClCompile Include="test\util\test_named.cpp" />
+    <ClCompile Include="util\glinfo.cpp" />
+    <ClCompile Include="util\named.cpp" />
+    <ClCompile Include="util\timer.cpp" />
+    <ClCompile Include="video\monitor.cpp" />
+    <ClCompile Include="video\video.cpp" />
+    <ClCompile Include="video\window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="app\application.h" />
+    <ClInclude Include="app\spinningcube.h" />
+    <ClInclude Include="core\channel.h" />
+    <ClInclude Include="core\channelQueue.h" />
+    <ClInclude Include="core\config.h" />
+    <ClInclude Include="core\engine.h" />
+    <ClInclude Include="core\settings.h" />
+    <ClInclude Include="core\taskprocessor.h" />
+    <ClInclude Include="core\logger.h" />
+    <ClInclude Include="core\system.h" />
+    <ClInclude Include="core\task.h" />
+    <ClInclude Include="input\input.h" />
+    <ClInclude Include="input\joystick.h" />
+    <ClInclude Include="input\keyboard.h" />
+    <ClInclude Include="input\mouse.h" />
+    <ClInclude Include="math\conversions.h" />
+    <ClInclude Include="math\frustum.h" />
+    <ClInclude Include="opengl.h" />
+    <ClInclude Include="preprocessor.h" />
+    <ClInclude Include="render\drawable.h" />
+    <ClInclude Include="render\shaderprogram.h" />
+    <ClInclude Include="render\shape\cube.h" />
+    <ClInclude Include="test\core\core_test.h" />
+    <ClInclude Include="test\input\input_test.h" />
+    <ClInclude Include="test\test.h" />
+    <ClInclude Include="test\util\util_test.h" />
+    <ClInclude Include="util\checkRange.h" />
+    <ClInclude Include="util\concurrent_queue.h" />
+    <ClInclude Include="util\concurrent_vector.h" />
+    <ClInclude Include="util\glinfo.h" />
+    <ClInclude Include="util\move_on_copy.h" />
+    <ClInclude Include="util\named.h" />
+    <ClInclude Include="util\timer.h" />
+    <ClInclude Include="util\unique_resource.h" />
+    <ClInclude Include="util\scope_guard.h" />
+    <ClInclude Include="video\monitor.h" />
+    <ClInclude Include="video\video.h" />
+    <ClInclude Include="video\window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\diffuse.fs" />
+    <None Include="shaders\diffuse.vs" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
