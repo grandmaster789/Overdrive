@@ -8,6 +8,16 @@
 
 namespace overdrive {
 	namespace app {
+		/*
+			Really basic application, showing a spinning cube and shutting down when escape is pressed
+			Minimal requirements:
+				- System features (init/update/shutdown)
+				- Channel features (MessageHandler, onKeyPress)
+				- ShaderProgram (diffuse shaders)
+				- render::shape::Cube
+
+			Does not use/require camera's, models, lights, etc.
+		 */
 		class SpinningCube :
 			public Application,
 			public core::MessageHandler<input::Keyboard::OnKeyPress>
