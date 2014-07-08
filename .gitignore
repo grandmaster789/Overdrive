@@ -27,3 +27,7 @@
 /Overdrive/Overdrive.vcxproj.user
 /Release/*.exe
 /Overdrive/Debug/*.xml
+Experimental
+/Overdrive/Release
+*.lastcodeanalysissucceeded
+Release
