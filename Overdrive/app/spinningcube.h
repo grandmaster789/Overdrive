@@ -4,6 +4,7 @@
 #include "app/application.h"
 #include "render/shaderprogram.h"
 #include "render/shape/cube.h"
+#include "render/shape/torus.h"
 #include "input/keyboard.h"
 
 namespace overdrive {
@@ -41,6 +42,7 @@ namespace overdrive {
 			render::ShaderProgram mShaderProgram;
 
 			std::unique_ptr<render::shape::Cube> mCube;
+			std::unique_ptr<render::shape::Torus> mTorus;
 		};
 	}
 }

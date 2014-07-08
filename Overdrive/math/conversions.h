@@ -5,9 +5,6 @@
 
 namespace overdrive {
 	namespace math {
-		static const float PI = 3.141592653589793f;
-		static const float TWO_PI = 6.2831853071795862f;
-
 		inline float toRadians(float value) {
 			return value * 0.017453292519943295f;
 		}

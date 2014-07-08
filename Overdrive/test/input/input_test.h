@@ -1,1 +1,1 @@
-// Input handling is quasi-reactive, so actual unit testing is difficult; samples have been provided though
+// Input handling is quasi-reactive, so actual unit testing would require mocks etc; samples have been provided though

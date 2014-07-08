@@ -46,7 +46,7 @@ namespace overdrive {
 			mParent(std::move(lh.mParent)),
 			mBuffer(std::move(lh.mBuffer))
 		{
-			lh.mParent = nullptr; // the old one doesn't have to flush anymore
+			lh.release(); // the old one doesn't have to flush anymore
 		}
 
 		Logger::LogHelper::~LogHelper() {
@@ -54,6 +54,19 @@ namespace overdrive {
 				mBuffer << "\n";	// automatically add a newline
 				mParent->flush(mBuffer.str());
 			}
+		}
+
+		Logger::LogHelper& Logger::LogHelper::operator= (LogHelper&& lh) {
+			mParent = std::move(lh.mParent);
+			mBuffer = std::move(lh.mBuffer);
+
+			lh.release();
+
+			return *this;
+		}
+
+		void Logger::LogHelper::release() {
+			mParent = nullptr;
 		}
 
 		Logger::LogHelper& Logger::LogHelper::operator << (std::ostream& (*fn)(std::ostream& os)) {

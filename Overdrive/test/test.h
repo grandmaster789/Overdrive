@@ -6,6 +6,8 @@
 
 namespace overdrive {
 	namespace test {
+		// DIY unit test (not very extensive ones, but still unit tests)
+
 		inline void runAllTests() {
 			std::cout << "Running core tests\n";
 			runCoreTest();

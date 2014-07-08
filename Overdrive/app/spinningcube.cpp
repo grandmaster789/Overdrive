@@ -53,6 +53,7 @@ namespace overdrive {
 			mShaderProgram.set("LightPosition", mView * glm::vec4(5.0f, 5.0f, 2.0f, 1.0f));
 
 			mCube = std::make_unique<render::shape::Cube>();
+			mTorus = std::make_unique<render::shape::Torus>();
 
 			mEngine->updateSystem(this, true, false);
 
@@ -74,7 +75,8 @@ namespace overdrive {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
-			mCube->draw();
+			//mCube->draw();
+			mTorus->draw();
 		}
 
 		void SpinningCube::shutdown() {

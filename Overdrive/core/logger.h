@@ -44,10 +44,17 @@ namespace overdrive {
 			void flush(std::string message);
 
 			// Helper struct to accumulate message; flushes at the parent object when it goes out of scope
+			// Move-only operations
 			struct LogHelper {
 				LogHelper(Logger* parent);
+				LogHelper(const LogHelper&) = delete;
 				LogHelper(LogHelper&& lh);
 				~LogHelper();
+
+				LogHelper& operator = (const LogHelper&) = delete;
+				LogHelper& operator = (LogHelper&& lh);
+
+				void release();
 
 				template <typename T>
 				LogHelper& operator << (const T& message) {

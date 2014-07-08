@@ -15,12 +15,14 @@
 #include <sstream>
 
 int main() {
+	//overdrive::test::runAllTests();
+
 	overdrive::core::Engine engine;
 	
 	engine.add(new overdrive::video::Video);
 	engine.add(new overdrive::input::Input);
 
 	engine.setApplication(new overdrive::app::SpinningCube);
-	
+
 	engine.run();
 }

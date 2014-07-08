@@ -73,6 +73,10 @@ namespace overdrive {
 		}
 
 		// resource access
+		tResource& get() {
+			return mResource;
+		}
+
 		const tResource& get() const {
 			return mResource;
 		}

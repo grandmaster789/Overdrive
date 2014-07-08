@@ -86,6 +86,9 @@
     <ClCompile Include="test\input\test_joy_recv.cpp">
       <Filter>test\input</Filter>
     </ClCompile>
+    <ClCompile Include="render\shape\torus.cpp">
+      <Filter>render\shape</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -197,6 +200,15 @@
     </ClInclude>
     <ClInclude Include="util\concurrent_vector.h">
       <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shape\torus.h">
+      <Filter>render\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="math\constants.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\util.h">
+      <Filter>math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
