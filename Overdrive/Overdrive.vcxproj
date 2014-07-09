@@ -99,8 +99,10 @@
     <ClCompile Include="input\mouse.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="render\drawable.cpp" />
+    <ClCompile Include="render\glinfo.cpp" />
     <ClCompile Include="render\shaderprogram.cpp" />
     <ClCompile Include="render\shape\cube.cpp" />
+    <ClCompile Include="render\shape\plane.cpp" />
     <ClCompile Include="render\shape\torus.cpp" />
     <ClCompile Include="test\core\test_channel.cpp" />
     <ClCompile Include="test\core\test_logger.cpp" />
@@ -108,7 +110,6 @@
     <ClCompile Include="test\input\test_key_recv.cpp" />
     <ClCompile Include="test\input\test_mouse_recv.cpp" />
     <ClCompile Include="test\util\test_named.cpp" />
-    <ClCompile Include="util\glinfo.cpp" />
     <ClCompile Include="util\named.cpp" />
     <ClCompile Include="util\timer.cpp" />
     <ClCompile Include="video\monitor.cpp" />
@@ -138,8 +139,10 @@
     <ClInclude Include="opengl.h" />
     <ClInclude Include="preprocessor.h" />
     <ClInclude Include="render\drawable.h" />
+    <ClInclude Include="render\glinfo.h" />
     <ClInclude Include="render\shaderprogram.h" />
     <ClInclude Include="render\shape\cube.h" />
+    <ClInclude Include="render\shape\plane.h" />
     <ClInclude Include="render\shape\torus.h" />
     <ClInclude Include="test\core\core_test.h" />
     <ClInclude Include="test\input\input_test.h" />
@@ -148,7 +151,6 @@
     <ClInclude Include="util\checkRange.h" />
     <ClInclude Include="util\concurrent_queue.h" />
     <ClInclude Include="util\concurrent_vector.h" />
-    <ClInclude Include="util\glinfo.h" />
     <ClInclude Include="util\move_on_copy.h" />
     <ClInclude Include="util\named.h" />
     <ClInclude Include="util\timer.h" />

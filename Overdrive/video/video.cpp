@@ -36,9 +36,9 @@ namespace overdrive {
 			mainWindow.setHeight(mMainWindowHeight);
 			mainWindow.setTitle("Overdrive");
 
-			//go for openGL 4.0 core by default
+			//go for openGL 4.3 core by default
 			mainWindow.mCreationHints.mContextVersionMajor = 4;
-			mainWindow.mCreationHints.mContextVersionMinor = 0;
+			mainWindow.mCreationHints.mContextVersionMinor = 3;
 			mainWindow.mCreationHints.mOpenGLProfile = Window::eOpenGLProfile::CORE;
 
 			if (mMainWindowFullscreen) {

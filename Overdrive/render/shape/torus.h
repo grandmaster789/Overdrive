@@ -11,8 +11,8 @@ namespace overdrive {
 			{
 			public:
 				Torus(
-					float outerRadius = 1.0f,
-					float innerRadius = 0.5f,
+					float outerRadius = 0.5f,
+					float innerRadius = 0.25f,
 					size_t numRings = 20,
 					size_t numSides = 20
 				);

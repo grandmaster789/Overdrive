@@ -54,6 +54,7 @@ namespace overdrive {
 
 			mCube = std::make_unique<render::shape::Cube>();
 			mTorus = std::make_unique<render::shape::Torus>();
+			mPlane = std::make_unique<render::shape::Plane>();
 
 			mEngine->updateSystem(this, true, false);
 
@@ -77,6 +78,7 @@ namespace overdrive {
 			
 			//mCube->draw();
 			mTorus->draw();
+			//mPlane->draw();
 		}
 
 		void SpinningCube::shutdown() {

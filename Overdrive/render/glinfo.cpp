@@ -1,8 +1,8 @@
-#include "util/glinfo.h"
+#include "render/glinfo.h"
 #include "core/logger.h"
 
 namespace overdrive {
-	namespace util {
+	namespace render {
 		bool checkGL(const char* srcFile, int line) {
 			GLenum err = glGetError();
 			bool result = true;

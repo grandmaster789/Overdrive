@@ -68,9 +68,6 @@
     <ClCompile Include="render\shaderprogram.cpp">
       <Filter>render</Filter>
     </ClCompile>
-    <ClCompile Include="util\glinfo.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
     <ClCompile Include="render\shape\cube.cpp">
       <Filter>render\shape</Filter>
     </ClCompile>
@@ -87,6 +84,12 @@
       <Filter>test\input</Filter>
     </ClCompile>
     <ClCompile Include="render\shape\torus.cpp">
+      <Filter>render\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="render\glinfo.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shape\plane.cpp">
       <Filter>render\shape</Filter>
     </ClCompile>
   </ItemGroup>
@@ -183,9 +186,6 @@
     <ClInclude Include="render\shaderprogram.h">
       <Filter>render</Filter>
     </ClInclude>
-    <ClInclude Include="util\glinfo.h">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="render\shape\cube.h">
       <Filter>render\shape</Filter>
     </ClInclude>
@@ -209,6 +209,12 @@
     </ClInclude>
     <ClInclude Include="math\util.h">
       <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="render\glinfo.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shape\plane.h">
+      <Filter>render\shape</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

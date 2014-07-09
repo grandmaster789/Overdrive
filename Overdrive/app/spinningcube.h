@@ -5,6 +5,7 @@
 #include "render/shaderprogram.h"
 #include "render/shape/cube.h"
 #include "render/shape/torus.h"
+#include "render/shape/plane.h"
 #include "input/keyboard.h"
 
 namespace overdrive {
@@ -43,6 +44,7 @@ namespace overdrive {
 
 			std::unique_ptr<render::shape::Cube> mCube;
 			std::unique_ptr<render::shape::Torus> mTorus;
+			std::unique_ptr<render::shape::Plane> mPlane;
 		};
 	}
 }
