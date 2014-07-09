@@ -6,6 +6,7 @@
 
 #include <array>
 #include <string>
+#include <unordered_map>
 
 namespace overdrive {
 	namespace render {
@@ -39,9 +40,6 @@ namespace overdrive {
 
 			bool isLinked() const;
 
-			void bindAttribute(GLuint location, const std::string& name) const;
-			void bindFragData(GLuint location, const std::string& name) const;
-
 			void set(const std::string& name, float x, float y, float z) const;
 			void set(const std::string& name, const glm::vec2& v) const;
 			void set(const std::string& name, const glm::vec3& v) const;
@@ -57,19 +55,40 @@ namespace overdrive {
 
 		private:
 			bool exists(const std::string& filename) const;
+
+			void gatherActiveAttributes();
+			void gatherActiveUniforms();
+
 			inline GLint getUniformLocation(const std::string& name) const;
+			inline GLint getAttributeLocation(const std::string& name) const;
 						
 			bool mIsLinked;
 			
 			GLuint mProgramHandle;
 			std::array<GLuint, 5> mShaderHandles;
+
+			std::unordered_map<std::string, GLint> mUniformLocations;
+			std::unordered_map<std::string, GLint> mAttributeLocations;
 		};
 
 		GLint ShaderProgram::getUniformLocation(const std::string& name) const {
-			GLint result = glGetUniformLocation(mProgramHandle, name.c_str());
-			assert(result >= 0);
+			//GLint result = glGetUniformLocation(mProgramHandle, name.c_str());
 
-			return result;
+			auto it = mUniformLocations.find(name);
+			
+			if (it == mUniformLocations.end())
+				throw std::runtime_error(std::string("Uniform not found: ") + name);
+
+			return it->second;
+		}
+
+		GLint ShaderProgram::getAttributeLocation(const std::string& name) const {
+			auto it = mAttributeLocations.find(name);
+
+			if (it == mAttributeLocations.end())
+				throw std::runtime_error(std::string("Attribute not found: ") + name);
+
+			return it->second;
 		}
 	}
 }

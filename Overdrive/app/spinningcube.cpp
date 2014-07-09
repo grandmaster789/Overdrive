@@ -2,6 +2,7 @@
 #include "core/engine.h"
 #include "video/video.h"
 #include "math/conversions.h"
+#include "render/glinfo.h"
 
 namespace overdrive {
 	namespace app {
@@ -12,6 +13,8 @@ namespace overdrive {
 
 		bool SpinningCube::initialize() {
 			System::initialize();
+
+			render::listGLinfo();
 
 			glClearColor(0.1f, 0.0f, 0.0f, 0.0f);
 			glEnable(GL_DEPTH_TEST);
@@ -46,6 +49,7 @@ namespace overdrive {
 			mShaderProgram.compileFile("shaders/diffuse.vs", render::VERTEX);
 			mShaderProgram.compileFile("shaders/diffuse.fs", render::FRAGMENT);
 			mShaderProgram.link();
+
 			mShaderProgram.use();
 
 			mShaderProgram.set("LightDiffuse", 1.0f, 1.0f, 1.0f);

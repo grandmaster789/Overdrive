@@ -6,8 +6,6 @@
 #include <cassert>
 #include <fstream>
 
-
-
 namespace overdrive {
 	namespace render {
 		ShaderProgram::ShaderProgram():
@@ -220,7 +218,75 @@ namespace overdrive {
 			}
 			else {
 				mIsLinked = true;
+
+				gatherActiveAttributes();
+				gatherActiveUniforms();
+
 				return true;
+			}
+		}
+
+		void ShaderProgram::gatherActiveAttributes() {
+			mAttributeLocations.clear();
+
+			GLint numAttributes = 0;
+			GLint maxAttributeNameLength = 0;
+			GLint location = 0;
+			GLenum type;
+			GLint size = 0;
+			GLint bytesWritten = 0;
+
+			glGetProgramiv(mProgramHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxAttributeNameLength);
+			glGetProgramiv(mProgramHandle, GL_ACTIVE_ATTRIBUTES, &numAttributes);
+
+			std::unique_ptr<GLchar[]> attributeName(new GLchar[maxAttributeNameLength]);
+
+			for (GLint i = 0; i < numAttributes; ++i) {
+				glGetActiveAttrib(
+					mProgramHandle,
+					i,
+					maxAttributeNameLength,
+					&bytesWritten,
+					&size,
+					&type,
+					attributeName.get()
+					);
+
+				location = glGetAttribLocation(mProgramHandle, attributeName.get());
+
+				mAttributeLocations[attributeName.get()] = location;
+			}
+		}
+
+		void ShaderProgram::gatherActiveUniforms() {
+			mUniformLocations.clear();
+
+			GLint numUniforms = 0;
+			GLint maxUniformNameLength = 0;
+			GLint location = 0;
+			GLenum type;
+			GLint size = 0;
+			GLint bytesWritten = 0;
+
+			glGetProgramiv(mProgramHandle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniformNameLength);
+			glGetProgramiv(mProgramHandle, GL_ACTIVE_UNIFORMS, &numUniforms);
+
+			std::unique_ptr<GLchar[]> uniformName(new GLchar[maxUniformNameLength]);
+
+			for (GLint i = 0; i < numUniforms; ++i) {
+				glGetActiveUniform(
+					mProgramHandle,
+					i,
+					maxUniformNameLength,
+					&bytesWritten,
+					&size,
+					&type,
+					uniformName.get()
+				);
+
+				location = glGetUniformLocation(mProgramHandle, uniformName.get());
+
+				mUniformLocations[uniformName.get()] = location;
 			}
 		}
 
@@ -274,6 +340,7 @@ namespace overdrive {
 			return mIsLinked;
 		}
 
+		/*
 		void ShaderProgram::bindAttribute(GLuint location, const std::string& name) const {
 			assert(mProgramHandle != 0);
 			glBindAttribLocation(mProgramHandle, location, name.c_str());
@@ -283,6 +350,7 @@ namespace overdrive {
 			assert(mProgramHandle != 0);
 			glBindFragDataLocation(mProgramHandle, location, name.c_str());
 		}
+		*/
 
 		void ShaderProgram::set(const std::string& name, float x, float y, float z) const {
 			glUniform3f(getUniformLocation(name), x, y, z);
@@ -349,6 +417,8 @@ namespace overdrive {
 					uniformName.get()
 				);
 
+				location = glGetUniformLocation(mProgramHandle, uniformName.get());
+
 				//TODO: add type information
 				gLog << i << ":\t" << uniformName.get() << " => " << location;
 			}
@@ -381,6 +451,8 @@ namespace overdrive {
 					&type,
 					attributeName.get()
 				);
+
+				location = glGetAttribLocation(mProgramHandle, attributeName.get());
 
 				//TODO: add type information
 				gLog << i << ":\t" << attributeName.get() << " => " << location;
