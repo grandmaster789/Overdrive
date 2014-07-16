@@ -26,6 +26,22 @@ namespace overdrive {
 
 			return true;
 		}
+
+		template <typename T>
+		T clamp(
+			T value, 
+			T minimum, 
+			T maximum,
+			typename std::enable_if<std::is_arithmetic<T>::value>::type* = nullptr	//only provide this function for arithmetic types
+		) {
+			if (value < minimum)
+				return minimum;
+			
+			if (value > maximum)
+				return maximum;
+
+			return value;
+		}
 	}
 }
 

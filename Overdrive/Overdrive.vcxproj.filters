@@ -92,6 +92,9 @@
     <ClCompile Include="render\shape\plane.cpp">
       <Filter>render\shape</Filter>
     </ClCompile>
+    <ClCompile Include="render\shape\grid.cpp">
+      <Filter>render\shape</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -216,6 +219,12 @@
     <ClInclude Include="render\shape\plane.h">
       <Filter>render\shape</Filter>
     </ClInclude>
+    <ClInclude Include="render\camera\camerabase.h">
+      <Filter>render\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shape\grid.h">
+      <Filter>render\shape</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="core">
@@ -259,6 +268,9 @@
     </Filter>
     <Filter Include="shaders">
       <UniqueIdentifier>{b89a9cb2-9ec8-446c-ab5e-8279aa705147}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\camera">
+      <UniqueIdentifier>{082d459e-c2d5-4853-a8ad-8b4342c20fd7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

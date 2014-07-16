@@ -325,11 +325,15 @@ namespace overdrive {
 			return true;
 		}
 
-		void ShaderProgram::use() const {
+		void ShaderProgram::enable() const {
 			assert(mProgramHandle != 0);
 			assert(mIsLinked);
 
 			glUseProgram(mProgramHandle);
+		}
+
+		void ShaderProgram::disable() const {
+			glUseProgram(0);
 		}
 
 		GLuint ShaderProgram::getHandle() const {

@@ -121,7 +121,7 @@ namespace overdrive {
 	};
 
 	template <typename tResource, typename tDeleterFn>
-	UniqueResource<tResource, tDeleterFn> unique_resource(
+	UniqueResource<tResource, tDeleterFn> make_unique_resource(
 		tResource&& resource,	// move the resource
 		tDeleterFn deleter		// copy the deleter when appropriate
 	) {
@@ -133,7 +133,7 @@ namespace overdrive {
 	}
 
 	template <typename tResource, typename tDeleterFn>
-	UniqueResource<tResource, tDeleterFn> unique_resource_checked(
+	UniqueResource<tResource, tDeleterFn> make_unique_resource_checked(
 		tResource resource,		// can't use move here because the resource might be invalid (in which case the original state should be maintained)
 		tResource invalidState,	// the reference state for an invalid resource can't be moved either
 		tDeleterFn deleter		// deleters should be copied anywaysS

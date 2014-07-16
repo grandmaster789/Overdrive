@@ -50,7 +50,7 @@ namespace overdrive {
 			mShaderProgram.compileFile("shaders/diffuse.fs", render::FRAGMENT);
 			mShaderProgram.link();
 
-			mShaderProgram.use();
+			mShaderProgram.enable();
 
 			mShaderProgram.set("LightDiffuse", 1.0f, 1.0f, 1.0f);
 			mShaderProgram.set("MaterialDiffuse", 0.9f, 0.5f, 0.3f);
@@ -59,6 +59,10 @@ namespace overdrive {
 			mCube = std::make_unique<render::shape::Cube>();
 			mTorus = std::make_unique<render::shape::Torus>();
 			mPlane = std::make_unique<render::shape::Plane>();
+			mGrid = std::make_unique<render::shape::Grid>(10.0f, 10.0f);
+
+			mShaderProgram.listActiveAttributes();
+			mShaderProgram.listActiveUniforms();
 
 			mEngine->updateSystem(this, true, false);
 
@@ -81,8 +85,9 @@ namespace overdrive {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			//mCube->draw();
-			mTorus->draw();
+			//mTorus->draw();
 			//mPlane->draw();
+			mGrid->draw();
 		}
 
 		void SpinningCube::shutdown() {

@@ -35,7 +35,8 @@ namespace overdrive {
 			bool link();
 			bool validate() const;
 			
-			void use() const;
+			void enable() const;
+			void disable() const;
 			GLuint getHandle() const;
 
 			bool isLinked() const;

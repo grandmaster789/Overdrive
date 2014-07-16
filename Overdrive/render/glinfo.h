@@ -6,7 +6,7 @@
 
 namespace overdrive {
 	namespace render {
-		bool checkGL(const char* srcFile, int line); // use preprocessor macros to call this
+		bool checkGL(const char* srcFile, int line); // usage - render::checkGL(__FILE__, __LINE__);
 		void listGLinfo(bool extensionInfo = false);
 	}
 }

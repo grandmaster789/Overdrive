@@ -13,4 +13,6 @@
 	#include <glm/gtx/transform2.hpp>
 #undef GLM_FORCE_RADIANS
 
+#include <SOIL/SOIL.h>
+
 #endif
