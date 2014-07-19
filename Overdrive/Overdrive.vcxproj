@@ -98,6 +98,7 @@
     <ClCompile Include="input\keyboard.cpp" />
     <ClCompile Include="input\mouse.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="render\camera\cameraBase.cpp" />
     <ClCompile Include="render\drawable.cpp" />
     <ClCompile Include="render\glinfo.cpp" />
     <ClCompile Include="render\shaderprogram.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="opengl.h" />
     <ClInclude Include="preprocessor.h" />
     <ClInclude Include="render\camera\camerabase.h" />
+    <ClInclude Include="render\camera\freeCamera.h" />
     <ClInclude Include="render\drawable.h" />
     <ClInclude Include="render\glinfo.h" />
     <ClInclude Include="render\shaderprogram.h" />

@@ -95,6 +95,9 @@
     <ClCompile Include="render\shape\grid.cpp">
       <Filter>render\shape</Filter>
     </ClCompile>
+    <ClCompile Include="render\camera\cameraBase.cpp">
+      <Filter>render\camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -224,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="render\shape\grid.h">
       <Filter>render\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="render\camera\freeCamera.h">
+      <Filter>render\camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

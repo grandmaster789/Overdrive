@@ -7,6 +7,8 @@
 
 namespace overdrive {
 	namespace render {
+		typedef UniqueResource<GLuint, void(*)(GLuint)> ManagedGLResource;
+
 		class Drawable {
 		public:
 			Drawable();
@@ -17,12 +19,13 @@ namespace overdrive {
 			static void deleteVertexArray(GLuint vao);
 			static void deleteBuffer(GLuint vbo);
 
-			UniqueResource<GLuint, void(*)(GLuint)> mVertexArray;
+			ManagedGLResource mVertexArray;
 
-			UniqueResource<GLuint, void(*)(GLuint)> mVertices;
-			UniqueResource<GLuint, void(*)(GLuint)> mIndices;
-			UniqueResource<GLuint, void(*)(GLuint)> mNormals;
-			UniqueResource<GLuint, void(*)(GLuint)> mTexCoords;
+			ManagedGLResource mVertices;
+			ManagedGLResource mIndices;
+			ManagedGLResource mNormals;
+			ManagedGLResource mTangents;
+			ManagedGLResource mTexCoords;
 		};
 	}
 }

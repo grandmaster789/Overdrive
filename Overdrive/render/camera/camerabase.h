@@ -13,7 +13,7 @@ namespace overdrive {
 				CameraBase();
 
 				virtual void update() = 0;
-				virtual void rotate(float yaw, float pitch, float roll) = 0;
+				virtual void rotate(float yaw, float pitch, float roll) = 0; // this is a rotation relative to the current orientation
 
 				void setPosition(glm::vec3 position);
 				void setPosition(float x, float y, float z);
@@ -47,7 +47,7 @@ namespace overdrive {
 
 			protected:
 				float mNearClip     = 0.1f;
-				float mFarClip      = 100.0f;
+				float mFarClip      = 1000.0f;
 				float mFieldOfView  = math::toRadians(70.0f);
 				float mAspectRatio  = 4.0f / 3.0f;
 				float mLookAtDistance = 1.0f;

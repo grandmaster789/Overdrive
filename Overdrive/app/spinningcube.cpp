@@ -85,9 +85,9 @@ namespace overdrive {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			//mCube->draw();
-			//mTorus->draw();
+			mTorus->draw();
 			//mPlane->draw();
-			mGrid->draw();
+			//mGrid->draw();
 		}
 
 		void SpinningCube::shutdown() {
