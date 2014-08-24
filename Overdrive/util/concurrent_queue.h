@@ -33,7 +33,7 @@ namespace overdrive {
 			void push(T&& item) {
 				{
 					ScopedLock lock(mMutex);
-					mInternalQueue.push(std::move(item));
+					mInternalQueue.push(std::forward<T>(item));
 				}
 
 				mCondition.notify_one();

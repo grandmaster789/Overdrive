@@ -98,6 +98,18 @@
     <ClCompile Include="render\camera\cameraBase.cpp">
       <Filter>render\camera</Filter>
     </ClCompile>
+    <ClCompile Include="math\aabb.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="util\color.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="render\camera\freeCamera.cpp">
+      <Filter>render\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="app\cameratest.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -230,6 +242,18 @@
     </ClInclude>
     <ClInclude Include="render\camera\freeCamera.h">
       <Filter>render\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="math\aabb.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\plane.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="util\color.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="app\cameratest.h">
+      <Filter>application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

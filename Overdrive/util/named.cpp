@@ -3,7 +3,7 @@
 namespace overdrive {
 	namespace util {
 		Named::Named(std::string name) :
-			mName{ std::move(name) }
+			mName(std::move(name))
 		{
 		}
 

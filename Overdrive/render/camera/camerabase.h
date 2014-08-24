@@ -13,8 +13,9 @@ namespace overdrive {
 				CameraBase();
 
 				virtual void update() = 0;
-				virtual void rotate(float yaw, float pitch, float roll) = 0; // this is a rotation relative to the current orientation
+				virtual void rotate(float yaw, float pitch, float roll) = 0; // relative to the current orientation
 
+				// all of these functions are in the absolute coordinate frame
 				void setPosition(glm::vec3 position);
 				void setPosition(float x, float y, float z);
 				glm::vec3 getPosition() const;

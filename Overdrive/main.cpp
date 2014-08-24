@@ -1,5 +1,6 @@
 #include "app/application.h"
 #include "app/spinningcube.h"
+#include "app/cameratest.h"
 
 #include "core/engine.h"
 #include "core/logger.h"
@@ -22,7 +23,8 @@ int main() {
 	engine.add(new overdrive::video::Video);
 	engine.add(new overdrive::input::Input);
 
-	engine.setApplication(new overdrive::app::SpinningCube);
+	//engine.setApplication(new overdrive::app::SpinningCube);
+	engine.setApplication(new overdrive::app::CameraTest);
 
 	engine.run();
 }

@@ -28,11 +28,11 @@ namespace overdrive {
 		public:
 			SpinningCube();
 
-			bool initialize();
-			void update();
-			void shutdown();
+			virtual bool initialize() override;
+			virtual void update() override;
+			virtual void shutdown() override;
 
-			void operator()(const input::Keyboard::OnKeyPress& kp);
+			virtual void operator()(const input::Keyboard::OnKeyPress& kp) override;
 
 		private:
 			glm::mat4 mModel;
