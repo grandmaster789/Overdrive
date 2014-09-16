@@ -13,13 +13,6 @@ namespace overdrive {
 				gLog << "float: " << f;
 				gLog << "string: " << s;
 
-				/*
-				gLogSev(DEBUG) << "Debug message";
-				gLogSev(INFO) << "Info message";
-				gLogSev(WARNING) << "Warning message";
-				gLogSev(ERROR) << "Error message";
-				gLogSev(FATAL) << "Fatal message";
-				*/
 				gLog.debug() << "Debug message";
 				gLog.info() << "Info message";
 				gLog.warning() << "Warning message";

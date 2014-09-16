@@ -1,40 +1,58 @@
 #include "video/monitor.h"
-#include <cassert>
 
 namespace overdrive {
 	namespace video {
-		Monitor::Monitor(GLFWmonitor* mon):
-			mHandle(mon)
+		Monitor::Monitor(GLFWmonitor* src):
+			mGLFWhandle(src)
 		{
-			mIsPrimaryMonitor = (mHandle == glfwGetPrimaryMonitor());
-			mName = glfwGetMonitorName(mHandle);
-			glfwGetMonitorPhysicalSize(mHandle, &mPhysicalSize.first, &mPhysicalSize.second);
+			glfwGetMonitorPhysicalSize(src, &mPhysicalWidth, &mPhysicalHeight);
+			glfwGetMonitorPos(src, &mXPos, &mYPos);
 			
-			int numModes;
-			const GLFWvidmode* modes = glfwGetVideoModes(mHandle, &numModes);
-			
+			mName = glfwGetMonitorName(src);
+
+			mIsPrimaryMonitor = (src == glfwGetPrimaryMonitor());
+
+			int numModes = 0;
+			const GLFWvidmode* modes = glfwGetVideoModes(src, &numModes);
+
 			for (int i = 0; i < numModes; ++i)
 				mSupportedVideoModes.emplace_back(detail::VideoMode(modes[i]));
 		}
 
-		GLFWmonitor* Monitor::getHandle() const {
-			return mHandle;
+		int Monitor::getWidth() const {
+			return mPhysicalWidth;
 		}
 
-		const std::string& Monitor::getName() const {
+		int Monitor::getHeight() const {
+			return mPhysicalHeight;
+		}
+
+		int Monitor::getXPos() const {
+			return mXPos;
+		}
+
+		int Monitor::getYPos() const {
+			return mYPos;
+		}
+
+		std::string Monitor::getName() const {
 			return mName;
 		}
 
-		bool Monitor::isPrimaryMonitor() const {
+		bool Monitor::isPrimary() const {
 			return mIsPrimaryMonitor;
 		}
 
-		const Monitor::Dimension& Monitor::getPhysicalSize() const {
-			return mPhysicalSize;
+		void Monitor::setGamma(float value) {
+			glfwSetGamma(mGLFWhandle, value);
+		}
+
+		GLFWmonitor* Monitor::getHandle() const {
+			return mGLFWhandle;
 		}
 
 		detail::VideoMode Monitor::getCurrentVideoMode() const {
-			const GLFWvidmode* mode = glfwGetVideoMode(mHandle);
+			auto mode = glfwGetVideoMode(mGLFWhandle);
 			return detail::VideoMode(mode);
 		}
 
@@ -42,35 +60,27 @@ namespace overdrive {
 			return mSupportedVideoModes;
 		}
 
-		void Monitor::setGamma(float value) {
-			glfwSetGamma(mHandle, value);
-		}
-
 		namespace detail {
 			VideoMode::VideoMode() {
 			}
 
-			VideoMode::VideoMode(const GLFWvidmode source):
-				mWidth{ source.width },
-				mHeight{ source.height },
-
-				mRedBits{ source.redBits },
-				mGreenBits{ source.greenBits },
-				mBlueBits{ source.blueBits },
-
-				mRefreshRate{ source.refreshRate }
+			VideoMode::VideoMode(const GLFWvidmode source) :
+				mWidth(source.width),
+				mHeight(source.height),
+				mRedBits(source.redBits),
+				mGreenBits(source.greenBits),
+				mBlueBits(source.blueBits),
+				mRefreshRate(source.refreshRate)
 			{
 			}
 
-			VideoMode::VideoMode(const GLFWvidmode* source):
-				mWidth{ source->width },
-				mHeight{ source->height },
-
-				mRedBits{ source->redBits },
-				mGreenBits{ source->greenBits },
-				mBlueBits{ source->blueBits },
-
-				mRefreshRate{ source->refreshRate }
+			VideoMode::VideoMode(const GLFWvidmode* source) :
+				mWidth(source->width),
+				mHeight(source->height),
+				mRedBits(source->redBits),
+				mGreenBits(source->greenBits),
+				mBlueBits(source->blueBits),
+				mRefreshRate(source->refreshRate)
 			{
 			}
 		}

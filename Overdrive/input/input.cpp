@@ -1,107 +1,248 @@
-#include "input/input.h"
+#include <unordered_map>
+
+#include "input.h"
 #include "input/keyboard.h"
 #include "input/mouse.h"
-#include "input/joystick.h"
-#include "core/engine.h"
+
 #include "video/video.h"
+
+#include "core/channel.h"
+#include "core/logger.h"
+#include "core/engine.h"
+
 #include "opengl.h"
+
+namespace {
+	overdrive::core::Channel chan; // shorthand
+}
+
+//***** Keyboard *****//
+namespace { 
+	typedef std::unordered_map<GLFWwindow*, overdrive::input::Keyboard*> KeyboardRegistry;
+	KeyboardRegistry mKeyboardRegistry;
+
+	void registerKeyboard(overdrive::input::Keyboard* kb) {
+		auto handle = kb->getHandle();
+		assert(mKeyboardRegistry.find(handle) == mKeyboardRegistry.end());
+		mKeyboardRegistry[handle] = kb;
+	}
+
+	void unregisterKeyboard(GLFWwindow* kb) {
+		auto it = mKeyboardRegistry.find(kb);
+		assert(it != mKeyboardRegistry.end());
+		mKeyboardRegistry.erase(it);
+	}
+
+	overdrive::input::Keyboard* fetchKeyboard(GLFWwindow* handle) {
+		assert(mKeyboardRegistry.find(handle) != mKeyboardRegistry.end());
+		return mKeyboardRegistry[handle];
+	}
+
+	// keyboard callbacks
+	void keyboardCallback(
+		GLFWwindow* handle, 
+		int key, 
+		int , //scancode
+		int action, 
+		int modifiers
+	) {
+		auto kb = fetchKeyboard(handle);
+
+		switch (action) {
+		case GLFW_PRESS:
+			kb->mKeyState[key] = true;
+			chan.broadcast(overdrive::input::Keyboard::OnKeyPress{ key, modifiers, kb });
+			break;
+
+		case GLFW_RELEASE:
+			kb->mKeyState[key] = false;
+			chan.broadcast(overdrive::input::Keyboard::OnKeyRelease{ key, modifiers, kb });
+			break;
+		}
+	}
+}
+
+//***** Mouse *****//
+namespace {
+	typedef std::unordered_map<GLFWwindow*, overdrive::input::Mouse*> MouseRegistry;
+	MouseRegistry mMouseRegistry;
+
+	void registerMouse(overdrive::input::Mouse* m) {
+		auto handle = m->getHandle();
+		assert(mMouseRegistry.find(handle) == mMouseRegistry.end());
+		mMouseRegistry[handle] = m;
+	}
+
+	void unregisterMouse(GLFWwindow* handle) {
+		auto it = mMouseRegistry.find(handle);
+		assert(it != mMouseRegistry.end());
+		mMouseRegistry.erase(it);
+	}
+
+	overdrive::input::Mouse* fetchMouse(GLFWwindow* handle) {
+		assert(mMouseRegistry.find(handle) != mMouseRegistry.end());
+		return mMouseRegistry[handle];
+	}
+
+	using namespace overdrive::input;
+
+	void mouseButtonCallback(
+		GLFWwindow* handle,
+		int button,
+		int action,
+		int modifiers
+	) {
+		auto mouse = fetchMouse(handle);
+
+		mouse->mButtonState[button] = (action == GLFW_PRESS);
+
+		switch (action) {
+		case GLFW_PRESS:
+			chan.broadcast(Mouse::OnButtonPress{
+				(Mouse::eButton)button,
+				modifiers,
+				mouse 
+			});
+			break;
+
+		case GLFW_RELEASE:
+			chan.broadcast(Mouse::OnButtonRelease{
+				(Mouse::eButton)button,
+				modifiers,
+				mouse
+			});
+			break;
+		}
+	}
+
+	void mouseMoveCallback(
+		GLFWwindow* handle,
+		double x,
+		double y
+	) {
+		static double previousX = 0;
+		static double previousY = 0;
+
+		auto mouse = fetchMouse(handle);
+
+		mouse->mX = x;
+		mouse->mY = y;
+
+		chan.broadcast(Mouse::OnMove{
+			x,
+			y,
+			x - previousX,
+			y - previousY,
+			mouse
+		});
+	}
+
+	void mouseEnterCallback(
+		GLFWwindow* handle,
+		int enter
+	) {
+		auto mouse = fetchMouse(handle);
+
+		mouse->setInsideClientArea(enter == GL_TRUE);
+
+		if (enter == GL_TRUE)
+			chan.broadcast(Mouse::OnEnter{ mouse });
+		else
+			chan.broadcast(Mouse::OnLeave{ mouse });
+	}
+
+	void mouseScrollCallback(
+		GLFWwindow* handle,
+		double xScroll,
+		double yScroll
+	) {
+		auto mouse = fetchMouse(handle);
+
+		chan.broadcast(Mouse::OnScroll{
+			xScroll,
+			yScroll,
+			mouse
+		});
+	}
+}
 
 namespace overdrive {
 	namespace input {
-		Input::Input():
+		Input::Input() :
 			System("Input")
 		{
-			for (int i = 0; i < GLFW_JOYSTICK_LAST; ++i)
-				mJoysticks.emplace_back(Joystick::NOT_PRESENT);
 		}
 
 		bool Input::initialize() {
 			System::initialize();
-
-			mEngine->updateSystem(this, true, false); 
-
-			auto vid = mEngine->get<video::Video>();
 			
-			if (vid) {
-				for (auto& w : vid->getWindows()) {
-					addKeyboard(Keyboard(&w));
-					addMouse(Mouse(&w));
-				}
-			}
+			mEngine->updateSystem(this, true, false); // continually poll joysticks
 
 			return true;
 		}
 
 		void Input::update() {
-			//continually see if joysticks have connected/disconnected
 			for (int i = 0; i < GLFW_JOYSTICK_LAST; ++i) {
 				if (glfwJoystickPresent(i)) {
-					if (mJoysticks[i].getJoystickID() == Joystick::NOT_PRESENT) {
-						mJoysticks[i].setJoystickID(i);
-						core::Channel::broadcast(Joystick::OnConnect{ i, glfwGetJoystickName(i) });
+					if (mJoystickList[i].getJoystickID() == Joystick::NOT_PRESENT) {
+						mJoystickList[i] = Joystick(i);
+						chan.broadcast(Joystick::OnConnect{ &mJoystickList[i] });
 					}
 
-					mJoysticks[i].update();
+					mJoystickList[i].poll();
 				}
 				else {
-					if (mJoysticks[i].getJoystickID() != Joystick::NOT_PRESENT) {
-						core::Channel::broadcast(Joystick::OnDisconnect{ i });
-						mJoysticks[i].setJoystickID(Joystick::NOT_PRESENT);
+					if (mJoystickList[i].getJoystickID() != Joystick::NOT_PRESENT) {
+						chan.broadcast(Joystick::OnDisconnect{ &mJoystickList[i] });
+						mJoystickList[i] = Joystick();
 					}
 				}
 			}
 		}
 
 		void Input::shutdown() {
+
 			System::shutdown();
 		}
 
-		void Input::addKeyboard(Keyboard&& kb) {
-			for (const auto& keyboard: mKeyboards)
-				if (keyboard == kb)
-					return;
+		void Input::operator()(const video::Window::OnCreate& created) {
+			auto handle = created.mWindow->getHandle();
 
-			mKeyboards.emplace_back(std::move(kb));
+			{
+				// Register keyboard object and set callbacks
+				auto kb = created.mWindow->getKeyboard();
+
+				registerKeyboard(kb);
+				glfwSetKeyCallback(handle, &keyboardCallback);
+				mKeyboardList.push_back(kb);
+
+				gLog.debug() << "Keyboard object registered";
+			}
+
+			{
+				// Register mouse object and set callbacks
+				auto mouse = created.mWindow->getMouse();
+
+				registerMouse(mouse);
+				glfwSetMouseButtonCallback(handle, &mouseButtonCallback);
+				glfwSetCursorPosCallback(handle, &mouseMoveCallback);
+				glfwSetCursorEnterCallback(handle, &mouseEnterCallback);
+				glfwSetScrollCallback(handle, &mouseScrollCallback);
+				mMouseList.push_back(mouse);
+
+				gLog.debug() << "Mouse object registered";
+			}
 		}
 
-		void Input::addMouse(Mouse&& m) {
-			for (const auto& mouse: mMice)
-				if (mouse == m)
-					return;
+		void Input::operator()(const video::Window::OnClose& closed) {
+			auto kb = closed.mWindow->getKeyboard();
+			auto mouse = closed.mWindow->getMouse();
 
-			mMice.emplace_back(std::move(m));
-		}
+			mKeyboardList.erase(std::remove(mKeyboardList.begin(), mKeyboardList.end(), kb));
+			mMouseList.erase(std::remove(mMouseList.begin(), mMouseList.end(), mouse));
 
-		void Input::operator()(const video::Window::OnCreate& onCreate) {
-			addKeyboard(Keyboard(onCreate.window));
-			addMouse(Mouse(onCreate.window));
-		}
-
-		void Input::operator()(const video::Window::OnClose& onClose) {
-			unregisterKeyboard(onClose.window);
-			unregisterMouse(onClose.window);
-
-			auto it = std::remove_if(
-				mKeyboards.begin(), 
-				mKeyboards.end(), 
-				[onClose](const Keyboard& kb) { 
-					return kb.isAssociatedWith(onClose.window); 
-				}
-			);
-
-			if (it != mKeyboards.end())
-				mKeyboards.erase(it);
-
-			auto jt = std::remove_if(
-				mMice.begin(),
-				mMice.end(),
-				[onClose](const Mouse& m) {
-					return m.isAssociatedWith(onClose.window);
-				}
-			);
-
-			if (jt != mMice.end())
-				mMice.erase(jt);
+			unregisterKeyboard(closed.mWindow->getHandle());
+			unregisterMouse(closed.mWindow->getHandle());
 		}
 	}
 }

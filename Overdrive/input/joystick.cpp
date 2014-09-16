@@ -1,139 +1,148 @@
 #include "input/joystick.h"
 #include "core/channel.h"
 #include "opengl.h"
-#include <cassert>
 
 namespace overdrive {
 	namespace input {
-		Joystick::Joystick(int id, float deadZone) :
+		Joystick::Joystick(int id, float deadzone):
 			mJoystickID(id),
-			mDeadZone(deadZone)
+			mDeadZone(deadzone)
 		{
-			setJoystickID(id);
-		}
+			int numAxes = 0;
+			int numButtons = 0;
 
-		void Joystick::update() {
-			std::vector<float> oldAxes;
-			std::vector<unsigned char> oldButtons;
-
-			std::swap(mAxisStates, oldAxes);
-			std::swap(mButtonStates, oldButtons);
-			
-			mButtonStates.clear();
-			mAxisStates.clear();
-
-			int numAxes;
-			int numButtons;
-
-			auto newAxes = glfwGetJoystickAxes(mJoystickID, &numAxes);
-			auto newButtons = glfwGetJoystickButtons(mJoystickID, &numButtons);
-
-			if ((numButtons > 0) && (newButtons != nullptr))
-				std::copy(
-					newButtons,
-					newButtons + numButtons - 1,
-					std::back_inserter(mButtonStates)
-				);
-
-			if ((numAxes > 0) && (newAxes != nullptr))
-				std::copy(
-					newAxes,
-					newAxes + numAxes - 1,
-					std::back_inserter(mAxisStates)
-				);
-
-			if (oldAxes.size() == static_cast<size_t>(numAxes)) {
-				for (int i = 0; i < numAxes; ++i) {
-					if (std::abs(oldAxes[i] - newAxes[i]) > mDeadZone) {
-						OnMove mv;
-
-						mv.mJoystickID = mJoystickID;
-						mv.mPosition = mAxisStates;
-						mv.mDelta.resize(numAxes);
-
-						for (int j = 0; j < numAxes; ++j)
-							mv.mDelta[j] = mAxisStates[j] - oldAxes[j];
-
-						core::Channel::broadcast(mv);
-
-						break; // only send one move message per update
-					}
-				}
-			}
-
-			if (oldButtons.size() == static_cast<size_t>(numButtons)) {
-				for (int i = 0; i < numButtons; ++i) {
-					if (mButtonStates[i] != oldButtons[i]) {
-						if (isPressed(i))
-							core::Channel::broadcast(OnButtonPress{ mJoystickID, i });
-						else
-							core::Channel::broadcast(OnButtonRelease{ mJoystickID, i });
-					}
-				}
-			}
-		}
-
-		void Joystick::setJoystickID(int id) {
-			mJoystickID = id;
-
-			mButtonStates.clear();
-			mAxisStates.clear();
-
-			if (id >= 0)
+			if (id != NOT_PRESENT) {
+				auto buttons = glfwGetJoystickButtons(mJoystickID, &numButtons);
+				auto axes = glfwGetJoystickAxes(mJoystickID, &numAxes);
 				mJoystickName = glfwGetJoystickName(mJoystickID);
+
+				for (int i = 0; i < numButtons; ++i) {
+					switch (buttons[i]) {
+					case GLFW_PRESS:
+						mButtonState.push_back(eButtonState::PRESSED);
+						break;
+
+					case GLFW_REPEAT:
+						mButtonState.push_back(eButtonState::REPEAT);
+						break;
+
+					case GLFW_RELEASE:
+					default:
+						mButtonState.push_back(eButtonState::RELEASED);
+						break;
+					}
+				}
+
+				for (int i = 0; i < numAxes; ++i)
+					mAxisState.push_back(axes[i]);
+			}
+			else
+				mJoystickName = "Not present";
+		}
+
+		void Joystick::poll() {
+			// note that this assumes the number of axes and buttons does not change for a given joystick
+			if (mJoystickID == NOT_PRESENT)
+				return;
+
+			auto oldButtons = mButtonState;
+			auto oldAxes = mAxisState;
+
+			int numAxes = 0;
+			int numButtons = 0;
+
+			auto newButtons = glfwGetJoystickButtons(mJoystickID, &numButtons);
+			auto newAxes = glfwGetJoystickAxes(mJoystickID, &numAxes);
+
+			assert(numAxes == static_cast<int>(mAxisState.size()));
+			assert(numButtons == static_cast<int>(mButtonState.size()));
+
+			for (int i = 0; i < numButtons; ++i) {
+				switch (newButtons[i]) {
+				case GLFW_PRESS:
+					mButtonState[i] = eButtonState::PRESSED;
+					if (mButtonState[i] != oldButtons[i])
+						core::Channel::broadcast(OnButtonPress{ i, this });
+					break;
+
+				case GLFW_REPEAT:
+					mButtonState[i] = eButtonState::REPEAT;
+					// Repeat shouldn't cause continous messages
+					break;
+
+				case GLFW_RELEASE:
+				default:
+					mButtonState[i] = eButtonState::RELEASED;
+					if (mButtonState[i] != oldButtons[i])
+						core::Channel::broadcast(OnButtonRelease{ i, this });
+					break;
+				}
+			}
+
+			for (int i = 0; i < numAxes; ++i)
+				mAxisState[i] = newAxes[i];
+
+			for (int i = 0; i < numAxes; ++i) {
+				if (std::abs(mAxisState[i] - oldAxes[i]) > mDeadZone) {
+					OnMove message;
+
+					message.mPosition = mAxisState;
+					
+					message.mDelta.resize(numAxes);
+					for (int j = 0; j < numAxes; ++j)
+						message.mDelta[j] = mAxisState[j] - oldAxes[j];
+
+					message.mJoystick = this;
+
+					overdrive::core::Channel::broadcast(message);
+
+					break; // only send one move message per poll
+				}
+			}
 		}
 
 		int Joystick::getJoystickID() const {
 			return mJoystickID;
 		}
 
-		const std::string& Joystick::getJoystickName() const {
+		const std::string& Joystick::getName() const {
 			return mJoystickName;
 		}
 
-		int Joystick::getNumButtons() const {
-			return mButtonStates.size();
-		}
-
-		int Joystick::getNumAxes() const {
-			return mButtonStates.size();
-		}
-
-		void Joystick::setDeadZone(float value) {
-			mDeadZone = value;
+		void Joystick::setDeadZone(float deadzone) {
+			mDeadZone = deadzone;
 		}
 
 		float Joystick::getDeadZone() const {
 			return mDeadZone;
 		}
+
+		int Joystick::getNumButtons() const {
+			return static_cast<int>(mButtonState.size());
+		}
+
+		int Joystick::getNumAxes() const {
+			return static_cast<int>(mAxisState.size());
+		}
 		
-		float Joystick::getAxis(int index) const {
-			assert(static_cast<size_t>(index) <mAxisStates.size());
-			assert(index >= 0);
-
-			return mAxisStates[index];
+		bool Joystick::isPressed(int buttonID) const {
+			return (mButtonState[buttonID] != eButtonState::RELEASED);
 		}
 
-		const std::vector<float>& Joystick::getAxes() const {
-			return mAxisStates;
+		bool Joystick::isRepeating(int buttonID) const {
+			return (mButtonState[buttonID] == eButtonState::REPEAT);
 		}
 
-		bool Joystick::isPressed(int buttonIndex) const {
-			assert(static_cast<size_t>(buttonIndex) < mButtonStates.size());
-			assert(buttonIndex >= 0);
-			
-			return (mButtonStates[buttonIndex] == GLFW_PRESS);
+		bool Joystick::isReleased(int buttonID) const {
+			return (mButtonState[buttonID] == eButtonState::RELEASED);
 		}
 
-		unsigned char Joystick::getButton(int buttonIndex) const {
-			assert(static_cast<size_t>(buttonIndex) < mButtonStates.size());
-			assert(buttonIndex >= 0);
-
-			return mButtonStates[buttonIndex];
+		Joystick::eButtonState Joystick::getButton(int button) const {
+			return mButtonState[button];
 		}
 
-		const std::vector<unsigned char>& Joystick::getButtons() const {
-			return mButtonStates;
+		const std::vector<Joystick::eButtonState>& Joystick::getButtonState() const {
+			return mButtonState;
 		}
 	}
 }

@@ -2,100 +2,102 @@
 #define OVERDRIVE_INPUT_MOUSE_H
 
 #include "opengl.h"
-#include "core/channel.h"
+
+/*
+	TODO: decide on sticky button states (see glfwSetInputMode documentation)
+*/
 
 namespace overdrive {
-	namespace video {
-		class Window;
-	}
-
 	namespace input {
 		class Mouse {
 		public:
-			// Typedefs and enums
+			// Shorter names; coincidentally, the actual integer values range from 0-7
 			enum eButton : int {
-				MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT,
-				MOUSE_BUTTON_RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
-				MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE,
-				MOUSE_BUTTON_1 = GLFW_MOUSE_BUTTON_1,
-				MOUSE_BUTTON_2 = GLFW_MOUSE_BUTTON_2,
-				MOUSE_BUTTON_3 = GLFW_MOUSE_BUTTON_3,
-				MOUSE_BUTTON_4 = GLFW_MOUSE_BUTTON_4,
-				MOUSE_BUTTON_5 = GLFW_MOUSE_BUTTON_5,
-				MOUSE_BUTTON_6 = GLFW_MOUSE_BUTTON_6,
-				MOUSE_BUTTON_7 = GLFW_MOUSE_BUTTON_7,
-				MOUSE_BUTTON_8 = GLFW_MOUSE_BUTTON_8,
-				MOUSE_BUTTON_LAST = GLFW_MOUSE_BUTTON_LAST
+				BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT,
+				BUTTON_RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
+				BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE,
+				BUTTON_1 = GLFW_MOUSE_BUTTON_1,
+				BUTTON_2 = GLFW_MOUSE_BUTTON_2,
+				BUTTON_3 = GLFW_MOUSE_BUTTON_3,
+				BUTTON_4 = GLFW_MOUSE_BUTTON_4,
+				BUTTON_5 = GLFW_MOUSE_BUTTON_5,
+				BUTTON_6 = GLFW_MOUSE_BUTTON_6,
+				BUTTON_7 = GLFW_MOUSE_BUTTON_7,
+				BUTTON_8 = GLFW_MOUSE_BUTTON_8,
+				BUTTON_LAST = GLFW_MOUSE_BUTTON_LAST
 			};
+
+			enum class eCursorState {
+				NORMAL,		// visible cursor, behaving normally
+				HIDDEN,		// hidden cursor, still behaving normally
+				DISABLED	// hidden cursor, disabled window clipping (useful for 3d camera controls)
+			};
+
+			// An overview of modifiers can be found at http://www.glfw.org/docs/latest/group__mods.html
 
 			// Signals
 			struct OnButtonPress {
 				eButton mButton;
 				int mModifiers;
-				video::Window* mAssociatedWindow;
+				Mouse* mMouse;
 			};
 
 			struct OnButtonRelease {
-				eButton mButton;
+				eButton button;
 				int mModifiers;
-				video::Window* mAssociatedWindow;
+				Mouse* mMouse;
 			};
 
 			struct OnScroll {
 				double mXOffset;
 				double mYOffset;
-				video::Window* mAssociatedWindow;
+				Mouse* mMouse;
 			};
 
 			struct OnEnter {
-				video::Window* mAssociatedWindow;
+				Mouse* mMouse;
 			};
 
 			struct OnLeave {
-				video::Window* mAssociatedWindow;
+				Mouse* mMouse;
 			};
 
 			struct OnMove {
-				double mX;		// in screen coordinates
-				double mY;		// in screen coordinates
+				double mX;	// in screen coordinates
+				double mY;	// in screen coordinates
 				double mDeltaX;
 				double mDeltaY;
-
-				video::Window* mAssociatedWindow;
+				Mouse* mMouse;
 			};
 
 			// Functions
-			Mouse(const video::Window* associatedWindow);
+			Mouse(GLFWwindow* handle);
 
-			void setHidden(bool enable = true);
-			bool getHidden() const;
+			void hideCursor();
+			void disableCursor();
+			void restoreCursor();
+			void setCursorState(eCursorState state);
+			eCursorState getCursorState() const;
 
-			void setButtonState(eButton button, bool pressed);
-			void setPosition(double x, double y, bool setCursor = true); // if setCursor is true, the pointer will be moved to the indicated position
-			void setInsideClientArea(bool isInside);
-
-			bool operator [] (eButton button) const; // usage -- bool pressed = (mouse[Mouse::MOUSE_BUTTON_LEFT]);
-			bool operator == (const Mouse& m) const;
-
+			void setPosition(double x, double y); // the pointer will be moved to the indicated position, triggering an OnMouseMove
 			void getPosition(double& x, double& y) const;
+
+			void setInsideClientArea(bool isInside);
 			bool isInsideClientArea() const;
 
-			bool isAssociatedWith(const video::Window* window) const;
+			bool operator [] (eButton button) const; // usage -- bool pressed = (mouse[Mouse::MOUSE_BUTTON_LEFT]);
 
-		private:
-			bool mButtonState[MOUSE_BUTTON_LAST];
-
+			bool mButtonState[BUTTON_LAST];
 			double mX = 0;
 			double mY = 0;
 
-			bool mIsHidden = false;
-			bool mIsInsideClientArea = false;
+			GLFWwindow* getHandle() const;
 
-			const video::Window* mAssociatedWindow;
+		private:
+			bool mIsInsideClientArea;
+
+			GLFWwindow* mHandle;
 		};
-
-		void registerMouse(const video::Window* window, Mouse* mouse);
-		void unregisterMouse(const video::Window* window); // this is handled by the Input system
 	}
 }
 

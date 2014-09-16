@@ -2,38 +2,44 @@
 #define OVERDRIVE_INPUT_INPUT_H
 
 #include "core/system.h"
+#include "core/channel.h"
+
 #include "video/window.h"
-#include <memory>
-#include <vector>
+
+#include "input/joystick.h"
+
+#include "opengl.h" // for GLFW_JOYSTICK_LAST
 
 namespace overdrive {
 	namespace input {
 		class Keyboard;
 		class Mouse;
-		class Joystick;
 
-		class Input:
+		class Input :
 			public core::System,
 			public core::MessageHandler<video::Window::OnCreate>,
 			public core::MessageHandler<video::Window::OnClose>
 		{
 		public:
+			typedef std::vector<Keyboard*> KeyboardList;
+			typedef std::vector<Mouse*> MouseList;
+
 			Input();
 
 			virtual bool initialize() override;
 			virtual void update() override;
 			virtual void shutdown() override;
 
-			void addKeyboard(Keyboard&& kb); //this takes ownership of the keyboard
-			void addMouse(Mouse&& m); //again, takes ownership of the mouse
+			const KeyboardList& getKeyboardList() const;
+			const MouseList& getMouseList() const;
 
-			void operator()(const video::Window::OnCreate& onCreate);
-			void operator()(const video::Window::OnClose& onClose);
+			void operator()(const video::Window::OnCreate& created);
+			void operator()(const video::Window::OnClose& closed);
 
 		private:
-			std::vector<Keyboard> mKeyboards; //one keyboard object per window is maintaned
-			std::vector<Mouse> mMice; //one mouse object per window is maintained
-			std::vector<Joystick> mJoysticks;
+			KeyboardList mKeyboardList;
+			MouseList mMouseList;
+			Joystick mJoystickList[GLFW_JOYSTICK_LAST];
 		};
 	}
 }

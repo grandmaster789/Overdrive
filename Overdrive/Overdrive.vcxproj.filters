@@ -26,14 +26,17 @@
     <ClCompile Include="test\core\test_channel.cpp">
       <Filter>test\core</Filter>
     </ClCompile>
-    <ClCompile Include="util\timer.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
     <ClCompile Include="core\system.cpp">
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="core\engine.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\config.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="app\application.cpp">
+      <Filter>application</Filter>
     </ClCompile>
     <ClCompile Include="video\video.cpp">
       <Filter>video</Filter>
@@ -53,62 +56,17 @@
     <ClCompile Include="input\mouse.cpp">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="core\config.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="input\joystick.cpp">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="app\application.cpp">
-      <Filter>application</Filter>
-    </ClCompile>
-    <ClCompile Include="render\drawable.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\shaderprogram.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\shape\cube.cpp">
-      <Filter>render\shape</Filter>
-    </ClCompile>
-    <ClCompile Include="app\spinningcube.cpp">
-      <Filter>application</Filter>
+    <ClCompile Include="test\input\test_joy_recv.cpp">
+      <Filter>test\input</Filter>
     </ClCompile>
     <ClCompile Include="test\input\test_key_recv.cpp">
       <Filter>test\input</Filter>
     </ClCompile>
     <ClCompile Include="test\input\test_mouse_recv.cpp">
       <Filter>test\input</Filter>
-    </ClCompile>
-    <ClCompile Include="test\input\test_joy_recv.cpp">
-      <Filter>test\input</Filter>
-    </ClCompile>
-    <ClCompile Include="render\shape\torus.cpp">
-      <Filter>render\shape</Filter>
-    </ClCompile>
-    <ClCompile Include="render\glinfo.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\shape\plane.cpp">
-      <Filter>render\shape</Filter>
-    </ClCompile>
-    <ClCompile Include="render\shape\grid.cpp">
-      <Filter>render\shape</Filter>
-    </ClCompile>
-    <ClCompile Include="render\camera\cameraBase.cpp">
-      <Filter>render\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="math\aabb.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="util\color.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="render\camera\freeCamera.cpp">
-      <Filter>render\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="app\cameratest.cpp">
-      <Filter>application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,26 +114,35 @@
       <Filter>util</Filter>
     </ClInclude>
     <ClInclude Include="preprocessor.h" />
-    <ClInclude Include="util\timer.h">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="core\engine.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="util\move_on_copy.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="video\video.h">
-      <Filter>video</Filter>
+    <ClInclude Include="util\checkRange.h">
+      <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="video\window.h">
+    <ClInclude Include="core\config.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="app\application.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="test\input\input_test.h">
+      <Filter>test\input</Filter>
+    </ClInclude>
+    <ClInclude Include="util\concurrent_vector.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="video\video.h">
       <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="video\monitor.h">
       <Filter>video</Filter>
     </ClInclude>
-    <ClInclude Include="util\checkRange.h">
-      <Filter>util</Filter>
+    <ClInclude Include="video\window.h">
+      <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="input\input.h">
       <Filter>input</Filter>
@@ -186,74 +153,8 @@
     <ClInclude Include="input\mouse.h">
       <Filter>input</Filter>
     </ClInclude>
-    <ClInclude Include="core\config.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="input\joystick.h">
       <Filter>input</Filter>
-    </ClInclude>
-    <ClInclude Include="math\frustum.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="app\application.h">
-      <Filter>application</Filter>
-    </ClInclude>
-    <ClInclude Include="render\drawable.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\shaderprogram.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\shape\cube.h">
-      <Filter>render\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="app\spinningcube.h">
-      <Filter>application</Filter>
-    </ClInclude>
-    <ClInclude Include="test\input\input_test.h">
-      <Filter>test\input</Filter>
-    </ClInclude>
-    <ClInclude Include="math\conversions.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="util\concurrent_vector.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="render\shape\torus.h">
-      <Filter>render\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="math\constants.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="math\util.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="render\glinfo.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\shape\plane.h">
-      <Filter>render\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="render\camera\camerabase.h">
-      <Filter>render\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="render\shape\grid.h">
-      <Filter>render\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="render\camera\freeCamera.h">
-      <Filter>render\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="math\aabb.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="math\plane.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="util\color.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="app\cameratest.h">
-      <Filter>application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

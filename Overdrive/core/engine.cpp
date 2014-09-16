@@ -4,6 +4,14 @@
 #include "core/system.h"
 #include "app/application.h"
 
+#include "opengl.h"
+
+namespace {
+	void glfwErrorCallback(int error, const char* description) {
+		gLog.error() << "GLFW error (" << error << "): " << description;
+	}
+}
+
 namespace overdrive {
 	namespace core {
 		Engine::Engine() {
@@ -80,9 +88,13 @@ namespace overdrive {
 		}
 
 		void Engine::run() {
-			initializeSystems();
-			mTaskProcessor.start();
-			shutdownSystems();
+			if (initializeDependencies()) {
+				initializeSystems();
+				mTaskProcessor.start();
+				shutdownSystems();
+
+				shutdownDependencies();
+			}
 		}
 		
 		void Engine::stop() {
@@ -118,6 +130,19 @@ namespace overdrive {
 
 			mSystems.clear();
 			mSystemLookup.clear();
+		}
+
+		bool Engine::initializeDependencies() {
+			glfwSetErrorCallback(&glfwErrorCallback);
+
+			if (!glfwInit())
+				return false;
+
+			return true;
+		}
+
+		void Engine::shutdownDependencies() {
+			glfwTerminate();
 		}
 
 		void Engine::updateSystem(System* system, bool repeating, bool background) {

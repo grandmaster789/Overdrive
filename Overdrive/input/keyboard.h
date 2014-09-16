@@ -1,18 +1,16 @@
 #ifndef OVERDRIVE_INPUT_KEYBOARD_H
 #define OVERDRIVE_INPUT_KEYBOARD_H
 
-#include "opengl.h"
-#include "input/input.h"
+#include <boost/noncopyable.hpp>
+#include "opengl.h" // for GLFW_KEY_LAST and GLFWwindow
 
 namespace overdrive {
-	namespace video {
-		class Window;
-	}
-
 	namespace input {
-		class Keyboard {
+		class Keyboard:
+			boost::noncopyable
+		{
 		public:
-			Keyboard(const video::Window* associatedWindow);
+			Keyboard(GLFWwindow* handle);
 
 			// For an overview of keycodes, see http://www.glfw.org/docs/latest/group__keys.html
 			// An overview of modifiers can be found at http://www.glfw.org/docs/latest/group__mods.html
@@ -20,30 +18,23 @@ namespace overdrive {
 			struct OnKeyPress {
 				int mKey;
 				int mModifiers;
-				video::Window* mAssociatedWindow;
+				Keyboard* mKeyboard;
 			};
 
 			struct OnKeyRelease {
 				int mKey;
 				int mModifiers;
-				video::Window* mAssociatedWindow;
+				Keyboard* mKeyboard;
 			};
 
-			bool operator [] (int button) const; // usage -- (keyboard[GLFW_BUTTON_ESCAPE] == true)
-			bool operator == (const Keyboard& kb) const;
-
-			void setButtonState(int button, bool pressed);
+			bool operator[](int button) const; // ex: keyboard[GLFW_BUTTON_ESCAPE] == false
+			GLFWwindow* getHandle() const;
 			
-			bool isAssociatedWith(const video::Window* window) const;
+			bool mKeyState[GLFW_KEY_LAST];
 
 		private:
-			bool mKeyState[GLFW_KEY_LAST]; // if a key is pressed, the relevant flag turns true
-			
-			const video::Window* mAssociatedWindow;
+			GLFWwindow* mHandle;
 		};
-
-		void registerKeyboard(const video::Window* win, Keyboard* kb);
-		void unregisterKeyboard(const video::Window* win); // this is handled by the Input subsystem
 	}
 }
 

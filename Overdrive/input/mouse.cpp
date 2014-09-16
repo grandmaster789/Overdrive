@@ -1,150 +1,74 @@
 #include "input/mouse.h"
-#include "video/window.h"
 #include "core/logger.h"
-
-#include <cassert>
-#include <unordered_map>
-
-namespace {
-	std::unordered_map<const overdrive::video::Window*, overdrive::input::Mouse*> mMouseRegistry;
-
-	void onMouseButton(
-		GLFWwindow* handle, 
-		int button, 
-		int action, 
-		int modifiers
-	) {
-		using namespace overdrive;
-
-		if (auto w = video::Window::getFromHandle(handle)) {
-			auto it = mMouseRegistry.find(w);
-			
-			if (it == mMouseRegistry.end()) {
-				gLog.warning() << "received mouse press from unregistered window";
-				return;
-			}
-
-			it->second->setButtonState((input::Mouse::eButton)button, (action == GLFW_PRESS));
-
-			switch (action) {
-			case GLFW_PRESS:
-				core::Channel::broadcast(input::Mouse::OnButtonPress{ (input::Mouse::eButton)button, modifiers, w });
-				break;
-
-			case GLFW_RELEASE:
-				core::Channel::broadcast(input::Mouse::OnButtonRelease{ (input::Mouse::eButton)button, modifiers, w });
-				break;
-			}
-		}
-		else
-			gLog.warning() << "received mouse press from unregistered window";
-	}
-
-	void onMouseMove(
-		GLFWwindow* handle,
-		double x,
-		double y
-	) {
-		using namespace overdrive;
-
-		static double previousX = 0;
-		static double previousY = 0;
-
-		if (auto w = video::Window::getFromHandle(handle)) {
-			auto it = mMouseRegistry.find(w);
-			
-			if (it == mMouseRegistry.end()) {
-				gLog.warning() << "received mouse press from unregistered window";
-				return;
-			}
-			
-			it->second->setPosition(x, y, false); // just update the internals
-
-			core::Channel::broadcast(input::Mouse::OnMove{
-				x,
-				y,
-				x - previousX,
-				y - previousY,
-				w
-			});
-
-			previousX = x;
-			previousY = y;
-		}
-		else
-			gLog.warning() << "received mouse press from unregistered window";
-	}
-
-	void onMouseEnter(GLFWwindow* handle, int enter) {
-		using namespace overdrive;
-
-		if (auto w = video::Window::getFromHandle(handle)) {
-			auto it = mMouseRegistry.find(w);
-			
-			if (it == mMouseRegistry.end()) {
-				gLog.warning() << "received mouse press from unregistered window";
-				return;
-			}
-
-			it->second->setInsideClientArea(enter == GL_TRUE);
-
-			if (enter == GL_TRUE)
-				core::Channel::broadcast(input::Mouse::OnEnter{ w });
-			else
-				core::Channel::broadcast(input::Mouse::OnLeave{ w });
-		}
-		else
-			gLog.warning() << "received mouse event from unregistered window";
-	}
-
-	void onMouseScroll(GLFWwindow* handle, double xScroll, double yScroll) {
-		using namespace overdrive;
-
-		if (auto w = video::Window::getFromHandle(handle))
-			core::Channel::broadcast(input::Mouse::OnScroll{ xScroll, yScroll, w }); // scroll doesn't set state, so just pass the offsets
-		else
-			gLog.warning() << "received mouse event from unregistered window";
-	}
-}
+#include "core/channel.h"
 
 namespace overdrive {
 	namespace input {
-		Mouse::Mouse(const video::Window* associatedWindow):
-			mAssociatedWindow(associatedWindow)
+		Mouse::Mouse(GLFWwindow* handle) :
+			mHandle(handle)
 		{
-			for (auto& button : mButtonState)
-				button = false;
+			assert(mHandle != nullptr);
 
-			registerMouse(associatedWindow, this);
-
-			glfwSetMouseButtonCallback(associatedWindow->getHandle(), &onMouseButton);
-			glfwSetCursorPosCallback(associatedWindow->getHandle(), &onMouseMove);
-			glfwSetCursorEnterCallback(associatedWindow->getHandle(), &onMouseEnter);
-			glfwSetScrollCallback(associatedWindow->getHandle(), &onMouseScroll);
+			std::uninitialized_fill(
+				std::begin(mButtonState),
+				std::end(mButtonState),
+				false
+			);
 		}
 
-		void Mouse::setButtonState(eButton button, bool pressed) {
-			mButtonState[button] = pressed;
+		void Mouse::hideCursor() {
+			setCursorState(eCursorState::HIDDEN);
 		}
 
-		void Mouse::setPosition(double x, double y, bool setCursor) {
+		void Mouse::disableCursor() {
+			setCursorState(eCursorState::DISABLED);
+		}
+
+		void Mouse::restoreCursor() {
+			setCursorState(eCursorState::NORMAL);
+		}
+
+		void Mouse::setCursorState(eCursorState state) {
+			int value = GLFW_CURSOR_NORMAL;
+
+			switch (state) {
+			case eCursorState::NORMAL:
+				value = GLFW_CURSOR_NORMAL;
+				break;
+
+			case eCursorState::HIDDEN:
+				value = GLFW_CURSOR_HIDDEN;
+				break;
+
+			case eCursorState::DISABLED:
+				value = GLFW_CURSOR_DISABLED;
+				break;
+			}
+
+			glfwSetInputMode(mHandle, GLFW_CURSOR, value);
+		}
+
+		Mouse::eCursorState Mouse::getCursorState() const {
+			int mode = glfwGetInputMode(mHandle, GLFW_CURSOR);
+
+			switch (mode) {
+			case GLFW_CURSOR_HIDDEN:
+				return eCursorState::HIDDEN;
+
+			case GLFW_CURSOR_DISABLED:
+				return eCursorState::DISABLED;
+
+			case GLFW_CURSOR_NORMAL:
+			default:
+				return eCursorState::NORMAL;
+			}
+		}
+
+		void Mouse::setPosition(double x, double y) {
 			mX = x;
 			mY = y;
 
-			if (setCursor)
-				glfwSetCursorPos(mAssociatedWindow->getHandle(), mX, mY);
-		}
-
-		void Mouse::setInsideClientArea(bool isInside) {
-			mIsInsideClientArea = isInside;
-		}
-
-		bool Mouse::operator[](Mouse::eButton button) const {
-			return mButtonState[button];
-		}
-
-		bool Mouse::operator == (const Mouse& m) const {
-			return mAssociatedWindow == m.mAssociatedWindow;
+			glfwSetCursorPos(mHandle, mX, mY);
 		}
 
 		void Mouse::getPosition(double& x, double& y) const {
@@ -152,22 +76,20 @@ namespace overdrive {
 			y = mY;
 		}
 
+		void Mouse::setInsideClientArea(bool isInside) {
+			mIsInsideClientArea = isInside;
+		}
+
 		bool Mouse::isInsideClientArea() const {
 			return mIsInsideClientArea;
 		}
 
-		bool Mouse::isAssociatedWith(const video::Window* window) const {
-			return window == mAssociatedWindow;
+		bool Mouse::operator [] (eButton button) const {
+			return mButtonState[button];
 		}
-
-		void registerMouse(const video::Window* win, Mouse* m) {
-			assert(mMouseRegistry.find(win) == mMouseRegistry.end());
-			mMouseRegistry[win] = m;
-		}
-
-		void unregisterMouse(const video::Window* win) {
-			assert(mMouseRegistry.find(win) != mMouseRegistry.end());
-			mMouseRegistry.erase(win);
+		
+		GLFWwindow* Mouse::getHandle() const {
+			return mHandle;
 		}
 	}
 }

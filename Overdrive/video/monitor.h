@@ -1,9 +1,8 @@
 #ifndef OVERDRIVE_VIDEO_MONITOR_H
 #define OVERDRIVE_VIDEO_MONITOR_H
 
-#include <utility>
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 #include "opengl.h"
 
@@ -15,29 +14,50 @@ namespace overdrive {
 
 		class Monitor {
 		public:
-			typedef std::pair<int, int> Dimension; // in approximate millimeters (mm)
+			Monitor(GLFWmonitor* src);
 
-			Monitor(GLFWmonitor* mon);
+			struct OnConnected {
+				GLFWmonitor* mMonitor; // if it just connected, there is no corresponding monitor object yet, so just provide the handle
+			};
+
+			struct OnDisconnected {
+				Monitor* mMonitor; // disconnecting monitors should have a corresponding monitor object, which should be more convenient to deal with
+			};
+
+			int getWidth() const;
+			int getHeight() const;
+
+			int getXPos() const;
+			int getYPos() const;
+
+			std::string getName() const;
+
+			bool isPrimary() const;
+
+			void setGamma(float value);
+
 			GLFWmonitor* getHandle() const;
-
-			const std::string& getName() const;
-
-			bool isPrimaryMonitor() const;
-			const Dimension& getPhysicalSize() const;
 
 			detail::VideoMode getCurrentVideoMode() const;
 			const std::vector<detail::VideoMode>& getSupportedVideoModes() const;
-			//void setVideoMode(detail::VideoMode mode); // this is only done at window creation time for fullscreen mode
-
-			void setGamma(float value); // the other gamma functions are pretty horrible imho
+			// setting video mode can only be done via fullscreen window creation
 
 		private:
-			GLFWmonitor* mHandle;
+			int mPhysicalWidth = 10;	// in millimeters
+			int mPhysicalHeight = 10; // in millimeters
 
-			bool mIsPrimaryMonitor;	
-			std::string mName;
-			Dimension mPhysicalSize;
-			
+			// position in screen coordinates of the upper left corner of this monitor
+			int mXPos = 0;
+			int mYPos = 0;
+
+			// Note - I'm ignoring the monitor gamma ramp stuff, I don't consider it useful
+
+			bool mIsPrimaryMonitor = false;
+
+			std::string mName = "Unknown monitor";
+
+			GLFWmonitor* mGLFWhandle = nullptr;
+
 			std::vector<detail::VideoMode> mSupportedVideoModes;
 		};
 

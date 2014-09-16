@@ -52,6 +52,9 @@ namespace overdrive {
 			void initializeSystems();
 			void shutdownSystems();
 
+			bool initializeDependencies();
+			void shutdownDependencies();
+
 			SystemList mSystems;
 			SystemMapping mSystemLookup;
 			TaskProcessor mTaskProcessor;

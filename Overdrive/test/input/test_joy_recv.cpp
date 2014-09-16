@@ -20,11 +20,11 @@ namespace overdrive {
 					for (const auto& val : jm.mPosition)
 						sstr << val << ", ";
 
-					gLog << "joystick " << jm.mJoystickID << " move: " << sstr.str();
+					gLog << "joystick move: " << sstr.str();
 				}
 
 				void operator()(const overdrive::input::Joystick::OnConnect& jc) {
-					gLog << "Joystick " << jc.mJoystickID << " connected: " << jc.mJoystickName;
+					gLog << "Joystick connected: " << jc.mJoystick->getName();
 				}
 			};
 		}

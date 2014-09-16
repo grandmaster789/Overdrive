@@ -3,61 +3,6 @@
 #include "core/channel.h"
 #include "util/checkRange.h"
 
-namespace {
-	// static callback functions to tie window events to Window objects
-	using namespace overdrive::video;
-	overdrive::core::Channel chan;
-
-	std::vector<std::pair<GLFWwindow*, Window*>> sHandleRegistry;
-
-	void onWindowPosFn(GLFWwindow* handle, int x, int y) {
-		if (auto w = Window::getFromHandle(handle))
-			chan.broadcast(Window::OnMove { w, x, y });
-	}
-
-	void onWindowSizeFn(GLFWwindow* handle, int newWidth, int newHeight) {
-		if (auto w = Window::getFromHandle(handle)) {
-			w->setWidth(newWidth);
-			w->setHeight(newHeight);
-
-			chan.broadcast(Window::OnResize{ w, newWidth, newHeight });
-		}
-	}
-
-	void onWindowCloseFn(GLFWwindow* handle) {
-		if (auto w = Window::getFromHandle(handle))
-			chan.broadcast(Window::OnClose{ w });
-	}
-
-	void onWindowRefreshFn(GLFWwindow* handle) {
-		if (auto w = Window::getFromHandle(handle))
-			chan.broadcast(Window::OnRefresh{ w });
-	}
-
-	void onWindowFocusFn(GLFWwindow* handle, int isFocus) {
-		if (auto w = Window::getFromHandle(handle)) {
-			if (isFocus)
-				chan.broadcast(Window::OnFocus{ w });
-			else
-				chan.broadcast(Window::OnDeFocus{ w });
-		}
-	}
-
-	void onWindowIconifyFn(GLFWwindow* handle, int isIconify) {
-		if (auto w = Window::getFromHandle(handle)) {
-			if (isIconify)
-				chan.broadcast(Window::OnIconify{ w });
-			else
-				chan.broadcast(Window::OnRestore{ w });
-		}
-	}
-
-	void onWindowFrameBufferSizeFn(GLFWwindow* handle, int newWidth, int newHeight) {
-		if (auto w = Window::getFromHandle(handle))
-			chan.broadcast(Window::OnResize{ w, newWidth, newHeight });
-	}
-}
-
 namespace overdrive {
 	namespace video {
 		Window::CreationHints Window::mCreationHints;
@@ -94,41 +39,29 @@ namespace overdrive {
 				throw std::runtime_error("Window already created");
 
 			mIsFullscreen = false;
-
 			mCreationHints.apply();
 
 			mHandle = glfwCreateWindow(
-				mWidth, 
-				mHeight, 
-				mTitle.c_str(), 
+				mWidth,
+				mHeight,
+				mTitle.c_str(),
 				nullptr,	//not running fullscreen, so no specific monitor associated
-				nullptr		//no shared context
+				nullptr	//no shared context
 			);
 
 			if (mHandle) {
-				sHandleRegistry.push_back(std::make_pair(mHandle, this));
-
-				//set all callbacks
-				glfwSetWindowCloseCallback(mHandle, onWindowCloseFn);
-				glfwSetWindowFocusCallback(mHandle, onWindowFocusFn);
-				glfwSetWindowIconifyCallback(mHandle, onWindowIconifyFn);
-				glfwSetWindowPosCallback(mHandle, onWindowPosFn);
-				glfwSetWindowRefreshCallback(mHandle, onWindowRefreshFn);
-				glfwSetWindowSizeCallback(mHandle, onWindowSizeFn);
-				glfwSetFramebufferSizeCallback(mHandle, onWindowFrameBufferSizeFn);
+				mKeyboard = std::make_unique<input::Keyboard>(mHandle);
+				mMouse = std::make_unique<input::Mouse>(mHandle);
 
 				gLog.info() << "Created window " << getWidth() << "x" << getHeight() << " " << getTitle();
-
 				core::Channel::broadcast(OnCreate{ this });
 			}
 		}
-		
 		void Window::createFullscreen(Monitor* m) {
 			if (mHandle != nullptr)
 				throw std::runtime_error("Window already created");
-
+			
 			mIsFullscreen = true;
-
 			mCreationHints.apply();
 
 			mHandle = glfwCreateWindow(
@@ -136,49 +69,34 @@ namespace overdrive {
 				mHeight,
 				mTitle.c_str(),
 				m->getHandle(),
-				nullptr		//no shared context
+				nullptr	//no shared context
 			);
 
 			if (mHandle) {
-				sHandleRegistry.push_back(std::make_pair(mHandle, this));
-
-				//set all callbacks
-				glfwSetWindowCloseCallback(mHandle, onWindowCloseFn);
-				glfwSetWindowFocusCallback(mHandle, onWindowFocusFn);
-				glfwSetWindowIconifyCallback(mHandle, onWindowIconifyFn);
-				glfwSetWindowPosCallback(mHandle, onWindowPosFn);
-				glfwSetWindowRefreshCallback(mHandle, onWindowRefreshFn);
-				glfwSetWindowSizeCallback(mHandle, onWindowSizeFn);
-				glfwSetFramebufferSizeCallback(mHandle, onWindowFrameBufferSizeFn);
+				mKeyboard = std::make_unique<input::Keyboard>(mHandle);
+				mMouse = std::make_unique<input::Mouse>(mHandle);
 
 				gLog.info() << "Created window " << getWidth() << "x" << getHeight() << " " << getTitle();
+				core::Channel::broadcast(OnCreate{ this });
 			}
 		}
 
 		void Window::destroy() {
 			assert(mHandle);
+			
+			glfwSetWindowShouldClose(mHandle, GL_TRUE);
 
-			// first remove this window from the handle registry
-			for (auto it = sHandleRegistry.begin(); it != sHandleRegistry.end(); ++it) {
-				if (it->second == this) {
-					sHandleRegistry.erase(it);
-					break;
-				}
-			}
-
-			// then actually destroy the window
-			glfwDestroyWindow(mHandle);
+			core::Channel::broadcast(OnClose{ this });
+			// actually destroying the window is done by the Video System
 		}
 
 		void Window::swapBuffers() const {
 			assert(mHandle);
-
 			glfwSwapBuffers(mHandle);
 		}
 
 		void Window::makeCurrent() const {
 			assert(mHandle);
-
 			glfwMakeContextCurrent(mHandle);
 		}
 
@@ -231,7 +149,7 @@ namespace overdrive {
 
 		Window::eClientAPI Window::getClientAPI() const {
 			assert(mHandle);
-
+			
 			switch (glfwGetWindowAttrib(mHandle, GLFW_CLIENT_API)) {
 			case GLFW_OPENGL_API:
 				return eClientAPI::OPENGL;
@@ -271,6 +189,7 @@ namespace overdrive {
 
 		Window::eContextRobustness Window::getContextRobustness() const {
 			assert(mHandle);
+
 			switch (glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_ROBUSTNESS)) {
 			case GLFW_LOSE_CONTEXT_ON_RESET:
 				return eContextRobustness::LOSE_CONTEXT_ON_RESET;
@@ -288,6 +207,7 @@ namespace overdrive {
 
 		Window::eOpenGLProfile Window::getOpenGLProfile() const {
 			assert(mHandle);
+
 			switch (glfwGetWindowAttrib(mHandle, GLFW_OPENGL_PROFILE)) {
 			case GLFW_OPENGL_CORE_PROFILE:
 				return eOpenGLProfile::CORE;
@@ -308,11 +228,9 @@ namespace overdrive {
 				return;
 
 			mTitle = std::move(title);
-
 			if (mHandle)
 				glfwSetWindowTitle(mHandle, mTitle.c_str());
 		}
-
 		void Window::setPosition(int x, int y) {
 			assert(mHandle);
 			glfwSetWindowPos(mHandle, x, y);
@@ -353,7 +271,6 @@ namespace overdrive {
 
 		void Window::CreationHints::apply() {
 			using util::checkRange;
-
 			glfwWindowHint(GLFW_RESIZABLE, mResizable ? GL_TRUE : GL_FALSE);
 			glfwWindowHint(GLFW_VISIBLE, mVisible ? GL_TRUE : GL_FALSE);
 			glfwWindowHint(GLFW_DECORATED, mDecorated ? GL_TRUE : GL_FALSE);
@@ -369,11 +286,12 @@ namespace overdrive {
 			if (checkRange(mAlphaBits, 0, INT_MAX))
 				glfwWindowHint(GLFW_ALPHA_BITS, mAlphaBits);
 			if (checkRange(mDepthBits, 0, INT_MAX))
+
 				glfwWindowHint(GLFW_DEPTH_BITS, mDepthBits);
 			if (checkRange(mStencilBits, 0, INT_MAX))
 				glfwWindowHint(GLFW_STENCIL_BITS, mStencilBits);
-			
 			if (checkRange(mAccumulationRedBits, 0, INT_MAX))
+
 				glfwWindowHint(GLFW_ACCUM_RED_BITS, mAccumulationRedBits);
 			if (checkRange(mAccumulationBlueBits, 0, INT_MAX))
 				glfwWindowHint(GLFW_ACCUM_GREEN_BITS, mAccumulationGreenBits);
@@ -392,13 +310,11 @@ namespace overdrive {
 
 			switch (mClientAPI) {
 			case eClientAPI::OPENGL:
-				glfwWindowHint(GLFW_OPENGL_API, GLFW_OPENGL_API);
+				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 				break;
-
 			case eClientAPI::OPENGL_ES:
-				glfwWindowHint(GLFW_OPENGL_API, GLFW_OPENGL_ES_API);
+				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
 				break;
-
 			default:
 				gLog.warning() << "Unsupported client API requested: " << mClientAPI;
 				break;
@@ -426,7 +342,7 @@ namespace overdrive {
 
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, mOpenGLForwardCompatible ? GL_TRUE : GL_FALSE);
 			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, mOpenGLDebugContext ? GL_TRUE : GL_FALSE);
-			
+
 			switch (mOpenGLProfile) {
 			case eOpenGLProfile::ANY:
 				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
@@ -444,17 +360,16 @@ namespace overdrive {
 				gLog.warning() << "Unsupported openGL profile requested: " << mOpenGLProfile;
 			}
 		}
-
 		GLFWwindow* Window::getHandle() const {
 			return mHandle;
 		}
 
-		Window* Window::getFromHandle(GLFWwindow* handle) {
-			for (const auto& pair : sHandleRegistry)
-				if (pair.first == handle)
-					return pair.second;
+		input::Keyboard* Window::getKeyboard() const {
+			return mKeyboard.get();
+		}
 
-			throw std::runtime_error("Handle not found in window registry");
+		input::Mouse* Window::getMouse() const {
+			return mMouse.get();
 		}
 	}
 }
@@ -512,7 +427,7 @@ std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eOp
 	case overdrive::video::Window::eOpenGLProfile::CORE:
 		os << "core";
 		break;
-		
+
 	case overdrive::video::Window::eOpenGLProfile::UNKNOWN:
 	default:
 		os << "unknown";

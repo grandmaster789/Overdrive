@@ -1,71 +1,74 @@
 #ifndef OVERDRIVE_INPUT_JOYSTICK_H
 #define OVERDRIVE_INPUT_JOYSTICK_H
 
-#include <string>
 #include <vector>
 
 namespace overdrive {
 	namespace input {
 		class Joystick {
 		public:
-			enum eInvalid {
+			// Enums and typedefs
+			enum eJoystickID {
 				NOT_PRESENT = -1
+			};
+
+			enum class eButtonState {
+				PRESSED,
+				RELEASED,
+				REPEAT
 			};
 
 			// Signals
 			struct OnMove {
-				int mJoystickID;
-
 				std::vector<float> mPosition;
 				std::vector<float> mDelta;
+				Joystick* mJoystick;
 			};
 
 			struct OnButtonPress {
-				int mJoystickID;
 				int mButtonID;
+				Joystick* mJoystick;
 			};
 
 			struct OnButtonRelease {
-				int mJoystickID;
 				int mButtonID;
+				Joystick* mJoystick;
 			};
 
-			struct OnConnect {
-				int mJoystickID;
-				std::string mJoystickName;
+			struct OnConnect{
+				Joystick* mJoystick;
 			};
 
 			struct OnDisconnect {
-				int mJoystickID;
+				Joystick* mJoystick;
 			};
 
-			Joystick(int id, float deadZone = 0.1f); // the deadzone is a threshold value for broadcasting axis movement
-			
-			void update();
+			// Functions
+			Joystick(int id = NOT_PRESENT, float deadzone = 0.1f); // the deadzone is a threshold value for broadcasting axis movement
 
-			void setJoystickID(int id); // as a side effect, this clears previous axis/button states
+			void poll(); // note that this assumes the number of axes and buttons does not change for a given joystick
+
 			int getJoystickID() const;
-			const std::string& getJoystickName() const;
+			const std::string& getName() const;
+
+			void setDeadZone(float deadzone);
+			float getDeadZone() const;
 
 			int getNumButtons() const;
 			int getNumAxes() const;
 
-			void setDeadZone(float value);
-			float getDeadZone() const;
-
-			float getAxis(int index) const;
-			const std::vector<float>& getAxes() const;
-
-			bool isPressed(int buttonIndex) const;
-			unsigned char getButton(int buttonIndex) const;
-			const std::vector<unsigned char>& getButtons() const;
+			bool isPressed(int buttonID) const; // note that this will also return true if the actual button state is 'REPEAT'
+			bool isRepeating(int buttonID) const;
+			bool isReleased(int buttonID) const;
+			eButtonState getButton(int buttonID) const;
+			const std::vector<eButtonState>& getButtonState() const;
 
 		private:
-			int mJoystickID;
-
+			int mJoystickID = NOT_PRESENT;
 			std::string mJoystickName;
-			std::vector<float> mAxisStates;
-			std::vector<unsigned char> mButtonStates;
+
+			std::vector<eButtonState> mButtonState;
+			std::vector<float> mAxisState;
 
 			float mDeadZone;
 		};

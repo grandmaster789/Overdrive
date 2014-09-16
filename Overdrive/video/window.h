@@ -4,10 +4,13 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <memory>
 
 #include "opengl.h"
 
 #include "video/monitor.h"
+#include "input/keyboard.h"
+#include "input/mouse.h"
 
 namespace overdrive {
 	namespace video {
@@ -33,7 +36,12 @@ namespace overdrive {
 				UNKNOWN
 			};
 
+		private:
+			friend class Video; // only allow the Video class to create Windows (because of handle management and callbacks)
+
 			Window();
+
+		public:
 
 			void setWidth(int newWidth);
 			void setHeight(int newHeight);
@@ -45,24 +53,24 @@ namespace overdrive {
 			const std::string& getTitle() const;
 
 			void create();
-			void createFullscreen(Monitor* m);
+			void createFullscreen(Monitor* m); // a video mode will be selected that is the closest match to this window size
 			void destroy();
-			
+
 			void swapBuffers() const;
 			void makeCurrent() const;
 			bool shouldClose() const;
 
 			// Signals
-			struct OnCreate	{ Window* window; };
-			struct OnFramebufferResize { Window* window; int newWidth, newHeight; };
-			struct OnClose { Window* window; };
-			struct OnFocus { Window* window; };
-			struct OnDeFocus { Window* window; };
-			struct OnIconify { Window* window; };
-			struct OnRestore { Window* window; };
-			struct OnMove { Window* window; int newX, newY; };
-			struct OnRefresh { Window* window; };
-			struct OnResize { Window* window; int newWidth, newHeight; };
+			struct OnCreate	{ Window* mWindow; };
+			struct OnFramebufferResize { Window* mWindow; int newWidth, newHeight; };
+			struct OnClose { Window* mWindow; };
+			struct OnFocus { Window* mWindow; };
+			struct OnDeFocus { Window* mWindow; };
+			struct OnIconify { Window* mWindow; };
+			struct OnRestore { Window* mWindow; };
+			struct OnMove { Window* mWindow; int newX, newY; };
+			struct OnRefresh { Window* mWindow; };
+			struct OnResize { Window* mWindow; int newWidth, newHeight; };
 
 			// Window Attributes
 			bool isFocused() const;
@@ -70,7 +78,6 @@ namespace overdrive {
 			bool isVisible() const;
 			bool isResizable() const;
 			bool isDecorated() const;
-			
 			void getPosition(int& x, int& y) const;
 			void getSize(int& width, int& height) const;
 			void getFramebufferSize(int& width, int& height) const;
@@ -105,6 +112,7 @@ namespace overdrive {
 				int mGreenBits = 8;
 				int mBlueBits = 8;
 				int mAlphaBits = 8;
+
 				int mDepthBits = 24;
 				int mStencilBits = 8;
 
@@ -124,10 +132,10 @@ namespace overdrive {
 
 				eClientAPI mClientAPI = eClientAPI::OPENGL;
 
-				int mContextVersionMajor = 1;	
+				int mContextVersionMajor = 1;
 				int mContextVersionMinor = 0;
-				// [Note] - When requesting an openGL profile below 3.2, you *must* also use the OPENGL_ANY_PROFILE
 
+				// [Note] - When requesting an openGL profile below 3.2, you *must* also use the OPENGL_ANY_PROFILE
 				eContextRobustness mContextRobustness = eContextRobustness::NO_ROBUSTNESS;
 
 				bool mOpenGLForwardCompatible = false;
@@ -138,23 +146,25 @@ namespace overdrive {
 
 			void setDefaultCreationHints();
 			static CreationHints mCreationHints; // this should be done better I guess
-
 			GLFWwindow* getHandle() const;
-			static Window* getFromHandle(GLFWwindow* handle);
+			
+			input::Keyboard* getKeyboard() const;
+			input::Mouse* getMouse() const;
 
 		private:
-			friend class Video;
-
 			GLFWwindow* mHandle;
 
-			std::string mTitle = "Default Window";
+			std::string mTitle = "Overdrive Default Window";
 
 			int mWidth = 800;
 			int mHeight = 600;
 			bool mIsFullscreen = false;
 
-			Monitor* mMonitor = nullptr; 
+			Monitor* mMonitor = nullptr;
 			Window* mSharedContext = nullptr;
+
+			std::unique_ptr<input::Keyboard> mKeyboard;
+			std::unique_ptr<input::Mouse> mMouse;
 		};
 	}
 }
