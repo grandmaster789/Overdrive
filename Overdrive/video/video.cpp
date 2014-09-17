@@ -6,6 +6,8 @@
 #include "video/monitor.h"
 #include "video/window.h"
 
+#include "util/checkGL.h"
+
 #include <unordered_map>
 
 namespace {
@@ -168,8 +170,24 @@ namespace overdrive {
 				<< "r" << mainWindow->getContextRevision()
 				<< ", " << mainWindow->getContextRobustness();
 
+			mainWindow->makeCurrent();
+
+			CHECK_GL_STATE;
+
+			// initialize GLEW (must be done after activating an openGL context)
+			glewExperimental = GL_TRUE;
+			GLenum err = glewInit();
+			if (err != GLEW_OK) {
+				gLog.error() << "Failed to initialize GLEW: " << glewGetErrorString(err);
+				return false;
+			}
+
+			// initializing GLEW with the experimental flag on can cause the GL_INVALID_ENUM error to be reported on some systems
+			// which should be safe to ignore (see http://www.opengl.org/wiki/OpenGL_Loading_Library)
+			while (glGetError() != GL_NO_ERROR); 
+
 			// configure module updates
-			mEngine->updateSystem(this, true, false); // repeatedly update this subsystem
+			mEngine->updateSystem(this, true, false); // repeatedly update this subsystem on the main thread
 
 			return true;
 		}

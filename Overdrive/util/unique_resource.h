@@ -18,7 +18,7 @@ namespace overdrive {
 	public:
 		explicit UniqueResource(
 			tResource&& resource,
-			tDeleteFn&& deleter,
+			tDeleteFn deleter,
 			bool useDeleter = true
 		):
 			mResource{ std::move(resource) },

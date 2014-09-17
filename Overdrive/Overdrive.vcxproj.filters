@@ -68,6 +68,18 @@
     <ClCompile Include="test\input\test_mouse_recv.cpp">
       <Filter>test\input</Filter>
     </ClCompile>
+    <ClCompile Include="render\shaderprogram.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shader.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="app\spinningcube.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="util\checkGL.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -155,6 +167,24 @@
     </ClInclude>
     <ClInclude Include="input\joystick.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="render\vao.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shaderprogram.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shader.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="app\spinningcube.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="math\conversions.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="util\checkGL.h">
+      <Filter>util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
