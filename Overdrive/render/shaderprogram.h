@@ -31,15 +31,15 @@ namespace overdrive {
 			void printAttributes(); // prints attribute names and locations to log
 
 			// set uniform variable to value
-			void set(std::string name, float x, float y, float z) const;
-			void set(std::string name, glm::vec2 v) const;
-			void set(std::string name, glm::vec3 v) const;
-			void set(std::string name, glm::vec4 v) const;
-			void set(std::string name, glm::mat3 m) const;
-			void set(std::string name, glm::mat4 m) const;
-			void set(std::string name, float f) const;
-			void set(std::string name, int i) const;
-			void set(std::string name, bool b) const;
+			void set(const std::string& name, float x, float y, float z) const;
+			void set(const std::string& name, const glm::vec4& v) const;
+			void set(const std::string& name, const glm::vec3& v) const;
+			void set(const std::string& name, const glm::mat3& m) const;
+			void set(const std::string& name, const glm::mat4& m) const;
+			void set(const std::string& name, float f) const;
+			void set(const std::string& name, int i) const;
+			void set(const std::string& name, bool b) const;
+			void set(const std::string& name, const glm::vec2& v) const;
 
 		private:
 			void gatherUniforms();

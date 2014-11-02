@@ -3,6 +3,7 @@
 #include <chrono>
 #include <ctime>
 #include <iostream>
+#include <iomanip>
 
 overdrive::core::Logger gLog("overdrive.log"); // ze global
 
@@ -11,7 +12,7 @@ namespace overdrive {
 		Logger::Logger(std::string filename):
 			mOutputFile{ std::move(filename) }
 		{
-			mOutputFile.sync_with_stdio(false);
+			mOutputFile.sync_with_stdio(false); // a static call -- the first Logger will turn off stdio sync for everything!
 		}
 
 		Logger::LogHelper Logger::operator << (std::ostream& (*fn)(std::ostream& os)) {
@@ -25,14 +26,21 @@ namespace overdrive {
 		std::string clockString(const std::chrono::system_clock::time_point& tp) {
 			auto timeStruct = std::chrono::system_clock::to_time_t(tp);
 
+			// converting a time_t to a string is one of those locale-influenced thingies
+			// and is affected by imbued iostreams. However, I'm not really inclined to
+			// use anything other than the system default. 
+			// for more information (and formatting options) search std::put_time @ cppreference
+			// [Note] This is the C-library, so the microsoft implementation is *not* up to date
+			//	in the documentation, assume that if it says C++11 it won't work...
+
+			std::stringstream sstr;
+
 			#pragma warning(push)
-			#pragma warning(disable: 4996)
-				std::string result = std::ctime(&timeStruct); // it's a little verbose, but it's also easy
+			#pragma warning(disable: 4996) // the call to 'localtime' is 'unsafe'...
+				sstr << std::put_time(std::localtime(&timeStruct), "%Y/%m/%d %H:%M:%S"); // year/month/day hour/minutes/seconds
 			#pragma warning(pop)
 
-			result.resize(result.size() - 1); //get rid of the trailing newline
-
-			return result;
+			return sstr.str();
 		}
 
 		Logger::LogHelper::LogHelper(Logger* parent):
@@ -50,9 +58,14 @@ namespace overdrive {
 		}
 
 		Logger::LogHelper::~LogHelper() {
-			if (mParent) {
-				mBuffer << "\n";	// automatically add a newline
-				mParent->flush(mBuffer.str());
+			try {
+				if (mParent) {
+					mBuffer << "\n";	// automatically add a newline
+					mParent->flush(mBuffer.str());
+				}
+			}
+			catch (...) {
+				std::cerr << "Failed to flush to log!\n";
 			}
 		}
 

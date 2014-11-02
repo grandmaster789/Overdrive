@@ -37,7 +37,7 @@ namespace overdrive {
 				Channel::add<tMessage>(this); 
 			}
 
-			~MessageHandler() {
+			virtual ~MessageHandler() {
 				Channel::remove<tMessage>(this);
 			}
 

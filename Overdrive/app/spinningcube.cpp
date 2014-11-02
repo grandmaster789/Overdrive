@@ -9,7 +9,9 @@ namespace overdrive {
 	namespace app {
 		SpinningCube::SpinningCube():
 			Application("Spinning Cube"),
+			
 			mVertexArray(0, &cleanupVertexArray, false),
+
 			mVertices(0, &cleanupBuffer, false),
 			mIndices(0, &cleanupBuffer, false),
 			mNormals(0, &cleanupBuffer, false),
@@ -89,8 +91,19 @@ namespace overdrive {
 		}
 
 		void SpinningCube::operator()(const input::Keyboard::OnKeyPress& kp) {
-			if (kp.mKey == GLFW_KEY_ESCAPE)
+			switch (kp.mKey) {
+			case GLFW_KEY_ESCAPE:
 				mChannel.broadcast(core::Engine::OnStop());
+				break;
+
+			case GLFW_KEY_F1:
+				mShaderProgram.printAttributes();
+				break;
+
+			case GLFW_KEY_F2:
+				mShaderProgram.printUniforms();
+				break;
+			}
 		}
 
 		void SpinningCube::createCube(float size) {

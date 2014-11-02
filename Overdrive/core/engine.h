@@ -7,6 +7,7 @@
 #include "core/channel.h"
 #include "core/taskprocessor.h"
 #include "core/config.h"
+#include "util/exception.h"
 
 namespace overdrive {
 	namespace app {
@@ -66,7 +67,6 @@ namespace overdrive {
 		// Note -- if systems are removed regularly, from non-main threads this needs to become threadsafe as well
 		//		   I don't expect this to be the typical use case, so I'll leave it for later
 
-
 		template <typename T>
 		T* Engine::get() const {
 			T* result = nullptr;
@@ -78,7 +78,7 @@ namespace overdrive {
 					return result;
 			}
 
-			return nullptr;
+			throw std::exception("System type not found");
 		}
 	}
 }

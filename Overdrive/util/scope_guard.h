@@ -1,13 +1,11 @@
 #ifndef OVERDRIVE_UTIL_SCOPE_GUARD_H
 #define OVERDRIVE_UTIL_SCOPE_GUARD_H
 
+#include <iostream>
+
 namespace overdrive {
 	//based on isocpp paper 3949 (slightly modified)
 	
-	/*
-		Typical use case -- schedule rollback unless all operations succeeded
-	 */
-
 	namespace util {
 		template <typename tDeleteFn>
 		struct ScopeGuard {
@@ -31,6 +29,8 @@ namespace overdrive {
 						mDeleter();
 					}
 					catch (...) {
+						// if the deleter function threw an exception, we should at least notify us
+						std::cerr << "ScopeGuard function threw an exception!\n";
 					}
 				}
 			}
@@ -58,5 +58,26 @@ namespace overdrive {
 
 	//usage: auto guard = scope_guard([] { std::cout << "done\n"; });
 }
+
+// for even easier use (auto-generate unique guard names at compile time):
+#define _OVERDRIVE_UTIL_TOKEN_CONCAT_INTERNAL(a, b) a ## b
+#define _OVERDRIVE_UTIL_TOKEN_CONCAT(a, b) _OVERDRIVE_UTIL_TOKEN_CONCAT_INTERNAL(a, b)
+
+#define _OVERDRIVE_UTIL_SCOPE_GUARD_INTERNAL_INSTANTIATE(lambdaName, guardName, ...) \
+	auto lambda = [&] { __VA_ARGS__; }; \
+	overdrive::util::ScopeGuard<decltype(lambda)> guardName(lambdaName);
+
+#define _OVERDRIVE_UTIL_SCOPE_GUARD_INTERNAL_CREATE_NAMES(counter, ...) \
+	_OVERDRIVE_UTIL_SCOPE_GUARD_INTERNAL_INSTANTIATE( \
+		_OVERDRIVE_UTIL_TOKEN_CONCAT(_SCOPEGUARD_FN_, counter), \
+		_OVERDRIVE_UTIL_TOKEN_CONCAT(_SCOPEGUARD_INSTANCE_, counter), \
+		__VA_ARGS__ \
+	)
+
+#define SCOPE_GUARD(...) _OVERDRIVE_UTIL_SCOPE_GUARD_INTERNAL_CREATE_NAMES(__COUNTER__, __VA_ARGS__)
+
+// usage: SCOPE_GUARD([] { std::cout << "performed at scope exit\n"; })
+//	the local guard name is automatically generated, so no 'auto guard = ' is needed anymore
+//	the 'downside' is that it becomes impossible to move/release the guard -- if you want to do that, you should make it named anyway
 
 #endif

@@ -20,7 +20,8 @@ namespace overdrive {
 				try {
 					boost::this_thread::interruption_point();
 				}
-				catch (const boost::thread_interrupted&) {}
+				catch (const boost::thread_interrupted&) {
+				}
 
 				try {
 					// execute the task

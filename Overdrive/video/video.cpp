@@ -182,6 +182,8 @@ namespace overdrive {
 				return false;
 			}
 
+			gLog.debug() << "Initialized GLEW " << glewGetString(GLEW_VERSION);
+
 			// initializing GLEW with the experimental flag on can cause the GL_INVALID_ENUM error to be reported on some systems
 			// which should be safe to ignore (see http://www.opengl.org/wiki/OpenGL_Loading_Library)
 			while (glGetError() != GL_NO_ERROR); 
@@ -193,6 +195,8 @@ namespace overdrive {
 		}
 
 		void Video::update() {
+			GLFWwindow* activeContext = nullptr;
+
 			// activate contexts and update window contents
 			for (auto it = mWindowList.begin(); it != mWindowList.end(); ) {
 				auto window = it->get();
@@ -201,8 +205,11 @@ namespace overdrive {
 					it = mWindowList.erase(it);
 				}
 				else {
-					// render
-					window->makeCurrent();
+					// switch active contexts, when required
+					if (activeContext != window->getHandle()) {
+						window->makeCurrent();
+						activeContext = window->getHandle();
+					}
 
 					// swap buffers
 					window->swapBuffers();

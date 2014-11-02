@@ -80,6 +80,21 @@
     <ClCompile Include="util\checkGL.cpp">
       <Filter>util</Filter>
     </ClCompile>
+    <ClCompile Include="render\vertexbuffer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\vertexarray.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="util\exception.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="util\color.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -168,9 +183,6 @@
     <ClInclude Include="input\joystick.h">
       <Filter>input</Filter>
     </ClInclude>
-    <ClInclude Include="render\vao.h">
-      <Filter>render</Filter>
-    </ClInclude>
     <ClInclude Include="render\shaderprogram.h">
       <Filter>render</Filter>
     </ClInclude>
@@ -184,6 +196,30 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="util\checkGL.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="render\render.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="util\make_iterable.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="render\vertexbuffer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\vertexarray.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="util\exception.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\bitmap.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\color.h">
       <Filter>util</Filter>
     </ClInclude>
   </ItemGroup>

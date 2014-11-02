@@ -69,7 +69,7 @@ namespace overdrive {
 
 			mProgramShaders[type] = std::make_unique<Shader>(type);
 			
-			if (mProgramShaders[type]->compile(source))
+			if (mProgramShaders[type]->compile(std::move(source)))
 				glAttachShader(mProgramHandle, mProgramShaders[type]->getHandle());
 
 			return CHECK_GL_STATE;
@@ -114,6 +114,8 @@ namespace overdrive {
 				return false;
 			}
 			
+			CHECK_GL_STATE;
+
 			gatherAttributes();
 			gatherUniforms();
 
@@ -159,6 +161,8 @@ namespace overdrive {
 
 				return false;
 			}
+
+			CHECK_GL_STATE;
 
 			return true;
 		}
@@ -282,39 +286,39 @@ namespace overdrive {
 			gLog.debug() << " ------------------------- ";
 		}
 
-		void ShaderProgram::set(std::string name, float x, float y, float z) const {
+		void ShaderProgram::set(const std::string& name, float x, float y, float z) const {
 			glUniform3f(getUniformLocation(std::move(name)), x, y, z);
 		}
 
-		void ShaderProgram::set(std::string name, glm::vec2 v) const {
+		void ShaderProgram::set(const std::string& name, const glm::vec2& v) const {
 			glUniform2f(getUniformLocation(std::move(name)), v.x, v.y);
 		}
 
-		void ShaderProgram::set(std::string name, glm::vec3 v) const {
+		void ShaderProgram::set(const std::string& name, const glm::vec3& v) const {
 			glUniform3f(getUniformLocation(std::move(name)), v.x, v.y, v.z);
 		}
 
-		void ShaderProgram::set(std::string name, glm::vec4 v) const {
+		void ShaderProgram::set(const std::string& name, const glm::vec4& v) const {
 			glUniform4f(getUniformLocation(std::move(name)), v.x, v.y, v.z, v.w);
 		}
 
-		void ShaderProgram::set(std::string name, glm::mat3 m) const {
+		void ShaderProgram::set(const std::string& name, const glm::mat3& m) const {
 			glUniformMatrix3fv(getUniformLocation(std::move(name)), 1, GL_FALSE, &m[0][0]);
 		}
 
-		void ShaderProgram::set(std::string name, glm::mat4 m) const {
+		void ShaderProgram::set(const std::string& name, const glm::mat4& m) const {
 			glUniformMatrix4fv(getUniformLocation(std::move(name)), 1, GL_FALSE, &m[0][0]);
 		}
 
-		void ShaderProgram::set(std::string name, float f) const {
+		void ShaderProgram::set(const std::string& name, float f) const {
 			glUniform1f(getUniformLocation(std::move(name)), f);
 		}
 
-		void ShaderProgram::set(std::string name, int i) const {
+		void ShaderProgram::set(const std::string& name, int i) const {
 			glUniform1i(getUniformLocation(std::move(name)), i);
 		}
 
-		void ShaderProgram::set(std::string name, bool b) const {
+		void ShaderProgram::set(const std::string& name, bool b) const {
 			if (b)
 				glUniform1i(getUniformLocation(name), 1);
 			else

@@ -36,10 +36,8 @@ namespace overdrive {
 		}
 
 		Shader::~Shader() {
-			if (mShaderHandle) {
-				gLog << "~Shader" << mShaderHandle;
+			if (mShaderHandle)
 				glDeleteShader(mShaderHandle);
-			}
 		}
 
 		bool Shader::compile(std::string source) {

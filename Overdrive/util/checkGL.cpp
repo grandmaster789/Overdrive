@@ -5,6 +5,7 @@
 
 namespace overdrive {
 	namespace util {
+#ifdef _DEBUG
 		bool checkGL(const char* file, int line) {
 			GLenum err = glGetError();
 			bool result = true;
@@ -46,5 +47,10 @@ namespace overdrive {
 
 			return result;
 		}
+#else
+		bool checkGL(chonst char*, int) {
+			return true;
+		}
+#endif
 	}
 }
