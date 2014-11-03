@@ -21,6 +21,7 @@ namespace overdrive {
 					boost::this_thread::interruption_point();
 				}
 				catch (const boost::thread_interrupted&) {
+					// interrupted thread is not really an error
 				}
 
 				try {
@@ -28,7 +29,7 @@ namespace overdrive {
 					mUnwrappedTask();
 				}
 				catch (const std::exception& ex) {
-					gLog.error() << "Exception: " << ex.what();
+					gLog.error() << "Wrapped task execution gave an exception: " << ex.what();
 				}
 				catch (...) {
 					gLog.error() << "Unknown exception";

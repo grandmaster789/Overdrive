@@ -4,8 +4,9 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <mutex>
+#include <vector>
 #include <utility>
-#include "util/concurrent_vector.h"
 
 namespace overdrive {
 	namespace core {
@@ -16,8 +17,8 @@ namespace overdrive {
 			class ChannelQueue {
 			public:
 				typedef std::function<void(const tMessage&)> Handler;
-				typedef std::pair<void*, Handler> HandlerPair;
-
+				typedef std::lock_guard<std::mutex> ScopedLock;
+				
 				static ChannelQueue& instance() {
 					static ChannelQueue anInstance;
 					
@@ -26,28 +27,37 @@ namespace overdrive {
 
 				template <typename tHandler>
 				void add(tHandler* handler) {
-					mInternalVector.push_back(
-						std::make_pair(
-							(void*)handler,
-							createHandler(handler)
-						)
-					);
+					ScopedLock lock(mMutex);
+
+					mHandlers.push_back(createHandler(handler));
+					mOriginalPtrs.push_back(handler);
 				}
 
 				template <typename tHandler>
 				void remove(tHandler* handler) {
-					mInternalVector.remove_if(
-						[handler] (const HandlerPair& pair) {
-							return (handler == pair.first);
-						}
-					);
+					ScopedLock lock(mMutex);
+
+					auto it = std::find(mOriginalPtrs.begin(), mOriginalPtrs.end(), handler);
+					
+					if (it == mOriginalPtrs.end())
+						throw std::runtime_error("Tried to remove a handler that is not in the list");
+
+					auto idx = (it - mOriginalPtrs.begin());
+
+					mHandlers.erase(mHandlers.begin() + idx);
+					mOriginalPtrs.erase(it);
 				}
 
 				void broadcast(const tMessage& message) {
-					auto localVector = mInternalVector.copyInternals();
+					std::vector<Handler> localVector(mHandlers.size());
+
+					{
+						ScopedLock lock(mMutex);
+						localVector = mHandlers;
+					}
 					
-					for (const auto& pair: localVector)
-						pair.second(message);
+					for (const auto& handler : localVector)
+						handler(message);
 				}
 
 			private:
@@ -59,10 +69,9 @@ namespace overdrive {
 					return [handler](const tMessage& message) { (*handler)(message); };
 				}
 
-				typedef std::function<void(const tMessage&)> Handler;
-				typedef std::pair<void*, Handler> HandlerPair;
-
-				util::ConcurrentVector<HandlerPair> mInternalVector;
+				std::mutex mMutex;
+				std::vector<Handler> mHandlers;
+				std::vector<void*> mOriginalPtrs;
 			};
 		}
 	}

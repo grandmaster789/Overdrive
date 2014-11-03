@@ -30,7 +30,7 @@ namespace overdrive {
 			// and is affected by imbued iostreams. However, I'm not really inclined to
 			// use anything other than the system default. 
 			// for more information (and formatting options) search std::put_time @ cppreference
-			// [Note] This is the C-library, so the microsoft implementation is *not* up to date
+			// [Note] This is the C-standard library, so the microsoft implementation is *not* up to date (grmbl)
 			//	in the documentation, assume that if it says C++11 it won't work...
 
 			std::stringstream sstr;
@@ -46,7 +46,6 @@ namespace overdrive {
 		Logger::LogHelper::LogHelper(Logger* parent):
 			mParent(parent)
 		{
-			mBuffer.sync_with_stdio(false);
 			mBuffer << clockString(std::chrono::system_clock::now());
 		}
 
@@ -58,6 +57,8 @@ namespace overdrive {
 		}
 
 		Logger::LogHelper::~LogHelper() {
+			// We're executing code in a destructor here, so at least try not to leak exceptions
+
 			try {
 				if (mParent) {
 					mBuffer << "\n";	// automatically add a newline
