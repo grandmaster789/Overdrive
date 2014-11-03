@@ -48,7 +48,7 @@ namespace overdrive {
 			return result;
 		}
 #else
-		bool checkGL(chonst char*, int) {
+		bool checkGL(const char*, int) {
 			return true;
 		}
 #endif

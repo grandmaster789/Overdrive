@@ -11,7 +11,7 @@ namespace overdrive {
 #ifdef _DEBUG
 	#define CHECK_GL_STATE overdrive::util::checkGL(__FILE__, __LINE__)
 #else
-	#define CHECK_GL_STATE
+	#define CHECK_GL_STATE true
 #endif
 
 #endif
