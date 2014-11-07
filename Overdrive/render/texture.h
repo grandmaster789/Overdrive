@@ -175,68 +175,9 @@ namespace overdrive {
 			eDataType mDataType;
 		};
 
-		class Texture1D:
-			public Texture
-		{
-		public:
-			Texture1D(
-				const void* data,
-				unsigned int imageSize,
-				eFormat format = eFormat::RGBA,
-				eDataType dataType = eDataType::UNSIGNED_BYTE,
-				eInternalFormat internalFormat = eInternalFormat::RGBA
-			);
-
-			void setWrapping(eWrapping s);
-			void setFilters(eFilter mini, eFilter mag);
-			void setBorder(const util::Color& c);
-
-			void generateMipmaps();
-
-		private:
-			// helper class that stores the currently bound texture handle and restores it upon destruction
-			class TexGuard {
-			public:
-				TexGuard();
-				TexGuard(const TexGuard&) = delete;
-				~TexGuard();
-
-			private:
-				GLint mCurrentTextureBinding;
-			};
-		};
-
-		class Texture2D:
-			public Texture
-		{
-		public:
-			Texture2D(
-				const void* data,
-				unsigned int imageWidth,
-				unsigned int imageHeight,
-				eFormat format = eFormat::RGBA,
-				eDataType dataType = eDataType::UNSIGNED_BYTE,
-				eInternalFormat internalFormat = eInternalFormat::RGBA
-			);
-
-			void setWrapping(eWrapping s, eWrapping t); // defaults to CLAMP_TO_EDGE
-			void setFilters(eFilter mini, eFilter mag);	// defaults to LINEAR_MIPMAP_LINEAR + LINEAR
-			void setBorder(const util::Color& c);		// defaults to black
-
-			void generateMipmaps();
-		
-		private:
-			// helper class that stores the currently bound texture handle and restores it upon destruction
-			class TexGuard {
-			public:
-				TexGuard();
-				TexGuard(const TexGuard&) = delete;
-				~TexGuard();
-
-			private:
-				GLint mCurrentTextureBinding;
-			};
-		};
+		class Texture1D;
+		class Texture2D;
+		class Texture3D;
 	}
 }
 

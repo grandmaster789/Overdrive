@@ -95,6 +95,15 @@
     <ClCompile Include="util\color.cpp">
       <Filter>util</Filter>
     </ClCompile>
+    <ClCompile Include="render\texture1D.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture2D.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture3D.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -223,6 +232,15 @@
       <Filter>render</Filter>
     </ClInclude>
     <ClInclude Include="render\framebuffer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture1D.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture2D.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture3D.h">
       <Filter>render</Filter>
     </ClInclude>
   </ItemGroup>

@@ -101,6 +101,9 @@
     <ClCompile Include="render\shader.cpp" />
     <ClCompile Include="render\shaderprogram.cpp" />
     <ClCompile Include="render\texture.cpp" />
+    <ClCompile Include="render\texture1D.cpp" />
+    <ClCompile Include="render\texture2D.cpp" />
+    <ClCompile Include="render\texture3D.cpp" />
     <ClCompile Include="render\vertexarray.cpp" />
     <ClCompile Include="render\vertexbuffer.cpp" />
     <ClCompile Include="test\core\test_channel.cpp" />
@@ -142,6 +145,9 @@
     <ClInclude Include="render\shader.h" />
     <ClInclude Include="render\shaderprogram.h" />
     <ClInclude Include="render\texture.h" />
+    <ClInclude Include="render\texture1D.h" />
+    <ClInclude Include="render\texture2D.h" />
+    <ClInclude Include="render\texture3D.h" />
     <ClInclude Include="render\vertexarray.h" />
     <ClInclude Include="render\vertexbuffer.h" />
     <ClInclude Include="test\core\core_test.h" />
