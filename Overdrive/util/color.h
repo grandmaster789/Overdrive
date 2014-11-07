@@ -6,7 +6,6 @@
 namespace overdrive {
 	namespace util {
 		struct Color {
-		public:
 			Color(
 				std::uint8_t r,
 				std::uint8_t g,

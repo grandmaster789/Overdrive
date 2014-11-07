@@ -216,11 +216,14 @@
     <ClInclude Include="util\exception.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="util\bitmap.h">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="util\color.h">
       <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="render\context.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\framebuffer.h">
+      <Filter>render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

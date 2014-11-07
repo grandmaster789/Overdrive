@@ -3,6 +3,7 @@
 
 #include "opengl.h"
 #include "util/color.h"
+#include <ostream>
 
 namespace overdrive {
 	namespace render {
@@ -186,11 +187,31 @@ namespace overdrive {
 				eInternalFormat internalFormat = eInternalFormat::RGBA
 			);
 
-			void setWrapping(eWrapping s, eWrapping t);
-			void setFilters(eFilter mini, eFilter mag);
-			void setBorder(const util::Color& c);
+			void setWrapping(eWrapping s, eWrapping t); // defaults to CLAMP_TO_EDGE
+			void setFilters(eFilter mini, eFilter mag);	// defaults to LINEAR_MIPMAP_LINEAR + LINEAR
+			void setBorder(const util::Color& c);		// defaults to black
+
+			void generateMipmaps();
+		
+		private:
+			// helper class that stores the currently bound texture handle and restores it upon destruction
+			class TexGuard {
+			public:
+				TexGuard();
+				TexGuard(const TexGuard&) = delete;
+				~TexGuard();
+
+			private:
+				GLint mCurrentTextureBinding;
+			};
 		};
 	}
 }
+
+std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eDataType& datatype);
+std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eFilter& filter);
+std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eFormat& format);
+std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eInternalFormat& format);
+std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eWrapping& wrapping);
 
 #endif

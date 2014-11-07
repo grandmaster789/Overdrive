@@ -37,7 +37,7 @@ namespace overdrive {
 
 			#pragma warning(push)
 			#pragma warning(disable: 4996) // the call to 'localtime' is 'unsafe'...
-				sstr << std::put_time(std::localtime(&timeStruct), "%Y/%m/%d %H:%M:%S"); // year/month/day hour/minutes/seconds
+				sstr << std::put_time(std::localtime(&timeStruct), "%H:%M:%S"); // hour/minutes/seconds
 			#pragma warning(pop)
 
 			return sstr.str();

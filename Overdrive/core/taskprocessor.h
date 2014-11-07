@@ -2,12 +2,9 @@
 #define OVERDRIVE_CORE_TASKPROCESSOR_H
 
 #include "core/task.h"
-//#include "util/concurrent_queue.h"
 #include "util/concurrent_vector.h"
-
 #include <cstdint>
 #include <boost/thread.hpp>
-#include <boost/lockfree/queue.hpp>
 
 namespace overdrive {
 	namespace core {

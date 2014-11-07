@@ -6,7 +6,8 @@ namespace overdrive {
 	namespace core {
 		namespace detail {
 			/*** WrappedTask ***/
-			WrappedTask::WrappedTask() {}
+			WrappedTask::WrappedTask() {
+			}
 
 			WrappedTask::WrappedTask(Task task, bool repeating, bool background):
 				mUnwrappedTask{ std::move(task) }
@@ -21,7 +22,7 @@ namespace overdrive {
 					boost::this_thread::interruption_point();
 				}
 				catch (const boost::thread_interrupted&) {
-					// interrupted thread is not really an error
+					// I don't really consider interrupted thread an error, so catch and ignore
 				}
 
 				try {

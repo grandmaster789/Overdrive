@@ -136,6 +136,8 @@
     <ClInclude Include="math\conversions.h" />
     <ClInclude Include="opengl.h" />
     <ClInclude Include="preprocessor.h" />
+    <ClInclude Include="render\context.h" />
+    <ClInclude Include="render\framebuffer.h" />
     <ClInclude Include="render\render.h" />
     <ClInclude Include="render\shader.h" />
     <ClInclude Include="render\shaderprogram.h" />
@@ -146,7 +148,6 @@
     <ClInclude Include="test\input\input_test.h" />
     <ClInclude Include="test\test.h" />
     <ClInclude Include="test\util\util_test.h" />
-    <ClInclude Include="util\bitmap.h" />
     <ClInclude Include="util\checkGL.h" />
     <ClInclude Include="util\checkRange.h" />
     <ClInclude Include="util\color.h" />

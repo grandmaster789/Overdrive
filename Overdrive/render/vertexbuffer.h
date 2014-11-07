@@ -69,7 +69,7 @@ namespace overdrive {
 		// -------- implementation ----------
 		template <typename T>
 		void VertexData::add(const T& value) {
-			// [TODO] this could be optimized more
+			// [TODO] this could be optimized more; create overloads for actually used types?
 
 			std::uint8_t* bytes = reinterpret_cast<std::uint8_t*>(&value);
 
