@@ -35,6 +35,7 @@ namespace overdrive {
 			void remove(std::string systemName);
 			void remove(System* system);
 
+			bool initialize(); // initializes all subsystems (except for the Application)
 			void run();
 			void stop();
 

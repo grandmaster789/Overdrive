@@ -8,13 +8,8 @@
 
 #include "video/video.h"
 #include "input/input.h"
-#include "input/keyboard.h"
-#include "input/mouse.h"
-#include "input/joystick.h"
 
 #include "test/test.h"
-
-#include <sstream>
 
 using namespace overdrive;
 
@@ -25,6 +20,8 @@ int main() {
 	
 	engine.add(new overdrive::video::Video);
 	engine.add(new overdrive::input::Input);
+
+	engine.initialize(); // initialize all engine components so the application has a working environment
 
 	//engine.setApplication(new overdrive::app::SpinningCube);
 	engine.setApplication(new overdrive::app::RenderTest);

@@ -35,13 +35,13 @@ namespace overdrive {
 			render::ShaderProgram mShaderProgram;
 
 			// openGL resources cannot be created until after engine initialization is completed!
-			std::unique_ptr<render::VertexBuffer> mVertices;
-			std::unique_ptr<render::VertexBuffer> mNormals;
-			std::unique_ptr<render::VertexBuffer> mTexCoords;
-			std::unique_ptr<render::VertexBuffer> mIndices;
+			render::VertexBuffer mVertices;
+			render::VertexBuffer mNormals;
+			render::VertexBuffer mTexCoords;
+			render::VertexBuffer mIndices;
 			GLsizei mNumElements;
 
-			std::unique_ptr<render::VertexArray> mVertexArray;
+			render::VertexArray mVertexArray;
 		};
 	}
 }

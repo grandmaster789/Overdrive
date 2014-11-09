@@ -16,13 +16,6 @@ namespace overdrive {
 		bool RenderTest::initialize() {
 			System::initialize();
 
-			mVertices = std::make_unique<render::VertexBuffer>();
-			mNormals = std::make_unique<render::VertexBuffer>();
-			mTexCoords = std::make_unique<render::VertexBuffer>();
-			mIndices = std::make_unique<render::VertexBuffer>();
-
-			mVertexArray = std::make_unique<render::VertexArray>();
-
 			glClearColor(0.1f, 0.0f, 0.0f, 0.0f);
 			glEnable(GL_DEPTH_TEST);
 
@@ -83,7 +76,7 @@ namespace overdrive {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			glBindVertexArray(mVertexArray->getHandle());
+			glBindVertexArray(mVertexArray.getHandle());
 			glDrawElements(GL_TRIANGLES, mNumElements, GL_UNSIGNED_INT, nullptr);
 		}
 
@@ -249,15 +242,15 @@ namespace overdrive {
 
 			mNumElements = sizeof(indices) / sizeof(indices[0]);
 
-			mVertices->setData(&vertices, sizeof(vertices), eBufferUsage::STATIC_DRAW);
-			mNormals->setData(&normals, sizeof(normals), eBufferUsage::STATIC_DRAW);
-			mTexCoords->setData(&texCoords, sizeof(texCoords), eBufferUsage::STATIC_DRAW);
-			mIndices->setData(&indices, sizeof(indices), eBufferUsage::STATIC_DRAW);
+			mVertices.setData(&vertices, sizeof(vertices), eBufferUsage::STATIC_DRAW);
+			mNormals.setData(&normals, sizeof(normals), eBufferUsage::STATIC_DRAW);
+			mTexCoords.setData(&texCoords, sizeof(texCoords), eBufferUsage::STATIC_DRAW);
+			mIndices.setData(&indices, sizeof(indices), eBufferUsage::STATIC_DRAW);
 			
-			mVertexArray->bindAttribute(0, *mVertices, eElementType::FLOAT, 3);
-			mVertexArray->bindAttribute(1, *mNormals, eElementType::FLOAT, 3);
-			mVertexArray->bindAttribute(2, *mTexCoords, eElementType::FLOAT, 2);
-			mVertexArray->bindElements(*mIndices);
+			mVertexArray.bindAttribute(0, mVertices, eElementType::FLOAT, 3);
+			mVertexArray.bindAttribute(1, mNormals, eElementType::FLOAT, 3);
+			mVertexArray.bindAttribute(2, mTexCoords, eElementType::FLOAT, 2);
+			mVertexArray.bindElements(mIndices);
 		}
 	}
 }

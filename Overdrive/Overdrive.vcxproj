@@ -99,6 +99,7 @@
     <ClCompile Include="input\keyboard.cpp" />
     <ClCompile Include="input\mouse.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="render\renderbuffer.cpp" />
     <ClCompile Include="render\shader.cpp" />
     <ClCompile Include="render\shaderprogram.cpp" />
     <ClCompile Include="render\texture.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="render\context.h" />
     <ClInclude Include="render\framebuffer.h" />
     <ClInclude Include="render\render.h" />
+    <ClInclude Include="render\renderbuffer.h" />
     <ClInclude Include="render\shader.h" />
     <ClInclude Include="render\shaderprogram.h" />
     <ClInclude Include="render\texture.h" />

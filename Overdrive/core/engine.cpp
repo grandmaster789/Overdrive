@@ -87,14 +87,29 @@ namespace overdrive {
 			}
 		}
 
-		void Engine::run() {
+		bool Engine::initialize() {
 			if (initializeDependencies()) {
 				initializeSystems();
-				mTaskProcessor.start();
-				shutdownSystems();
-
-				shutdownDependencies();
+				return true;
 			}
+			else
+				return false;
+		}
+
+		void Engine::run() {
+			// if an application was set, initialize it
+			if (mApplication) {
+				if (!mApplication->initialize())
+					gLog.error() << "Failed to initialize application: " << mApplication->getName();
+			}
+			else {
+				gLog << "No application was set, running in unit test mode";
+			}
+
+			mTaskProcessor.start(); // start the main loop
+			
+			shutdownSystems();
+			shutdownDependencies();
 		}
 		
 		void Engine::stop() {
@@ -115,10 +130,7 @@ namespace overdrive {
 					gLog.error() << "Failed to initialize subsystem: " << system->getName();
 			}
 
-			// if an application was set, initialize it as well
-			if (mApplication)
-				if (!mApplication->initialize())
-					gLog.error() << "Failed to initialize application: " << mApplication->getName();
+			
 		}
 
 		void Engine::shutdownSystems() {
