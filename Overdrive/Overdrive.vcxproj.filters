@@ -104,6 +104,9 @@
     <ClCompile Include="render\texture3D.cpp">
       <Filter>render</Filter>
     </ClCompile>
+    <ClCompile Include="app\rendertest.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -242,6 +245,9 @@
     </ClInclude>
     <ClInclude Include="render\texture3D.h">
       <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="app\rendertest.h">
+      <Filter>application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

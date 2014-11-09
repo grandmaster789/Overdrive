@@ -64,7 +64,7 @@ namespace overdrive {
 			VideoMode::VideoMode() {
 			}
 
-			VideoMode::VideoMode(const GLFWvidmode source) :
+			VideoMode::VideoMode(const GLFWvidmode& source) :
 				mWidth(source.width),
 				mHeight(source.height),
 				mRedBits(source.redBits),

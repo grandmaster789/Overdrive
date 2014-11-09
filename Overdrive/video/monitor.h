@@ -64,7 +64,7 @@ namespace overdrive {
 		namespace detail {
 			struct VideoMode {
 				VideoMode();
-				VideoMode(const GLFWvidmode source);
+				VideoMode(const GLFWvidmode& source);
 				VideoMode(const GLFWvidmode* source);
 
 				int mWidth = 0;

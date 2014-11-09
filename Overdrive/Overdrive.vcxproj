@@ -85,6 +85,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app\application.cpp" />
+    <ClCompile Include="app\rendertest.cpp" />
     <ClCompile Include="app\spinningcube.cpp" />
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\engine.cpp" />
@@ -122,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\application.h" />
+    <ClInclude Include="app\rendertest.h" />
     <ClInclude Include="app\spinningcube.h" />
     <ClInclude Include="core\channel.h" />
     <ClInclude Include="core\channelQueue.h" />
