@@ -12,7 +12,7 @@ namespace overdrive {
 			RenderBuffer(
 				unsigned int width, 
 				unsigned int height, 
-				Texture::eInternalFormat internalFormat
+				eInternalFormat internalFormat
 			);
 			RenderBuffer(const RenderBuffer&) = delete;
 			~RenderBuffer();
@@ -24,7 +24,7 @@ namespace overdrive {
 			void setStorage(
 				unsigned int width,
 				unsigned int height,
-				Texture::eInternalFormat internalFormat
+				eInternalFormat internalFormat
 			);
 
 			GLuint getHandle() const;

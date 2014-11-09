@@ -110,6 +110,12 @@
     <ClCompile Include="render\renderbuffer.cpp">
       <Filter>render</Filter>
     </ClCompile>
+    <ClCompile Include="render\context.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\framebuffer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />

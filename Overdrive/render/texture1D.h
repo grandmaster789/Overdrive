@@ -9,14 +9,16 @@ namespace overdrive {
 			public Texture
 		{
 		public:
+			explicit Texture1D();
 			Texture1D(
 				const void* data,
 				unsigned int imageSize,
 				eFormat format = eFormat::RGBA,
 				eDataType dataType = eDataType::UNSIGNED_BYTE,
 				eInternalFormat internalFormat = eInternalFormat::RGBA
-				);
+			);
 
+			void bind();
 			void setWrapping(eWrapping s);
 			void setFilters(eFilter mini, eFilter mag);
 			void setBorder(const util::Color& c);

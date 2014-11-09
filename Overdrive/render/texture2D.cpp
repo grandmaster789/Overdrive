@@ -3,6 +3,11 @@
 
 namespace overdrive {
 	namespace render {
+		Texture2D::Texture2D():
+			Texture()
+		{
+		}
+
 		Texture2D::Texture2D(
 			const void* data,
 			unsigned int imageWidth,
@@ -28,7 +33,7 @@ namespace overdrive {
 				static_cast<GLenum>(mFormat),			// format
 				static_cast<GLenum>(mDataType),			// data type
 				data									// pointer to actual pixeldata
-				);
+			);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -38,6 +43,10 @@ namespace overdrive {
 			glGenerateMipmap(GL_TEXTURE_2D);
 
 			CHECK_GL_STATE;
+		}
+
+		void Texture2D::bind() {
+			glBindTexture(GL_TEXTURE_2D, mHandle);
 		}
 
 		void Texture2D::setWrapping(eWrapping s, eWrapping t) {

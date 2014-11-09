@@ -20,38 +20,38 @@ namespace overdrive {
 			ALL
 		};
 
-		enum class eDrawingMode {
-			TRIANGLES,
-			LINES,
-			POINTS
+		enum class eDrawingMode: GLint {
+			TRIANGLES = GL_TRIANGLES,
+			LINES = GL_LINES,
+			POINTS = GL_POINTS
 		};
 
-		enum class eCullFace {
-			FRONT,
-			BACK,
-			FRONT_AND_BACK
+		enum class eCullFace: GLenum {
+			FRONT = GL_FRONT,
+			BACK = GL_BACK,
+			FRONT_AND_BACK = GL_FRONT_AND_BACK
 		};
 
-		enum class eTestFunction {
-			NEVER,
-			ALWAYS,
-			LESS,
-			LESS_EQUAL,
-			GREATER,
-			GREATER_EQUAL,
-			EQUAL,
-			NOT_EQUAL
+		enum class eTestFunction: GLenum {
+			NEVER = GL_NEVER,
+			ALWAYS = GL_ALWAYS,
+			LESS = GL_LESS,
+			LESS_EQUAL = GL_LEQUAL,
+			GREATER = GL_GREATER,
+			GREATER_EQUAL = GL_GEQUAL,
+			EQUAL = GL_EQUAL,
+			NOT_EQUAL = GL_NOTEQUAL
 		};
 
-		enum class eStencilOperation {
-			KEEP,
-			ZERO,
-			REPLACE,
-			INCREASE,
-			INCREASE_WRAP,
-			DECREASE,
-			DECREASE_WRAP,
-			INVERT
+		enum class eStencilOperation: GLenum {
+			KEEP = GL_KEEP,
+			ZERO = GL_ZERO,
+			REPLACE = GL_REPLACE,
+			INCREASE = GL_INCR,
+			INCREASE_WRAP = GL_INCR_WRAP,
+			DECREASE = GL_DECR,
+			DECREASE_WRAP = GL_DECR_WRAP,
+			INVERT = GL_INVERT
 		};
 
 		class Context {

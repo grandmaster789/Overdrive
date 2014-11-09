@@ -10,7 +10,7 @@ namespace overdrive {
 		RenderBuffer::RenderBuffer(
 			unsigned int width, 
 			unsigned int height, 
-			Texture::eInternalFormat format
+			eInternalFormat format
 		):
 			RenderBuffer()
 		{
@@ -29,7 +29,7 @@ namespace overdrive {
 		void RenderBuffer::setStorage(
 			unsigned int width,
 			unsigned int height,
-			Texture::eInternalFormat internalFormat
+			eInternalFormat internalFormat
 		) {
 			glBindBuffer(GL_RENDERBUFFER, mHandle);
 			glRenderbufferStorage(

@@ -3,6 +3,11 @@
 
 namespace overdrive {
 	namespace render {
+		Texture3D::Texture3D():
+			Texture()
+		{
+		}
+
 		Texture3D::Texture3D(
 			const void* data,
 			unsigned int imageWidth,
@@ -42,6 +47,10 @@ namespace overdrive {
 			glGenerateMipmap(GL_TEXTURE_3D);
 
 			CHECK_GL_STATE;
+		}
+
+		void Texture3D::bind() {
+			glBindTexture(GL_TEXTURE_3D, mHandle);
 		}
 
 		void Texture3D::setWrapping(eWrapping s, eWrapping t, eWrapping r) {

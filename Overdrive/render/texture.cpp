@@ -3,6 +3,15 @@
 
 namespace overdrive {
 	namespace render {
+		Texture::Texture():
+			mFormat(eFormat::RGBA),
+			mInternalFormat(eInternalFormat::RGBA),
+			mDataType(eDataType::FLOAT)
+		{
+			glGenTextures(1, &mHandle);
+			assert(mHandle);
+		}
+
 		Texture::Texture(
 			eFormat format,
 			eDataType dataType,
@@ -26,85 +35,85 @@ namespace overdrive {
 	}
 }
 
-std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eDataType& datatype) {
-	using overdrive::render::Texture;
+std::ostream& operator << (std::ostream& os, const overdrive::render::eDataType& datatype) {
+	using overdrive::render::eDataType;
 
 	os << "Texture data type: ";
 
 	switch (datatype) {
-	case Texture::eDataType::BYTE:
+	case eDataType::BYTE:
 		os << "byte";
 		break;
 
-	case Texture::eDataType::SHORT:
+	case eDataType::SHORT:
 		os << "short";
 		break;
 
-	case Texture::eDataType::INT:
+	case eDataType::INT:
 		os << "int";
 		break;
 
-	case Texture::eDataType::UNSIGNED_BYTE:
+	case eDataType::UNSIGNED_BYTE:
 		os << "unsigned byte";
 		break;
 
-	case Texture::eDataType::UNSIGNED_SHORT:
+	case eDataType::UNSIGNED_SHORT:
 		os << "unsigned short";
 		break;
 
-	case Texture::eDataType::UNSIGNED_INT:
+	case eDataType::UNSIGNED_INT:
 		os << "unsigned int";
 		break;
 
-	case Texture::eDataType::FLOAT:
+	case eDataType::FLOAT:
 		os << "float";
 		break;
 
-	case Texture::eDataType::DOUBLE:
+	case eDataType::DOUBLE:
 		os << "double";
 		break;
 
-	case Texture::eDataType::UNSIGNED_BYTE_332:
+	case eDataType::UNSIGNED_BYTE_332:
 		os << "byte (332)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_BYTE_233_REV:
+	case eDataType::UNSIGNED_BYTE_233_REV:
 		os << "byte (332 reversed)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_SHORT_565:
+	case eDataType::UNSIGNED_SHORT_565:
 		os << "unsigned short (565)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_SHORT_565_REV:
+	case eDataType::UNSIGNED_SHORT_565_REV:
 		os << "unsigned short (565 reversed)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_SHORT_4444:
+	case eDataType::UNSIGNED_SHORT_4444:
 		os << "unsigned short (4444)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_SHORT_4444_REV:
+	case eDataType::UNSIGNED_SHORT_4444_REV:
 		os << "unsigned short (4444 reversed)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_SHORT_5551:
+	case eDataType::UNSIGNED_SHORT_5551:
 		os << "unsigned short (5551)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_SHORT_1555_REV:
+	case eDataType::UNSIGNED_SHORT_1555_REV:
 		os << "unsigned short (1555 reversed)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_INT_8888:
+	case eDataType::UNSIGNED_INT_8888:
 		os << "unsigned int (8888)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_INT_8888_REV:
+	case eDataType::UNSIGNED_INT_8888_REV:
 		os << "unsigned int (8888 reversed)";
 		break;
 
-	case Texture::eDataType::UNSIGNED_INT_1010102:
+	case eDataType::UNSIGNED_INT_1010102:
 		os << "unsigned int (1010102)";
 		break;
 
@@ -115,33 +124,33 @@ std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::e
 	return os;
 }
 
-std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eFilter& filter) {
-	using overdrive::render::Texture;
+std::ostream& operator << (std::ostream& os, const overdrive::render::eFilter& filter) {
+	using overdrive::render::eFilter;
 
 	os << "Texture filter: ";
 
 	switch (filter) {
-	case Texture::eFilter::NEAREST:
+	case eFilter::NEAREST:
 		os << "nearest";
 		break;
 
-	case Texture::eFilter::LINEAR:
+	case eFilter::LINEAR:
 		os << "linear";
 		break;
 
-	case Texture::eFilter::NEAREST_MIPMAP_NEAREST:
+	case eFilter::NEAREST_MIPMAP_NEAREST:
 		os << "nearest mipmap nearest";
 		break;
 
-	case Texture::eFilter::NEAREST_MIPMAP_LINEAR:
+	case eFilter::NEAREST_MIPMAP_LINEAR:
 		os << "nearest mipmap linear";
 		break;
 
-	case Texture::eFilter::LINEAR_MIPMAP_NEAREST:
+	case eFilter::LINEAR_MIPMAP_NEAREST:
 		os << "linear mipmap nearest";
 		break;
 
-	case Texture::eFilter::LINEAR_MIPMAP_LINEAR:
+	case eFilter::LINEAR_MIPMAP_LINEAR:
 		os << "linear mipmap linear";
 		break;
 
@@ -152,29 +161,29 @@ std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::e
 	return os;
 }
 
-std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eFormat& format) {
-	using overdrive::render::Texture;
+std::ostream& operator << (std::ostream& os, const overdrive::render::eFormat& format) {
+	using overdrive::render::eFormat;
 
 	os << "Texture format: ";
 
 	switch (format) {
-	case Texture::eFormat::RED:
+	case eFormat::RED:
 		os << "red";
 		break;
 
-	case Texture::eFormat::RGB:
+	case eFormat::RGB:
 		os << "rgb";
 		break;
 
-	case Texture::eFormat::BGR:
+	case eFormat::BGR:
 		os << "bgr";
 		break;
 
-	case Texture::eFormat::RGBA:
+	case eFormat::RGBA:
 		os << "rgba";
 		break;
 
-	case Texture::eFormat::BGRA:
+	case eFormat::BGRA:
 		os << "bgra";
 		break;
 
@@ -185,305 +194,305 @@ std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::e
 	return os;
 }
 
-std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eInternalFormat& format) {
-	using overdrive::render::Texture;
+std::ostream& operator << (std::ostream& os, const overdrive::render::eInternalFormat& format) {
+	using overdrive::render::eInternalFormat;
 
 	os << "Texture internal format: ";
 
 	switch (format) {
-	case Texture::eInternalFormat::COMPRESSED_RED:
+	case eInternalFormat::COMPRESSED_RED:
 		os << "compressed red";
 		break;
 
-	case Texture::eInternalFormat::COMPRESSED_RG:
+	case eInternalFormat::COMPRESSED_RG:
 		os << "compressed RG";
 		break;
 
-	case Texture::eInternalFormat::COMPRESSED_RED_RGTC1:
+	case eInternalFormat::COMPRESSED_RED_RGTC1:
 		os << "compressed RGTC1";
 		break;
 
-	case Texture::eInternalFormat::COMPRESSED_RGB:
+	case eInternalFormat::COMPRESSED_RGB:
 		os << "compressed RGB";
 		break;
 
-	case Texture::eInternalFormat::COMPRESSED_RGBA:
+	case eInternalFormat::COMPRESSED_RGBA:
 		os << "compressed RGBA";
 		break;
 
-	case Texture::eInternalFormat::COMPRESSED_RGRGTC2:
+	case eInternalFormat::COMPRESSED_RGRGTC2:
 		os << "compressed RGRGTC2";
 		break;
 
-	case Texture::eInternalFormat::COMPRESSED_SIGNED_RED_RGTC1:
+	case eInternalFormat::COMPRESSED_SIGNED_RED_RGTC1:
 		os << "compressed signed red RGTC1";
 		break;
 
-	case Texture::eInternalFormat::COMPRESSED_SIGNED_RG_RGTC2:
+	case eInternalFormat::COMPRESSED_SIGNED_RG_RGTC2:
 		os << "compressed signed RG RGTC2";
 		break;
 
-	case Texture::eInternalFormat::COMPRESSED_SRGB:
+	case eInternalFormat::COMPRESSED_SRGB:
 		os << "compressed sRGB";
 		break;
 
-	case Texture::eInternalFormat::DEPTH_STENCIL:
+	case eInternalFormat::DEPTH_STENCIL:
 		os << "depth stencil";
 		break;
 
-	case Texture::eInternalFormat::DEPTH24_STENCIL8:
+	case eInternalFormat::DEPTH24_STENCIL8:
 		os << "depth(24) stencil(8)";
 		break;
 
-	case Texture::eInternalFormat::DEPTH32F_STENCIL8:
+	case eInternalFormat::DEPTH32F_STENCIL8:
 		os << "depth(32f) stencil(8)";
 		break;
 
-	case Texture::eInternalFormat::DEPTH_COMPONENT:
+	case eInternalFormat::DEPTH_COMPONENT:
 		os << "depth component";
 		break;
 
-	case Texture::eInternalFormat::DEPTH_COMPONENT16:
+	case eInternalFormat::DEPTH_COMPONENT16:
 		os << "depth component(16)";
 		break;
 
-	case Texture::eInternalFormat::DEPTH_COMPONENT24:
+	case eInternalFormat::DEPTH_COMPONENT24:
 		os << "depth component(24)";
 		break;
 
-	case Texture::eInternalFormat::DEPTH_COMPONENT32F:
+	case eInternalFormat::DEPTH_COMPONENT32F:
 		os << "depth component(32f)";
 		break;
 
-	case Texture::eInternalFormat::RED:
+	case eInternalFormat::RED:
 		os << "red";
 		break;
 
-	case Texture::eInternalFormat::RG:
+	case eInternalFormat::RG:
 		os << "RG";
 		break;
 
-	case Texture::eInternalFormat::RGB:
+	case eInternalFormat::RGB:
 		os << "RGB";
 		break;
 
-	case Texture::eInternalFormat::RGB4:
+	case eInternalFormat::RGB4:
 		os << "RGB(4)";
 		break;
 
-	case Texture::eInternalFormat::RGB5:
+	case eInternalFormat::RGB5:
 		os << "RGB(5)";
 		break;
 
-	case Texture::eInternalFormat::RGB5_A1:
+	case eInternalFormat::RGB5_A1:
 		os << "RGB(5) A(1)";
 		break;
 
-	case Texture::eInternalFormat::RGBA:
+	case eInternalFormat::RGBA:
 		os << "RGBA";
 		break;
 
-	case Texture::eInternalFormat::RGBA2:
+	case eInternalFormat::RGBA2:
 		os << "RGBA(2)";
 		break;
 
-	case Texture::eInternalFormat::RGBA4:
+	case eInternalFormat::RGBA4:
 		os << "RGBA(4)";
 		break;
 
-	case Texture::eInternalFormat::R8:
+	case eInternalFormat::R8:
 		os << "R(8)";
 		break;
 
-	case Texture::eInternalFormat::R8I:
+	case eInternalFormat::R8I:
 		os << "R(8i)";
 		break;
 
-	case Texture::eInternalFormat::R8UI:
+	case eInternalFormat::R8UI:
 		os << "R(8ui)";
 		break;
 
-	case Texture::eInternalFormat::RG8:
+	case eInternalFormat::RG8:
 		os << "RG(8)";
 		break;
 
-	case Texture::eInternalFormat::RG8I:
+	case eInternalFormat::RG8I:
 		os << "RG(8i)";
 		break;
 
-	case Texture::eInternalFormat::RG8UI:
+	case eInternalFormat::RG8UI:
 		os << "RG(8ui)";
 		break;
 
-	case Texture::eInternalFormat::RGB8:
+	case eInternalFormat::RGB8:
 		os << "RGB(8)";
 		break;
 
-	case Texture::eInternalFormat::RGB8I:
+	case eInternalFormat::RGB8I:
 		os << "RGB(8i)";
 		break;
 
-	case Texture::eInternalFormat::RGB8UI:
+	case eInternalFormat::RGB8UI:
 		os << "RGB(8ui)";
 		break;
 
-	case Texture::eInternalFormat::RGBA8:
+	case eInternalFormat::RGBA8:
 		os << "RGBA(8)";
 		break;
 
-	case Texture::eInternalFormat::RGBA8UI:
+	case eInternalFormat::RGBA8UI:
 		os << "RGBA(8ui)";
 		break;
 
-	case Texture::eInternalFormat::RGB9E5:
+	case eInternalFormat::RGB9E5:
 		os << "RGB(9) E(5)";
 		break;
 
-	case Texture::eInternalFormat::RGB10:
+	case eInternalFormat::RGB10:
 		os << "RGB(10)";
 		break;
 
-	case Texture::eInternalFormat::RGB10A2:
+	case eInternalFormat::RGB10A2:
 		os << "RGB(10) A(2)";
 		break;
 
-	case Texture::eInternalFormat::RGB12:
+	case eInternalFormat::RGB12:
 		os << "RGB(12)";
 		break;
 
-	case Texture::eInternalFormat::RGBA12:
+	case eInternalFormat::RGBA12:
 		os << "RGBA(12)";
 		break;
 
-	case Texture::eInternalFormat::R16F:
+	case eInternalFormat::R16F:
 		os << "R(16f)";
 		break;
 
-	case Texture::eInternalFormat::R16I:
+	case eInternalFormat::R16I:
 		os << "R(16i)";
 		break;
 
-	case Texture::eInternalFormat::R16UI:
+	case eInternalFormat::R16UI:
 		os << "R(16ui)";
 		break;
 		
-	case Texture::eInternalFormat::RG16:
+	case eInternalFormat::RG16:
 		os << "RG(16)";
 		break;
 
-	case Texture::eInternalFormat::RG16F:
+	case eInternalFormat::RG16F:
 		os << "RG(16f)";
 		break;
 
-	case Texture::eInternalFormat::RGB16:
+	case eInternalFormat::RGB16:
 		os << "RGB(16)";
 		break;
 
-	case Texture::eInternalFormat::RGB16F:
+	case eInternalFormat::RGB16F:
 		os << "RGB(16f)";
 		break;
 
-	case Texture::eInternalFormat::RGB16I:
+	case eInternalFormat::RGB16I:
 		os << "RGB(16i)";
 		break;
 
-	case Texture::eInternalFormat::RGB16UI:
+	case eInternalFormat::RGB16UI:
 		os << "RGB(16ui)";
 		break;
 
-	case Texture::eInternalFormat::RGBA16:
+	case eInternalFormat::RGBA16:
 		os << "RGBA(16)";
 		break;
 
-	case Texture::eInternalFormat::RGBA16F:
+	case eInternalFormat::RGBA16F:
 		os << "RGBA(16f)";
 		break;
 
-	case Texture::eInternalFormat::RGBA16I:
+	case eInternalFormat::RGBA16I:
 		os << "RGBA(16i)";
 		break;
 
-	case Texture::eInternalFormat::RGBA16UI:
+	case eInternalFormat::RGBA16UI:
 		os << "RGBA(16ui)";
 		break;
 
-	case Texture::eInternalFormat::R32I:
+	case eInternalFormat::R32I:
 		os << "R(32i)";
 		break;
 
-	case Texture::eInternalFormat::R32F:
+	case eInternalFormat::R32F:
 		os << "R(32f)";
 		break;
 
-	case Texture::eInternalFormat::R32UI:
+	case eInternalFormat::R32UI:
 		os << "R(32ui)";
 		break;
 
-	case Texture::eInternalFormat::RG32F:
+	case eInternalFormat::RG32F:
 		os << "RG(32f)";
 		break;
 
-	case Texture::eInternalFormat::RG32I:
+	case eInternalFormat::RG32I:
 		os << "RG(32i)";
 		break;
 
-	case Texture::eInternalFormat::RG32UI:
+	case eInternalFormat::RG32UI:
 		os << "RG(32ui)";
 		break;
 
-	case Texture::eInternalFormat::RGB32F:
+	case eInternalFormat::RGB32F:
 		os << "RGB(32f)";
 		break;
 
-	case Texture::eInternalFormat::RGB32I:
+	case eInternalFormat::RGB32I:
 		os << "RGB(32i)";
 		break;
 
-	case Texture::eInternalFormat::RGB32UI:
+	case eInternalFormat::RGB32UI:
 		os << "RGB(32ui)";
 		break;
 
-	case Texture::eInternalFormat::RGBA32F:
+	case eInternalFormat::RGBA32F:
 		os << "RGBA(32f)";
 		break;
 
-	case Texture::eInternalFormat::RGBA32I:
+	case eInternalFormat::RGBA32I:
 		os << "RGBA(32i)";
 		break;
 
-	case Texture::eInternalFormat::RGBA32UI:
+	case eInternalFormat::RGBA32UI:
 		os << "RGBA(32ui)";
 		break;
 
-	case Texture::eInternalFormat::R3_G3_B2:
+	case eInternalFormat::R3_G3_B2:
 		os << "R(3) G(3) B(2)";
 		break;
 
-	case Texture::eInternalFormat::R8_SNORM:
+	case eInternalFormat::R8_SNORM:
 		os << "R(8) snorm";
 		break;
 
-	case Texture::eInternalFormat::RG8_SNORM:
+	case eInternalFormat::RG8_SNORM:
 		os << "RG(8) snorm";
 		break;
 
-	case Texture::eInternalFormat::R16_SNORM:
+	case eInternalFormat::R16_SNORM:
 		os << "R(16) snorm";
 		break;
 
-	case Texture::eInternalFormat::RG16_SNORM:
+	case eInternalFormat::RG16_SNORM:
 		os << "RG(16) snorm";
 		break;
 
-	case Texture::eInternalFormat::SRGB8:
+	case eInternalFormat::SRGB8:
 		os << "sRGB(8)";
 		break;
 
-	case Texture::eInternalFormat::SRGB8A8:
+	case eInternalFormat::SRGB8A8:
 		os << "sRGB(8) A(8)";
 		break;
 
-	case Texture::eInternalFormat::SRGBA:
+	case eInternalFormat::SRGBA:
 		os << "sRGBA";
 		break;
 
@@ -494,25 +503,25 @@ std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::e
 	return os;
 }
 
-std::ostream& operator << (std::ostream& os, const overdrive::render::Texture::eWrapping& wrapping) {
-	using overdrive::render::Texture;
+std::ostream& operator << (std::ostream& os, const overdrive::render::eWrapping& wrapping) {
+	using overdrive::render::eWrapping;
 
 	os << "Texture wrapping: ";
 
 	switch (wrapping) {
-	case Texture::eWrapping::CLAMP_EDGE:
+	case eWrapping::CLAMP_EDGE:
 		os << "clamp to edge";
 		break;
 
-	case Texture::eWrapping::CLAMP_BORDER:
+	case eWrapping::CLAMP_BORDER:
 		os << "clamp to border";
 		break;
 
-	case Texture::eWrapping::REPEAT:
+	case eWrapping::REPEAT:
 		os << "repeat";
 		break;
 
-	case Texture::eWrapping::MIRRORED_REPEAT:
+	case eWrapping::MIRRORED_REPEAT:
 		os << "mirrored repeat";
 		break;
 

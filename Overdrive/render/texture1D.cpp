@@ -3,13 +3,18 @@
 
 namespace overdrive {
 	namespace render {
+		Texture1D::Texture1D():
+			Texture()
+		{
+		}
+
 		Texture1D::Texture1D(
 			const void* data,
 			unsigned int imageSize,
 			eFormat format,
 			eDataType dataType,
 			eInternalFormat internalFormat
-			) :
+		):
 			Texture(format, dataType, internalFormat)
 		{
 			TexGuard guard;
@@ -26,7 +31,7 @@ namespace overdrive {
 				static_cast<GLenum>(mFormat),			// format
 				static_cast<GLenum>(mDataType),			// data type
 				data									// pointer to actual pixeldata
-				);
+			);
 
 			glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -35,6 +40,10 @@ namespace overdrive {
 			glGenerateMipmap(GL_TEXTURE_1D);
 
 			CHECK_GL_STATE;
+		}
+
+		void Texture1D::bind() {
+			glBindTexture(GL_TEXTURE_1D, mHandle);
 		}
 
 		void Texture1D::setWrapping(eWrapping s) {

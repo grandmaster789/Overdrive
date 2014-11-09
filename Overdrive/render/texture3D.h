@@ -9,6 +9,8 @@ namespace overdrive {
 			public Texture
 		{
 		public:
+			explicit Texture3D();
+
 			Texture3D(
 				const void* data,
 				unsigned int imageWidth,
@@ -19,6 +21,7 @@ namespace overdrive {
 				eInternalFormat internalFormat = eInternalFormat::RGBA
 			);
 
+			void bind();
 			void setWrapping(eWrapping s, eWrapping t, eWrapping r); // defaults to CLAMP_TO_EDGE
 			void setFilters(eFilter mini, eFilter mag);	// defaults to LINEAR_MIPMAP_LINEAR + LINEAR
 			void setBorder(const util::Color& c);		// defaults to black
