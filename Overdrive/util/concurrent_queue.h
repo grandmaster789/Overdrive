@@ -8,6 +8,7 @@
 
 namespace overdrive {
 	namespace util {
+		// [Note] While this works it's still a queue, which is shitty
 		template <typename T>
 		class ConcurrentQueue {
 		private:
@@ -17,86 +18,22 @@ namespace overdrive {
 			typedef std::condition_variable Condition;
 
 		public:
-			ConcurrentQueue() {}
+			ConcurrentQueue();
 			ConcurrentQueue(const ConcurrentQueue&) = delete;
 			ConcurrentQueue& operator = (const ConcurrentQueue&) = delete;
 
-			void push(const T& item) {
-				{
-					ScopedLock lock(mMutex);
-					mInternalQueue.push(item);
-				}
+			void push(const T& item);
+			void push(T&& item);
 
-				mCondition.notify_one();
-			}
+			T pop(); // Easy to use, slightly non-exception-safe but still threadsafe
+			T pop_unsafe(); // The not-so-threadsafe variant (can be safely used when the queue is being consumed completely in a while loop)
+			void pop(T& result); // This is the more exception-safe variant, also threadsafe
+			bool try_pop(T& result); // This will return false if it would block
 
-			void push(T&& item) {
-				{
-					ScopedLock lock(mMutex);
-					mInternalQueue.push(std::forward<T>(item));
-				}
+			bool isEmpty() const;
+			bool isEmpty_unsafe() const;
 
-				mCondition.notify_one();
-			}
-
-			// Easy to use, slightly non-exception-safe but threadsafe
-			T pop() {
-				UniqueLock lock(mMutex);
-				
-				while (mInternalQueue.empty())
-					mCondition.wait(lock);
-
-				auto result = std::move(mInternalQueue.front());
-				mInternalQueue.pop();
-				return result;
-			}
-
-			// The not-so-threadsafe variant (can be safely used when the queue is being consumed completely in a while loop)
-			T pop_unsafe() {
-				auto result = std::move(mInternalQueue.front());
-				mInternalQueue.pop();
-				return result;
-			}
-
-			// This is the slightly more exception-safe variant, also threadsafe
-			void pop(T& result) {
-				UniqueLock lock(mMutex);
-				
-				while (mInternalQueue.empty())
-					mCondition.wait(lock);
-
-				result = std::move(mInternalQueue.front());
-				mInternalQueue.pop();
-			}
-
-			// This will return false if it would block
-			bool try_pop(T& result) {
-				ScopedLock lock(mMutex);
-				
-				if (mInternalQueue.empty())
-					return false;
-
-				result = std::move(mInternalQueue.front());
-				mInternalQueue.pop();
-
-				return result;
-			}
-
-			bool isEmpty() const {
-				ScopedLock lock(mMutex);
-				return mInternalQueue.empty();
-			}
-
-			bool isEmpty_unsafe() const {
-				return mInternalQueue.empty();
-			}
-
-			void swap(ConcurrentQueue& cq) {
-				ScopedLock lock_other(cq.mMutex);
-				ScopedLock lock_self(mMutex);
-				
-				std::swap(cq.mInternalQueue, mInternalQueue);
-			}
+			void swap(ConcurrentQueue& cq);
 
 		private:
 			Mutex mMutex;
@@ -106,5 +43,7 @@ namespace overdrive {
 		};
 	}
 }
+
+#include "util/concurrent_queue.inl"
 
 #endif

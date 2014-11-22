@@ -7,46 +7,23 @@ namespace overdrive {
 		// and such (like std::vector) that require CopyConstructible/CopyAssignable semantics
 		template <typename tMovable>
 		struct MoveOnCopy {
-			explicit MoveOnCopy(tMovable&& object) :
-				mObject(std::move(object))
-			{
-			}
+			explicit MoveOnCopy(tMovable&& object);
+			MoveOnCopy(const MoveOnCopy& moc);
+			MoveOnCopy(MoveOnCopy&& moc);
 
-			MoveOnCopy(const MoveOnCopy& moc) :
-				mObject(std::move(moc.mObject))
-			{
-			}
+			MoveOnCopy& operator = (const MoveOnCopy& moc);
+			MoveOnCopy& operator = (MoveOnCopy&& moc);
 
-			MoveOnCopy(MoveOnCopy&& moc) :
-				mObject(std::move(moc.mObject))
-			{
-			}
+			void operator()();
 
-			MoveOnCopy& operator = (const MoveOnCopy& moc) {
-				mObject = std::move(moc.mObject);
-				return *this;
-			}
-
-			MoveOnCopy& operator = (MoveOnCopy&& moc) {
-				mObject = std::move(moc.mObject);
-				return *this;
-			}
-
-			void operator()() {
-				mObject();
-			}
-
-			tMovable& get() {
-				return mObject;
-			}
-
-			tMovable release() {
-				return std::move(mObject);
-			}
+			tMovable& get();
+			tMovable release();
 
 			mutable tMovable mObject;
 		};
 	}
 }
+
+#include "move_on_copy.inl"
 
 #endif

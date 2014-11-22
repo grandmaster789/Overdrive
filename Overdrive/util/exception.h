@@ -5,28 +5,23 @@
 #include <exception>
 
 namespace overdrive {
-	class FileException : public std::exception {
-	public:
+	struct FileException : public std::exception {
 		virtual const char* what() const throw();
 	};
 
-	class UnsupportedFormatException : public std::exception {
-	public:
+	struct UnsupportedFormatException : public std::exception {
 		virtual const char* what() const throw();
 	};
 
-	class VersionException : public std::exception {
-	public:
+	struct VersionException : public std::exception {
 		virtual const char* what() const throw();
 	};
 
-	class PixelFormatException : public std::exception {
-	public:
+	struct PixelFormatException : public std::exception {
 		virtual const char* what() const throw();
 	};
 
-	class UnsupportedOperationException : public std::exception {
-	public:
+	struct UnsupportedOperationException : public std::exception {
 		UnsupportedOperationException(const std::string& description);
 
 		virtual const char* what() const throw();

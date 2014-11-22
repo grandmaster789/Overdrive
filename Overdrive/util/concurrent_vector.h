@@ -7,6 +7,7 @@
 
 namespace overdrive {
 	namespace util {
+		// [Note] while this does work, it is also kinda shitty :(
 		template <typename T>
 		class ConcurrentVector {
 		public:
@@ -15,57 +16,16 @@ namespace overdrive {
 			typedef std::unique_lock<Mutex> UniqueLock;
 			typedef std::condition_variable Condition;
 
-			void push_back(const T& item) {
-				ScopedLock lock(mMutex);
-				mInternalVector.push_back(item);
-				mCondition.notify_all();
-			}
+			void push_back(const T& item);
+			void push_back(T&& item);
+			void pop_back(T& item);
 
-			void push_back(T&& item) {
-				ScopedLock lock(mMutex);
-				mInternalVector.push_back(std::move(item));
-				mCondition.notify_all();
-			}
+			void swap(ConcurrentVector& other);
 
-			void pop_back(T& item) {
-				UniqueLock lock(mMutex);
+			const std::vector<T>& getInternalsUnsafe() const; // no locking
+			std::vector<T> copyInternals() const;
 
-				mCondition.wait(lock, [&] { return !mInternalVector.empty(); });
-
-				if (!mInternalVector.empty()) {
-					item = std::move(mInternalVector.back());
-					mInternalVector.pop_back();
-				}
-			}
-
-			void swap(ConcurrentVector& other) {
-				ScopedLock lockSelf(mMutex);
-				ScopedLock lockOther(other.mMutex);
-
-				std::swap(mInternalVector, other.mInternalVector);
-			}
-
-			const std::vector<T>& getInternalsUnsafe() const {
-				return mInternalVector;
-			}
-
-			std::vector<T> copyInternals() const {
-				ScopedLock lock(mMutex);
-				return mInternalVector;
-			}
-
-			void remove_if(std::function<bool(const T& value)> condition) {
-				ScopedLock lock(mMutex);
-				
-				auto it = std::remove_if(
-					mInternalVector.begin(), 
-					mInternalVector.end(), 
-					condition
-				);
-
-				if (it != mInternalVector.end())
-					mInternalVector.erase(it);
-			}
+			void remove_if(std::function<bool(const T& value)> condition);
 
 		private:
 			std::vector<T> mInternalVector;
@@ -74,5 +34,7 @@ namespace overdrive {
 		};
 	}
 }
+
+#include "util/concurrent_vector.inl"
 
 #endif

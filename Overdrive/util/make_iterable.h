@@ -5,24 +5,17 @@ namespace overdrive {
 	namespace util {
 		// given a begin and end iterator (usually pointers), yield an object that allows for range-based for looping
 		// caveats apply! make sure the specified pair of iterators is actually a range!
+		// will work for pointer pairs and integer pairs (pretty much nothing else though)
+		// [TODO] add enable_if's
 		namespace detail {
 			template <typename T>
 			class Iterable {
 			public:
 				Iterable() = default;
-				Iterable(T begin, T end):
-					mBegin(begin)
-					mEnd(end)
-				{
-				}
+				Iterable(T begin, T end);
 
-				T begin() const {
-					return *mBegin;
-				}
-
-				T end() const {
-					return *mEnd;
-				}
+				T begin() const;
+				T end() const;
 
 			private:
 				T mBegin;
@@ -31,16 +24,10 @@ namespace overdrive {
 		}
 
 		template <typename T>
-		inline detail::Iterable<T> make_iterable(
-			T begin, 
-			T end
-		) {
-			return detail::Iterable(begin, end);
-		}
-
-		// http://ldionne.github.io/mlp11-cppnow-2014/
-
+		inline detail::Iterable<T> make_iterable(T begin, T end);
 	}
 }
+
+#include "make_iterable.inl"
 
 #endif

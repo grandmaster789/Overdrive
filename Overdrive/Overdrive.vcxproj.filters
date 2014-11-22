@@ -298,5 +298,26 @@
     <None Include="core\system.inl">
       <Filter>core</Filter>
     </None>
+    <None Include="util\checkRange.inl">
+      <Filter>util</Filter>
+    </None>
+    <None Include="util\make_iterable.inl">
+      <Filter>util</Filter>
+    </None>
+    <None Include="util\move_on_copy.inl">
+      <Filter>util</Filter>
+    </None>
+    <None Include="util\scope_guard.inl">
+      <Filter>util</Filter>
+    </None>
+    <None Include="util\unique_resource.inl">
+      <Filter>util</Filter>
+    </None>
+    <None Include="util\concurrent_vector.inl">
+      <Filter>util</Filter>
+    </None>
+    <None Include="util\concurrent_queue.inl">
+      <Filter>util</Filter>
+    </None>
   </ItemGroup>
 </Project>

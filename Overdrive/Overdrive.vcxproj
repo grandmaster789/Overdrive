@@ -172,6 +172,13 @@
     <None Include="render\vertexbuffer.inl" />
     <None Include="shaders\diffuse.fs" />
     <None Include="shaders\diffuse.vs" />
+    <None Include="util\checkRange.inl" />
+    <None Include="util\concurrent_queue.inl" />
+    <None Include="util\concurrent_vector.inl" />
+    <None Include="util\make_iterable.inl" />
+    <None Include="util\move_on_copy.inl" />
+    <None Include="util\scope_guard.inl" />
+    <None Include="util\unique_resource.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
