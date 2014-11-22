@@ -80,40 +80,19 @@
     <ClCompile Include="util\checkGL.cpp">
       <Filter>util</Filter>
     </ClCompile>
-    <ClCompile Include="render\vertexbuffer.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\vertexarray.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
     <ClCompile Include="util\exception.cpp">
       <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="render\texture.cpp">
-      <Filter>render</Filter>
     </ClCompile>
     <ClCompile Include="util\color.cpp">
       <Filter>util</Filter>
     </ClCompile>
-    <ClCompile Include="render\texture1D.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\texture2D.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\texture3D.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
     <ClCompile Include="app\rendertest.cpp">
       <Filter>application</Filter>
     </ClCompile>
-    <ClCompile Include="render\renderbuffer.cpp">
+    <ClCompile Include="render\vertexarray.cpp">
       <Filter>render</Filter>
     </ClCompile>
-    <ClCompile Include="render\context.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\framebuffer.cpp">
+    <ClCompile Include="render\enumerations.cpp">
       <Filter>render</Filter>
     </ClCompile>
   </ItemGroup>
@@ -219,20 +198,8 @@
     <ClInclude Include="util\checkGL.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="render\render.h">
-      <Filter>render</Filter>
-    </ClInclude>
     <ClInclude Include="util\make_iterable.h">
       <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="render\vertexbuffer.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\vertexarray.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\texture.h">
-      <Filter>render</Filter>
     </ClInclude>
     <ClInclude Include="util\exception.h">
       <Filter>util</Filter>
@@ -240,25 +207,16 @@
     <ClInclude Include="util\color.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="render\context.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\framebuffer.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\texture1D.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\texture2D.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\texture3D.h">
-      <Filter>render</Filter>
-    </ClInclude>
     <ClInclude Include="app\rendertest.h">
       <Filter>application</Filter>
     </ClInclude>
-    <ClInclude Include="render\renderbuffer.h">
+    <ClInclude Include="render\vertexbuffer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\vertexarray.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\enumerations.h">
       <Filter>render</Filter>
     </ClInclude>
   </ItemGroup>
@@ -315,6 +273,9 @@
     </None>
     <None Include="shaders\diffuse.fs">
       <Filter>shaders</Filter>
+    </None>
+    <None Include="render\vertexbuffer.inl">
+      <Filter>render</Filter>
     </None>
   </ItemGroup>
 </Project>

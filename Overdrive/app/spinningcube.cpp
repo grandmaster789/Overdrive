@@ -109,6 +109,8 @@ namespace overdrive {
 		void SpinningCube::createCube(float size) {
 			float halfSide = size * 0.5f;
 
+			// declare a cube as six quads (two triangles each)
+
 			float vertices[] = {
 				// Front
 				-halfSide, -halfSide, halfSide,

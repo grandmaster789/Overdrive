@@ -1,6 +1,7 @@
 #ifndef OVERDRIVE_UTIL_EXCEPTION_H
 #define OVERDRIVE_UTIL_EXCEPTION_H
 
+#include <string>
 #include <exception>
 
 namespace overdrive {
@@ -22,6 +23,16 @@ namespace overdrive {
 	class PixelFormatException : public std::exception {
 	public:
 		virtual const char* what() const throw();
+	};
+
+	class UnsupportedOperationException : public std::exception {
+	public:
+		UnsupportedOperationException(const std::string& description);
+
+		virtual const char* what() const throw();
+
+	private:
+		std::string mDescription;
 	};
 }
 

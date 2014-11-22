@@ -21,4 +21,17 @@ namespace overdrive {
 		gLog.error() << "Pixel format exception thrown -- no pixel format could be found that supports the specified buffer depths (and antialiasing settings)";
 		return "Pixel format exception thrown";
 	}
+
+	UnsupportedOperationException::UnsupportedOperationException(const std::string& description) :
+		mDescription(description) 
+	{
+	}
+
+	const char* UnsupportedOperationException::what() const {
+		std::string message = "Unsupported operation exception thrown : " + mDescription;
+
+		gLog.error() << message;
+
+		return message.c_str();
+	}
 }

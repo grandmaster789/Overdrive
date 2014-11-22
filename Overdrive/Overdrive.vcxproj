@@ -99,17 +99,10 @@
     <ClCompile Include="input\keyboard.cpp" />
     <ClCompile Include="input\mouse.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="render\context.cpp" />
-    <ClCompile Include="render\framebuffer.cpp" />
-    <ClCompile Include="render\renderbuffer.cpp" />
+    <ClCompile Include="render\enumerations.cpp" />
     <ClCompile Include="render\shader.cpp" />
     <ClCompile Include="render\shaderprogram.cpp" />
-    <ClCompile Include="render\texture.cpp" />
-    <ClCompile Include="render\texture1D.cpp" />
-    <ClCompile Include="render\texture2D.cpp" />
-    <ClCompile Include="render\texture3D.cpp" />
     <ClCompile Include="render\vertexarray.cpp" />
-    <ClCompile Include="render\vertexbuffer.cpp" />
     <ClCompile Include="test\core\test_channel.cpp" />
     <ClCompile Include="test\core\test_logger.cpp" />
     <ClCompile Include="test\input\test_joy_recv.cpp" />
@@ -144,16 +137,9 @@
     <ClInclude Include="math\conversions.h" />
     <ClInclude Include="opengl.h" />
     <ClInclude Include="preprocessor.h" />
-    <ClInclude Include="render\context.h" />
-    <ClInclude Include="render\framebuffer.h" />
-    <ClInclude Include="render\render.h" />
-    <ClInclude Include="render\renderbuffer.h" />
+    <ClInclude Include="render\enumerations.h" />
     <ClInclude Include="render\shader.h" />
     <ClInclude Include="render\shaderprogram.h" />
-    <ClInclude Include="render\texture.h" />
-    <ClInclude Include="render\texture1D.h" />
-    <ClInclude Include="render\texture2D.h" />
-    <ClInclude Include="render\texture3D.h" />
     <ClInclude Include="render\vertexarray.h" />
     <ClInclude Include="render\vertexbuffer.h" />
     <ClInclude Include="test\core\core_test.h" />
@@ -176,6 +162,7 @@
     <ClInclude Include="video\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="render\vertexbuffer.inl" />
     <None Include="shaders\diffuse.fs" />
     <None Include="shaders\diffuse.vs" />
   </ItemGroup>

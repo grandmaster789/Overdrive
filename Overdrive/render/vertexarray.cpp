@@ -16,41 +16,28 @@ namespace overdrive {
 		GLuint VertexArray::getHandle() const {
 			return mHandle;
 		}
-		
-		void VertexArray::bindAttribute(
-			GLuint location,
-			const VertexBuffer& buffer,
-			eElementType type,
-			GLint numElements,
-			GLsizei stride,
-			const GLvoid* offset
-		) {
+
+		void VertexArray::bindElements(const VertexBuffer<GLuint, 1>& indexBuffer) {
 			glBindVertexArray(mHandle);
-
-			glBindBuffer(GL_ARRAY_BUFFER, buffer.getHandle());
-			glEnableVertexAttribArray(location);
-
-			glVertexAttribPointer(
-				location, 
-				numElements, 
-				static_cast<GLenum>(type), 
-				GL_FALSE, 
-				stride,
-				offset
-			);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.getHandle());
 		}
 
-		void VertexArray::bindElements(const VertexBuffer& elements) {
-			glBindVertexArray(mHandle);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements.getHandle());
+		void append(std::vector<glm::vec2::value_type>& buffer, const glm::vec2& v) {
+			buffer.push_back(v.x);
+			buffer.push_back(v.y);
 		}
 
-		void VertexArray::bindTransformFeedback(
-			GLuint index, 
-			const VertexBuffer& buffer
-		) {
-			glBindVertexArray(mHandle);
-			glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, index, buffer.getHandle());
+		void append(std::vector<glm::vec3::value_type>& buffer, const glm::vec3& v) {
+			buffer.push_back(v.x);
+			buffer.push_back(v.y);
+			buffer.push_back(v.z);
+		}
+
+		void append(std::vector<glm::vec4::value_type>& buffer, const glm::vec4& v) {
+			buffer.push_back(v.x);
+			buffer.push_back(v.y);
+			buffer.push_back(v.z);
+			buffer.push_back(v.w);
 		}
 	}
 }

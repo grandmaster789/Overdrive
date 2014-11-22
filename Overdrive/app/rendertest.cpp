@@ -77,7 +77,7 @@ namespace overdrive {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glBindVertexArray(mVertexArray.getHandle());
-			glDrawElements(GL_TRIANGLES, mNumElements, GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, mIndices.getNumElements(), GL_UNSIGNED_INT, nullptr);
 		}
 
 		void RenderTest::shutdown() {
@@ -101,45 +101,48 @@ namespace overdrive {
 		}
 
 		void RenderTest::createCube(float size) {
+			using namespace overdrive::render;
+
 			float halfSide = size * 0.5f;
 
-			float vertices[] = {
-				// Front
-				-halfSide, -halfSide, halfSide,
-				halfSide, -halfSide, halfSide,
-				halfSide, halfSide, halfSide,
-				-halfSide, halfSide, halfSide,
+			std::vector<float> vertices;
+			vertices.reserve(6 * 4 * 3); // 6 quads with 4 vertices each that have 3 values
+			
+			//front
+			push(vertices, -halfSide, -halfSide, halfSide);
+			push(vertices, halfSide, -halfSide, halfSide);
+			push(vertices, halfSide, halfSide, halfSide);
+			push(vertices, -halfSide, halfSide, halfSide);
+			
+			// Right
+			push(vertices, halfSide, -halfSide, halfSide);
+			push(vertices, halfSide, -halfSide, -halfSide);
+			push(vertices, halfSide, halfSide, -halfSide);
+			push(vertices, halfSide, halfSide, halfSide);
 
-				// Right
-				halfSide, -halfSide, halfSide,
-				halfSide, -halfSide, -halfSide,
-				halfSide, halfSide, -halfSide,
-				halfSide, halfSide, halfSide,
+			// Back
+			push(vertices, -halfSide, -halfSide, -halfSide);
+			push(vertices, -halfSide, halfSide, -halfSide);
+			push(vertices, halfSide, halfSide, -halfSide);
+			push(vertices, halfSide, -halfSide, -halfSide);
 
-				// Back
-				-halfSide, -halfSide, -halfSide,
-				-halfSide, halfSide, -halfSide,
-				halfSide, halfSide, -halfSide,
-				halfSide, -halfSide, -halfSide,
+			// Left
+			push(vertices, -halfSide, -halfSide, halfSide);
+			push(vertices, -halfSide, halfSide, halfSide);
+			push(vertices, -halfSide, halfSide, -halfSide);
+			push(vertices, -halfSide, -halfSide, -halfSide);
 
-				// Left
-				-halfSide, -halfSide, halfSide,
-				-halfSide, halfSide, halfSide,
-				-halfSide, halfSide, -halfSide,
-				-halfSide, -halfSide, -halfSide,
+			// Bottom
+			push(vertices, -halfSide, -halfSide, halfSide);
+			push(vertices, -halfSide, -halfSide, -halfSide);
+			push(vertices, halfSide, -halfSide, -halfSide);
+			push(vertices, halfSide, -halfSide, halfSide);
 
-				// Bottom
-				-halfSide, -halfSide, halfSide,
-				-halfSide, -halfSide, -halfSide,
-				halfSide, -halfSide, -halfSide,
-				halfSide, -halfSide, halfSide,
-
-				// Top
-				-halfSide, halfSide, halfSide,
-				halfSide, halfSide, halfSide,
-				halfSide, halfSide, -halfSide,
-				-halfSide, halfSide, -halfSide
-			};
+			// Top
+			push(vertices, -halfSide, halfSide, halfSide);
+			push(vertices, halfSide, halfSide, halfSide);
+			push(vertices, halfSide, halfSide, -halfSide);
+			push(vertices, -halfSide, halfSide, -halfSide);
 
 			float normals[] = {
 				// Front
@@ -237,19 +240,14 @@ namespace overdrive {
 				20, 22, 23
 			};
 
-			using render::eBufferUsage;
-			using render::eElementType;
+			mVertices.setData(vertices);
+			mNormals.setData(normals, sizeof(normals));
+			mTexCoords.setData(texCoords, sizeof(texCoords));
+			mIndices.setData(indices, sizeof(indices));
 
-			mNumElements = sizeof(indices) / sizeof(indices[0]);
-
-			mVertices.setData(&vertices, sizeof(vertices), eBufferUsage::STATIC_DRAW);
-			mNormals.setData(&normals, sizeof(normals), eBufferUsage::STATIC_DRAW);
-			mTexCoords.setData(&texCoords, sizeof(texCoords), eBufferUsage::STATIC_DRAW);
-			mIndices.setData(&indices, sizeof(indices), eBufferUsage::STATIC_DRAW);
-			
-			mVertexArray.bindAttribute(0, mVertices, eElementType::FLOAT, 3);
-			mVertexArray.bindAttribute(1, mNormals, eElementType::FLOAT, 3);
-			mVertexArray.bindAttribute(2, mTexCoords, eElementType::FLOAT, 2);
+			mVertexArray.bindAttribute(0, mVertices);
+			mVertexArray.bindAttribute(1, mNormals);
+			mVertexArray.bindAttribute(2, mTexCoords);
 			mVertexArray.bindElements(mIndices);
 		}
 	}

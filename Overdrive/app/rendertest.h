@@ -35,10 +35,10 @@ namespace overdrive {
 			render::ShaderProgram mShaderProgram;
 
 			// openGL resources cannot be created until after engine initialization is completed!
-			render::VertexBuffer mVertices;
-			render::VertexBuffer mNormals;
-			render::VertexBuffer mTexCoords;
-			render::VertexBuffer mIndices;
+			render::VertexBuffer<float, 3> mVertices;
+			render::VertexBuffer<float, 3> mNormals;
+			render::VertexBuffer<float, 2> mTexCoords;
+			render::VertexBuffer<GLuint> mIndices;
 			GLsizei mNumElements;
 
 			render::VertexArray mVertexArray;
