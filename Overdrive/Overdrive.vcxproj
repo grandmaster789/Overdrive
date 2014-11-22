@@ -162,6 +162,8 @@
     <ClInclude Include="video\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="render\enumerations.inl" />
+    <None Include="render\vertexarray.inl" />
     <None Include="render\vertexbuffer.inl" />
     <None Include="shaders\diffuse.fs" />
     <None Include="shaders\diffuse.vs" />

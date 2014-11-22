@@ -1,6 +1,8 @@
 #ifndef OVERDRIVE_RENDER_VERTEXBUFFER_INL
 #define OVERDRIVE_RENDER_VERTEXBUFFER_INL
 
+#include "render/vertexbuffer.h"
+
 namespace overdrive {
 	namespace render {
 		template <typename T, int I>
@@ -35,7 +37,10 @@ namespace overdrive {
 		}
 
 		template <typename T, int I>
-		void VertexBuffer<T, I>::setData(const T* data, size_t numBytes) {
+		void VertexBuffer<T, I>::setData(
+			const T* data,
+			size_t numBytes
+		) {
 			assert((numBytes / sizeof(T))  % I == 0); // the number of elements should be a multiple of I
 
 			mNumBytes = numBytes;

@@ -20,8 +20,15 @@ namespace overdrive {
 			DYNAMIC_READ = GL_DYNAMIC_READ,
 			DYNAMIC_COPY = GL_DYNAMIC_COPY
 		};
+
+		template <typename T>
+		struct GLType {
+			static GLenum type;
+		};
 	}
 }
+
+#include "render/enumerations.inl"
 
 std::ostream& operator << (std::ostream& os, const overdrive::render::eBufferUsage& usage);
 

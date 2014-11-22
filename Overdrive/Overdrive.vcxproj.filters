@@ -277,5 +277,11 @@
     <None Include="render\vertexbuffer.inl">
       <Filter>render</Filter>
     </None>
+    <None Include="render\vertexarray.inl">
+      <Filter>render</Filter>
+    </None>
+    <None Include="render\enumerations.inl">
+      <Filter>render</Filter>
+    </None>
   </ItemGroup>
 </Project>
