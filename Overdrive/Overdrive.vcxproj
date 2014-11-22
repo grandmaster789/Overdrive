@@ -87,7 +87,6 @@
     <ClCompile Include="app\application.cpp" />
     <ClCompile Include="app\rendertest.cpp" />
     <ClCompile Include="app\spinningcube.cpp" />
-    <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\engine.cpp" />
     <ClCompile Include="core\logger.cpp" />
     <ClCompile Include="core\settings.cpp" />
@@ -123,7 +122,6 @@
     <ClInclude Include="app\spinningcube.h" />
     <ClInclude Include="core\channel.h" />
     <ClInclude Include="core\channelQueue.h" />
-    <ClInclude Include="core\config.h" />
     <ClInclude Include="core\engine.h" />
     <ClInclude Include="core\settings.h" />
     <ClInclude Include="core\taskprocessor.h" />
@@ -162,6 +160,13 @@
     <ClInclude Include="video\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="core\channel.inl" />
+    <None Include="core\channelQueue.inl" />
+    <None Include="core\engine.inl" />
+    <None Include="core\logger.inl" />
+    <None Include="core\settings.inl" />
+    <None Include="core\system.inl" />
+    <None Include="math\conversions.inl" />
     <None Include="render\enumerations.inl" />
     <None Include="render\vertexarray.inl" />
     <None Include="render\vertexbuffer.inl" />

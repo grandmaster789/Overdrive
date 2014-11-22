@@ -28,25 +28,19 @@ namespace overdrive {
 			virtual void shutdown();
 
 			template <typename T>
-			void registerSetting(std::string nameInConfigFile, T* correspondingVariable);
+			void registerSetting(
+				const std::string& nameInConfigFile, 
+				T* correspondingVariable
+			);
 
 		protected:
 			Channel mChannel;
 			Engine* mEngine;
 			Settings mSettings;
 		};
-
-		template <typename T>
-		void System::registerSetting(std::string nameInConfigFile, T* correspondingVariable) {
-			std::string configSetting = getName();
-			configSetting.append(".");
-			configSetting.append(nameInConfigFile);
-
-			mSettings.add_options()
-				(configSetting.c_str(), boost::program_options::value<T>(correspondingVariable))
-			;
-		}
 	}
 }
+
+#include "system.inl"
 
 #endif

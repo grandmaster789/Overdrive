@@ -12,7 +12,7 @@ namespace overdrive {
 		/*
 			Wrapper around boost::program_options, for super-easy system/module configuration
 		*/
-		class Settings :
+		class Settings:
 			public util::Named,
 			public boost::noncopyable
 		{
@@ -37,15 +37,9 @@ namespace overdrive {
 			Options mOptions;
 			Variables mVariables;
 		};
-
-		template <typename T>
-		T Settings::get(std::string option_identifier) const {
-			if (isAvailable(option_identifier))
-				return mVariables[option_identifier.c_str()].as<T>;
-			else
-				throw std::runtime_error(std::string("Failed to find setting option: ") + option_identifier);
-		}
 	}
 }
+
+#include "settings.inl"
 
 #endif

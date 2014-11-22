@@ -6,8 +6,7 @@
 #include <map>
 #include "core/channel.h"
 #include "core/taskprocessor.h"
-#include "core/config.h"
-#include "util/exception.h"
+#include "core/settings.h"
 
 namespace overdrive {
 	namespace app {
@@ -60,28 +59,13 @@ namespace overdrive {
 			SystemList mSystems;
 			SystemMapping mSystemLookup;
 			TaskProcessor mTaskProcessor;
-			Config mConfig;
+			Settings mSettings;
 
 			std::unique_ptr<app::Application> mApplication;
 		};
-
-		// Note -- if systems are removed regularly, from non-main threads this needs to become threadsafe as well
-		//		   I don't expect this to be the typical use case, so I'll leave it for later
-
-		template <typename T>
-		T* Engine::get() const {
-			T* result = nullptr;
-
-			for (const auto& system : mSystems) {
-				result = dynamic_cast<T*>(system.get());
-				
-				if (result)
-					return result;
-			}
-
-			throw std::exception("System type not found");
-		}
 	}
 }
+
+#include "engine.inl"
 
 #endif

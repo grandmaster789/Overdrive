@@ -8,22 +8,14 @@ namespace overdrive {
 		static const float PI = 3.141592653589793f;
 		static const float TWO_PI = 6.2831853071795862f;
 
-		inline float toRadians(float value) {
-			return value * 0.017453292519943295f;
-		}
+		inline float toRadians(float value);
+		inline double toRadians(double value);
 
-		inline double toRadians(double value) {
-			return value * 0.017453292519943295;
-		}
-
-		inline float toDegrees(float value) {
-			return value * 57.29577951308232f;
-		}
-
-		inline double toDegrees(double value) {
-			return value * 57.29577951308232;
-		}
+		inline float toDegrees(float value);
+		inline double toDegrees(double value);
 	}
 }
+
+#include "math/conversions.inl"
 
 #endif

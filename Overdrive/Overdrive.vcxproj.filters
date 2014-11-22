@@ -32,9 +32,6 @@
     <ClCompile Include="core\engine.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="core\config.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="app\application.cpp">
       <Filter>application</Filter>
     </ClCompile>
@@ -149,9 +146,6 @@
     </ClInclude>
     <ClInclude Include="util\checkRange.h">
       <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="core\config.h">
-      <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="app\application.h">
       <Filter>application</Filter>
@@ -282,6 +276,27 @@
     </None>
     <None Include="render\enumerations.inl">
       <Filter>render</Filter>
+    </None>
+    <None Include="math\conversions.inl">
+      <Filter>math</Filter>
+    </None>
+    <None Include="core\channel.inl">
+      <Filter>core</Filter>
+    </None>
+    <None Include="core\channelQueue.inl">
+      <Filter>core</Filter>
+    </None>
+    <None Include="core\engine.inl">
+      <Filter>core</Filter>
+    </None>
+    <None Include="core\logger.inl">
+      <Filter>core</Filter>
+    </None>
+    <None Include="core\settings.inl">
+      <Filter>core</Filter>
+    </None>
+    <None Include="core\system.inl">
+      <Filter>core</Filter>
     </None>
   </ItemGroup>
 </Project>

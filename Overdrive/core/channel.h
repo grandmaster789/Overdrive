@@ -9,19 +9,13 @@ namespace overdrive {
 		class Channel {
 		public:
 			template <typename tEvent, class tHandler>
-			static void add(tHandler* handler) {
-				detail::ChannelQueue<tEvent>::instance().add(handler);
-			}
+			static void add(tHandler* handler);
 
 			template <typename tEvent, class tHandler>
-			static void remove(tHandler* handler) {
-				detail::ChannelQueue<tEvent>::instance().remove(handler);
-			}
+			static void remove(tHandler* handler);
 
 			template <typename tEvent>
-			static void broadcast(const tEvent& message) {
-				detail::ChannelQueue<tEvent>::instance().broadcast(message);
-			}
+			static void broadcast(const tEvent& message);
 		};
 
 		// This is the contract that an object should fulfill for correct usage with a Channel
@@ -29,22 +23,14 @@ namespace overdrive {
 		template <typename tMessage>
 		class MessageHandler {
 		public:
-			MessageHandler() {
-				Channel::add<tMessage>(this);
-			}
-
-			/*
-			MessageHandler(const MessageHandler& ) {
-				Channel::add<tMessage>(this); 
-			}*/
-
-			virtual ~MessageHandler() {
-				Channel::remove<tMessage>(this);
-			}
+			MessageHandler();
+			virtual ~MessageHandler();
 
 			virtual void operator()(const tMessage&) = 0;
 		};
 	}
 }
+
+#include "core/channel.inl"
 
 #endif

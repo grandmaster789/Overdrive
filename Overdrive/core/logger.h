@@ -24,14 +24,7 @@ namespace overdrive {
 			Logger& operator = (Logger&&) = delete;
 
 			template <typename T>
-			LogHelper operator << (const T& message) {
-				LogHelper helper = info();
-
-				helper << message;
-				
-				return helper;
-			}
-
+			LogHelper operator << (const T& message);
 			LogHelper operator << (std::ostream& (*fn)(std::ostream& os)); //overloading this allows std::iomanip functions to operate on a Logger
 
 			LogHelper debug();		// [dbg]
@@ -57,12 +50,7 @@ namespace overdrive {
 				void release();
 
 				template <typename T>
-				LogHelper& operator << (const T& message) {
-					mBuffer << message;
-
-					return *this;
-				}
-
+				LogHelper& operator << (const T& message);
 				LogHelper& operator << (std::ostream& (*fn)(std::ostream& os));
 
 				std::ostringstream mBuffer;
@@ -74,6 +62,8 @@ namespace overdrive {
 		};
 	}
 }
+
+#include "core/logger.inl"
 
 extern overdrive::core::Logger gLog;
 

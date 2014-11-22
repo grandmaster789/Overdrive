@@ -119,10 +119,10 @@ namespace overdrive {
 		void Engine::initializeSystems() {
 			// first, consolidate all settings from all registered subsystems
 			for (const auto& system: mSystems)
-				mConfig.settings().add(system->mSettings);
+				mSettings.options().add(system->mSettings);
 
 			// try and load a config file
-			mConfig.load("overdrive.cfg");
+			mSettings.load("overdrive.cfg");
 
 			// now perform per-system initialization
 			for (auto& system : mSystems) {
