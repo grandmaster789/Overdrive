@@ -1,141 +1,64 @@
-#include "preprocessor.h" // for OVERDRIVE_DEBUG
-#include "core/logger.h"
-#include <chrono>
-#include <ctime>
-#include <iostream>
-#include <iomanip>
-
-overdrive::core::Logger gLog("overdrive.log"); // ze global
+#include "stdafx.h"
+#include "logger.h"
+#include "log_sink.h"
 
 namespace overdrive {
 	namespace core {
-		Logger::Logger(std::string filename):
-			mOutputFile{ std::move(filename) }
-		{
-			mOutputFile.sync_with_stdio(false); // a static call -- the first Logger will turn off stdio sync for everything!
+		Logger::Logger(const std::string& filename) {
+			mActive = util::Active::create();
+
+			add(makeConsoleSink());
+			add(makeFileSink(filename));
 		}
 
-		Logger::LogHelper Logger::operator << (std::ostream& (*fn)(std::ostream& os)) {
-			LogHelper helper(this);
-
-			fn(helper.mBuffer);
-
-			return helper;
+		LogMessage Logger::operator()(
+			eLogLevel level,
+			const std::string& filename,
+			int line
+		) {
+			return LogMessage(
+				level, 
+				filename, 
+				line, 
+				this
+			);
 		}
 
-		std::string clockString(const std::chrono::system_clock::time_point& tp) {
-			auto timeStruct = std::chrono::system_clock::to_time_t(tp);
-
-			// converting a time_t to a string is one of those locale-influenced thingies
-			// and is affected by imbued iostreams. However, I'm not really inclined to
-			// use anything other than the system default. 
-			// for more information (and formatting options) search std::put_time @ cppreference
-			// [Note] This is the C-standard library, so the microsoft implementation is *not* up to date (grmbl)
-			//	in the documentation, assume that if it says C++11 it won't work...
-
-			std::stringstream sstr;
-
-			#pragma warning(push)
-			#pragma warning(disable: 4996) // the call to 'localtime' is 'unsafe'...
-				sstr << std::put_time(std::localtime(&timeStruct), "%H:%M:%S"); // hour/minutes/seconds
-			#pragma warning(pop)
-
-			return sstr.str();
+		void Logger::add(const LogSink& sink) {
+			mSinks.push_back(sink); // perhaps check for duplicates?
 		}
 
-		Logger::LogHelper::LogHelper(Logger* parent):
-			mParent(parent)
-		{
-			mBuffer << clockString(std::chrono::system_clock::now());
+		void Logger::remove(const LogSink& sink) {
+			auto it = std::find(mSinks.begin(), mSinks.end(), sink);
+
+			if (it == mSinks.end())
+				throw std::runtime_error("Tried to remove a sink that was not added yet");
+
+			mSinks.erase(it);
 		}
 
-		Logger::LogHelper::LogHelper(LogHelper&& lh):
-			mParent(std::move(lh.mParent)),
-			mBuffer(std::move(lh.mBuffer))
-		{
-			lh.release(); // the old one doesn't have to flush anymore
+		void Logger::flush(const LogMessage& message) const {
+			/*
+			// This is the single-threaded version
+
+			auto msg = message.mBuffer.str();
+			
+			for (auto&& sink: mSinks)
+				sink.forward(message.mMeta, msg);
+			*/
+
+			// This is the Active Object (and threadsafe) version
+
+			auto&& sinks = mSinks;
+			auto&& meta = message.mMeta;
+			auto msg = message.mBuffer.str();
+
+			mActive->send([=] {
+				for (auto&& sink : sinks)
+					sink.forward(meta, msg);
+			});
 		}
 
-		Logger::LogHelper::~LogHelper() {
-			// We're executing code in a destructor here, so at least try not to leak exceptions
-
-			try {
-				if (mParent) {
-					mBuffer << "\n";	// automatically add a newline
-					mParent->flush(mBuffer.str());
-				}
-			}
-			catch (...) {
-				std::cerr << "Failed to flush to log!\n";
-			}
-		}
-
-		Logger::LogHelper& Logger::LogHelper::operator= (LogHelper&& lh) {
-			mParent = std::move(lh.mParent);
-			mBuffer = std::move(lh.mBuffer);
-
-			lh.release();
-
-			return *this;
-		}
-
-		void Logger::LogHelper::release() {
-			mParent = nullptr;
-		}
-
-		Logger::LogHelper& Logger::LogHelper::operator << (std::ostream& (*fn)(std::ostream& os)) {
-			fn(mBuffer);
-			return *this;
-		}
-
-		void Logger::flush(std::string message) {
-			std::lock_guard<std::mutex> lock(mMutex);
-
-			mOutputFile << message;
-
-			#ifdef OVERDRIVE_DEBUG
-				std::clog << message;
-			#endif
-		}
-
-		Logger::LogHelper Logger::debug() {
-			LogHelper helper(this);
-
-			helper << " [dbg] ";
-
-			return helper;
-		}
-
-		Logger::LogHelper Logger::info() {
-			LogHelper helper(this);
-
-			helper << "       ";
-
-			return helper;
-		}
-
-		Logger::LogHelper Logger::warning() {
-			LogHelper helper(this);
-
-			helper << " [wrn] ";
-
-			return helper;
-		}
-
-		Logger::LogHelper Logger::error() {
-			LogHelper helper(this);
-
-			helper << " [** ERROR **] ";
-
-			return helper;
-		}
-
-		Logger::LogHelper Logger::fatal() {
-			LogHelper helper(this);
-
-			helper << " [<=== FATAL ===>] ";
-
-			return helper;
-		}
+		Logger gLogger("overdrive.log");
 	}
 }

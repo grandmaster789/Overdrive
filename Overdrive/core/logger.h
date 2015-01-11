@@ -1,70 +1,51 @@
-#ifndef OVERDRIVE_CORE_LOGGER_H
-#define OVERDRIVE_CORE_LOGGER_H
+#pragma once
 
-#include <mutex>
-#include <string>
-#include <sstream>
-#include <fstream>
+#include "log_level.h"
+#include "log_message.h"
+
+#include "util/active.h"
+
+#include <vector>
 
 namespace overdrive {
 	namespace core {
+		class LogSink;
+		class LogMessage;
+
 		class Logger {
-		private:
-			struct LogHelper;
-
 		public:
-			friend struct LogHelper;
+			Logger(const std::string& filename);
 
-			Logger(std::string filename);
+			LogMessage operator()(
+				eLogLevel level, 
+				const std::string& filename, 
+				int line
+			);
 
-			//don't do copy/move stuff
-			Logger(const Logger&) = delete;
-			Logger(Logger&&) = delete;
-			Logger& operator = (const Logger&) = delete;
-			Logger& operator = (Logger&&) = delete;
+			void add(const LogSink& sink);
+			void remove(const LogSink& sink);
 
-			template <typename T>
-			LogHelper operator << (const T& message);
-			LogHelper operator << (std::ostream& (*fn)(std::ostream& os)); //overloading this allows std::iomanip functions to operate on a Logger
-
-			LogHelper debug();		// [dbg]
-			LogHelper info();		// this is the default (empty prefix)
-			LogHelper warning();	// [wrn]
-			LogHelper error();		// [** ERROR **]
-			LogHelper fatal();		// [<=== FATAL ===>]
+			void flush(const LogMessage& message) const;
 
 		private:
-			void flush(std::string message);
-
-			// Helper struct to accumulate message; flushes at the parent object when it goes out of scope
-			// Move-only operations
-			struct LogHelper {
-				LogHelper(Logger* parent);
-				LogHelper(const LogHelper&) = delete;
-				LogHelper(LogHelper&& lh);
-				~LogHelper();
-
-				LogHelper& operator = (const LogHelper&) = delete;
-				LogHelper& operator = (LogHelper&& lh);
-
-				void release();
-
-				template <typename T>
-				LogHelper& operator << (const T& message);
-				LogHelper& operator << (std::ostream& (*fn)(std::ostream& os));
-
-				std::ostringstream mBuffer;
-				Logger* mParent;
-			};
-
-			std::mutex mMutex;
-			std::ofstream mOutputFile;
+			std::vector<LogSink> mSinks;
+			std::unique_ptr<util::Active> mActive;
 		};
+
+		extern Logger gLogger;
 	}
 }
 
-#include "core/logger.inl"
+#define gLogLevel(level) ::overdrive::core::gLogger( \
+	::overdrive::core::eLogLevel::level,             \
+	__FILE__,                                        \
+	__LINE__                                         \
+)
 
-extern overdrive::core::Logger gLog;
+#define gLog        gLogLevel(MESSAGE)
 
-#endif
+#define gLogDebug   gLogLevel(DEBUG)
+#define gLogMessage gLogLevel(MESSAGE)
+#define gLogError   gLogLevel(ERROR_)
+#define gLogWarning gLogLevel(WARNING)
+#define gLogFatal   gLogLevel(FATAL)
