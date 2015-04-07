@@ -1,12 +1,17 @@
 #include "stdafx.h"
 #include "logger.h"
-#include "log_sink.h"
+#include "logger/log_sink.h"
 
 namespace overdrive {
 	namespace core {
-		Logger::Logger(const std::string& filename) {
-			mActive = util::Active::create();
+		Logger::Logger():
+			mActive(util::Active::create())
+		{
+		}
 
+		Logger::Logger(const std::string& filename):
+			mActive(util::Active::create())
+		{
 			add(makeConsoleSink());
 			add(makeFileSink(filename));
 		}
@@ -17,48 +22,76 @@ namespace overdrive {
 			int line
 		) {
 			return LogMessage(
-				level, 
-				filename, 
-				line, 
+				level,
+				filename,
+				line,
+				this
+			);
+		}
+
+		LogMessage Logger::operator()() {
+			return LogMessage(
+				eLogLevel::MESSAGE, 
+				"", 
+				0, 
 				this
 			);
 		}
 
 		void Logger::add(const LogSink& sink) {
-			mSinks.push_back(sink); // perhaps check for duplicates?
+			using std::find;
+			using std::begin;
+			using std::end;
+
+			auto it = find(begin(mSinks), end(mSinks), sink);
+
+			if (it == end(mSinks))
+				mSinks.push_back(std::move(sink)); 
+			else {} // silently fail when the sink is already present
 		}
 
 		void Logger::remove(const LogSink& sink) {
-			auto it = std::find(mSinks.begin(), mSinks.end(), sink);
+			using std::find;
+			using std::begin;
+			using std::end;
 
-			if (it == mSinks.end())
-				throw std::runtime_error("Tried to remove a sink that was not added yet");
+			auto it = find(begin(mSinks), end(mSinks), sink);
 
-			mSinks.erase(it);
+			if (it != end(mSinks))
+				mSinks.erase(it);
+			else {} // silently fail when the sink is not contained
 		}
 
-		void Logger::flush(const LogMessage& message) const {
+		void Logger::removeAll() {
+			mSinks.clear();
+		}
+
+		size_t Logger::getSinkCount() const {
+			return mSinks.size();
+		}
+
+		void Logger::flush(const LogMessage& message) {
+			std::string msg = message.mBuffer.str();
+
 			/*
-			// This is the single-threaded version
-
-			auto msg = message.mBuffer.str();
-			
+			// Singlethreaded version: 
 			for (auto&& sink: mSinks)
-				sink.forward(message.mMeta, msg);
+				sink.write(message.mMeta, msg);
 			*/
-
-			// This is the Active Object (and threadsafe) version
 
 			auto&& sinks = mSinks;
 			auto&& meta = message.mMeta;
-			auto msg = message.mBuffer.str();
 
 			mActive->send([=] {
 				for (auto&& sink : sinks)
-					sink.forward(meta, msg);
+					sink.write(meta, msg);
 			});
 		}
 
-		Logger gLogger("overdrive.log");
+		Logger& Logger::instance() {
+			static Logger gLogger("overdrive.log");
+
+			return gLogger;
+		}
 	}
 }

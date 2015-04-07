@@ -11,6 +11,10 @@ namespace overdrive {
 		class Logger;
 		class LogSink;
 
+		/*
+			Collects possibly multiple parts of a message, stores some metadata and flushes the message
+			upon destruction.
+		*/
 		class LogMessage {
 		private:
 			friend class Logger;
@@ -24,18 +28,19 @@ namespace overdrive {
 			);
 
 		public:
-			~LogMessage();
+			~LogMessage(); // flush the message upon destruction
 
-			LogMessage(LogMessage&& message);
+			LogMessage(LogMessage&& message); // if the message is moved, the husk doesn't need to flush
 
 			template <typename T>
 			LogMessage& operator << (const T& message);
 			LogMessage& operator << (std::ostream& (*fn)(std::ostream& os));
 
+			// message attributes
 			struct Meta {
 				eLogLevel mLevel;
-				std::string mFile;
-				int mLine;
+				std::string mFile;	// intended to store __FILE__
+				int mLine;			// intended to store __LINE__
 			};
 
 		private:

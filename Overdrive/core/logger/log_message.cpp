@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "log_message.h"
-#include "logger.h"
+#include "../logger.h"
 
 namespace overdrive {
 	namespace core {
@@ -24,7 +24,7 @@ namespace overdrive {
 				mOwner->flush(*this);
 		}
 
-		LogMessage::LogMessage(LogMessage&& message):
+		LogMessage::LogMessage(LogMessage&& message) :
 			mMeta(std::move(message.mMeta)),
 			mOwner(std::move(message.mOwner)),
 			mBuffer(std::move(message.mBuffer))
