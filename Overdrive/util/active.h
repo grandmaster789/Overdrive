@@ -2,9 +2,9 @@
 
 #include <memory>
 #include <functional>
-#include <thread>
 #include <type_traits>
 
+#include <boost/thread.hpp>
 #include <boost/thread/sync_queue.hpp>
 
 namespace overdrive {
@@ -14,7 +14,9 @@ namespace overdrive {
 		Allows threadsafe execution of void() functions in an object (by internally queuing calls)
 		The object maintains its own (OS-level!) thread, so don't overuse this
 		
-		[NOTE] MSVC has some kind of bug in the cleanup of global objects, which causes the destructor to contain some... questionable code to deal with it
+		[NOTE] MSVC has some kind of bug in the cleanup of global objects, which causes the destructor 
+			   to contain some... questionable code to deal with it. It's the reason I'm using boost::thread
+			   instead of std::thread
 		*/
 		typedef std::function<void()> Callback;
 
@@ -44,7 +46,7 @@ namespace overdrive {
 
 			bool mIsDone;
 			boost::sync_queue<Callback> mMessageQueue; // I'm assuming that the queue is mostly in a waiting state
-			std::thread mThread;
+			boost::thread mThread;
 		};
 	}
 }
