@@ -1,13 +1,12 @@
-#ifndef OVERDRIVE_CORE_SYSTEM_INL
-#define OVERDRIVE_CORE_SYSTEM_INL
+#pragma once
 
-#include "core/system.h"
+#include "system.h"
 
 namespace overdrive {
 	namespace core {
 		template <typename T>
 		void System::registerSetting(
-			const std::string& nameInConfigFile, 
+			const std::string& nameInConfigFile,
 			T* correspondingVariable
 		) {
 			std::string configSetting = getName();
@@ -20,5 +19,3 @@ namespace overdrive {
 		}
 	}
 }
-
-#endif

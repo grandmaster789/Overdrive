@@ -1,31 +1,34 @@
-#include "core/settings.h"
-#include "core/logger.h"
+#include "settings.h"
+#include "logger.h"
 
 #include <fstream>
+#include <boost/filesystem.hpp>
 
 namespace overdrive {
 	namespace core {
 		namespace po = boost::program_options;
 
-		Settings::Settings():
-			util::Named{ "Settings" }
-		{
+		Settings::Settings() {
 		}
 
 		po::options_description& Settings::options() {
 			return mOptions;
 		}
 
-		bool Settings::load(std::string filename) {
+		bool Settings::load(const std::string& filename) {
 			std::ifstream ifs(filename.c_str());
 			ifs.sync_with_stdio(false);
 
 			if (!ifs.good()) {
-				gLog.error() << "Failed to open config file: " << filename;
+				gLogError << "Failed to open config file: " << filename;
+				gLogError << "Current path: " << boost::filesystem::current_path();
 				return false;
 			}
 			else {
-				po::store(po::parse_config_file(ifs, mOptions, true), mVariables);
+				po::store(
+					po::parse_config_file(ifs, mOptions, true),
+					mVariables
+				);
 				po::notify(mVariables);
 
 				return true;
@@ -40,7 +43,7 @@ namespace overdrive {
 			mVariables.notify();
 		}
 
-		bool Settings::isAvailable(std::string option_identifier) const {
+		bool Settings::isAvailable(const std::string& option_identifier) const {
 			return (mVariables.count(option_identifier) > 0);
 		}
 	}

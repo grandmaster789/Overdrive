@@ -1,176 +1,151 @@
-#ifndef OVERDRIVE_VIDEO_WINDOW_H
-#define OVERDRIVE_VIDEO_WINDOW_H
+#pragma once
 
 #include <string>
-#include <vector>
-#include <utility>
 #include <memory>
-
-#include "opengl.h"
-
-#include "video/monitor.h"
-#include "input/keyboard.h"
-#include "input/mouse.h"
+#include "monitor.h"
+#include "windowHints.h"
+#include "../opengl.h"
 
 namespace overdrive {
+	namespace input {
+		class Mouse;
+		class Keyboard;
+	}
+
 	namespace video {
+		/*
+			[TODO] ostream
+			[TODO] context sharing (for threaded loading of resources perhaps)
+			[TODO] drag n drop events?
+			[TODO] clipboard? copypasta?
+		 */
+
+		// http://www.glfw.org/docs/latest/window.html
+		// http://www.glfw.org/docs/latest/group__window.html
 		class Window {
 		public:
-			enum class eClientAPI {
-				OPENGL,
-				OPENGL_ES,
-				UNKNOWN
+			struct Frame {
+				int mLeft;
+				int mTop;
+				int mRight;
+				int mBottom;
 			};
 
-			enum class eContextRobustness {
-				NO_ROBUSTNESS,
-				NO_RESET_NOTIFICATION,
-				LOSE_CONTEXT_ON_RESET,
-				UNKNOWN
+			struct ContextAttributes {
+				eClientAPI mAPI;
+				int mVersionMajor;
+				int mVersionMinor;
+				int mVersionRevision;
+				bool mOpenGLForwardCompatible;
+				bool mOpenGLDebugContext;
+				eOpenGLProfile mProfile;
+				eContextRobustness mContextRobustness;
+				// [NOTE] apparantly the context release behavior is not part of this O_o
 			};
 
-			enum class eOpenGLProfile {
-				ANY,
-				COMPATIBILITY,
-				CORE,
-				UNKNOWN
+			struct FramebufferAttributes {
+				int mRedBits;
+				int mGreenBits;
+				int mBlueBits;
+				int mAlphaBits;
+				int mDepthBits;
+				int mStencilBits;
+				int mSamples; // MSAA
 			};
 
-		private:
-			friend class Video; // only allow the Video class to create Windows (because of handle management and callbacks)
+			Window(const std::string& title, int width, int height);					// windowed mode (on primary monitor)
+			Window(const std::string& title, const Monitor* m);							// borderless fullscreen mode (make sure that the decoration hint is turned off)
+			Window(const std::string& title, const Monitor* m, int width, int height);	// fullscreen mode
+			Window(const Window&) = delete;
+			Window(Window&& w);
+			Window& operator = (const Window&) = delete;
+			Window& operator = (Window&& w);
+			~Window();
 
-			Window();
+			GLFWwindow* getHandle() const;
 
-		public:
-
-			void setWidth(int newWidth);
-			void setHeight(int newHeight);
-			int getWidth() const;
-			int getHeight() const;
-
-			bool isFullscreen() const; // setFullscreen may introduce problems, so I'll leave it as a todo
-
-			const std::string& getTitle() const;
-
-			void create();
-			void createFullscreen(Monitor* m); // a video mode will be selected that is the closest match to this window size
-			void destroy();
-
-			void swapBuffers() const;
-			void makeCurrent() const;
 			bool shouldClose() const;
 
-			// Signals
-			struct OnCreate	{ Window* mWindow; };
-			struct OnFramebufferResize { Window* mWindow; int newWidth, newHeight; };
-			struct OnClose { Window* mWindow; };
-			struct OnFocus { Window* mWindow; };
-			struct OnDeFocus { Window* mWindow; };
-			struct OnIconify { Window* mWindow; };
-			struct OnRestore { Window* mWindow; };
-			struct OnMove { Window* mWindow; int newX, newY; };
-			struct OnRefresh { Window* mWindow; };
-			struct OnResize { Window* mWindow; int newWidth, newHeight; };
+			void setShouldClose(bool value);
+			void setTitle(const std::string& title);
+			void setPosition(int x, int y); // client area position in screen coords
+			void setSize(int width, int height); // client area size from left upper corner
 
-			// Window Attributes
-			bool isFocused() const;
-			bool isIconified() const;
-			bool isVisible() const;
-			bool isResizable() const;
-			bool isDecorated() const;
-			void getPosition(int& x, int& y) const;
-			void getSize(int& width, int& height) const;
-			void getFramebufferSize(int& width, int& height) const;
-
-			// Context Attributes
-			eClientAPI getClientAPI() const;
-			int getContextVersionMajor() const;
-			int getContextVersionMinor() const;
-			int getContextRevision() const;
-			bool isOpenGLForwardCompatible() const;
-			bool isOpenGLDebugContext() const;
-			eContextRobustness getContextRobustness() const;
-			eOpenGLProfile getOpenGLProfile() const;
-
-			// Triggers
-			void setTitle(std::string title);
-			void setPosition(int x, int y);
-			void setSize(int width, int height);
 			void iconify();
 			void restore();
 			void show();
 			void hide();
 
-			struct CreationHints {
-				void apply(); // checks and applies the current settings
+			void makeCurrent();
+			void swapBuffers();
+						
+			std::pair<int, int> getPosition() const; // in screen coords
+			std::pair<int, int> getSize() const; // client area size in screen coords
+			std::pair<int, int> getFramebufferSize() const; // in actual pixels; use this for viewport sizes
+			Frame getFrame() const; // includes decorations, if any
 
-				bool mResizable = true;
-				bool mVisible = true;
-				bool mDecorated = true;
-
-				int mRedBits = 8;
-				int mGreenBits = 8;
-				int mBlueBits = 8;
-				int mAlphaBits = 8;
-
-				int mDepthBits = 24;
-				int mStencilBits = 8;
-
-				int mAccumulationRedBits = 0;
-				int mAccumulationGreenBits = 0;
-				int mAccumulationBlueBits = 0;
-				int mAccumulationAlphaBits = 0;
-
-				int mAuxiliaryBuffers = 0;
-
-				int mSamples = 0;
-				int mRefreshRate = 0;
-
-				bool mStereo = false;
-
-				bool mSRGB = false;
-
-				eClientAPI mClientAPI = eClientAPI::OPENGL;
-
-				int mContextVersionMajor = 1;
-				int mContextVersionMinor = 0;
-
-				// [Note] - When requesting an openGL profile below 3.2, you *must* also use the OPENGL_ANY_PROFILE
-				eContextRobustness mContextRobustness = eContextRobustness::NO_ROBUSTNESS;
-
-				bool mOpenGLForwardCompatible = false;
-				bool mOpenGLDebugContext = false;
-
-				eOpenGLProfile mOpenGLProfile = eOpenGLProfile::ANY;
-			};
-
-			void setDefaultCreationHints();
-			static CreationHints mCreationHints; // this should be done better I guess
-			GLFWwindow* getHandle() const;
-			
+			Monitor* getMonitor() const;
 			input::Keyboard* getKeyboard() const;
 			input::Mouse* getMouse() const;
+
+			// ----- Attribute queries -----
+			bool isFocused() const;
+			bool isIconified() const;
+			bool isVisible() const;
+			bool isResizable() const; // resizable by the user that is
+			bool isDecorated() const;
+			bool isFloating() const; // also known as always-on-top
+
+			ContextAttributes getContextAttributes() const;
+			FramebufferAttributes getFramebufferAttributes() const;
+
+			// ----- Events ------
+			struct OnMoved {
+				Window* mWindow; 
+				int mOldPositionX;
+				int mOldPositionY;
+				int mPositionX;
+				int mPositionY;
+			};
+
+			struct OnResized {
+				Window* mWindow;
+				int mOldWidth;
+				int mOldHeight;
+				int mWidth;
+				int mHeight;
+			};
+
+			struct OnFramebufferResized {
+				Window* mWindow; 
+				int mWidth;
+				int mHeight;
+			};
+
+			struct OnCreated { Window* mWindow; };
+			struct OnRefreshed { Window* mWindow; };
+			struct OnClosed { Window* mWindow; };
+			struct OnFocused { Window* mWindow; };
+			struct OnFocusLost { Window* mWindow; };
+			struct OnIconify { Window* mWindow; };
+			struct OnRestore { Window* mWindow; };
+
+			// ----- Handlers ------
+			void operator()(const OnMoved& moved);
+			void operator()(const OnResized& resized);
 
 		private:
 			GLFWwindow* mHandle;
 
-			std::string mTitle = "Overdrive Default Window";
+			std::string mTitle;
 
-			int mWidth = 800;
-			int mHeight = 600;
-			bool mIsFullscreen = false;
-
-			Monitor* mMonitor = nullptr;
-			Window* mSharedContext = nullptr;
+			int mPositionX;
+			int mPositionY;
+			int mWidth;
+			int mHeight;
 
 			std::unique_ptr<input::Keyboard> mKeyboard;
 			std::unique_ptr<input::Mouse> mMouse;
 		};
 	}
 }
-
-std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eClientAPI& api);
-std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eContextRobustness& robust);
-std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eOpenGLProfile& profile);
-
-#endif

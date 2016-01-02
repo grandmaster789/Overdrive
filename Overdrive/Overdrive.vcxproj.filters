@@ -1,160 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="core\logger.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\task.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="test\core\test_logger.cpp">
-      <Filter>test\core</Filter>
-    </ClCompile>
-    <ClCompile Include="util\named.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="test\util\test_named.cpp">
-      <Filter>test\util</Filter>
-    </ClCompile>
-    <ClCompile Include="core\taskprocessor.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\settings.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="test\core\test_channel.cpp">
-      <Filter>test\core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\system.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\engine.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="app\application.cpp">
-      <Filter>application</Filter>
-    </ClCompile>
-    <ClCompile Include="video\video.cpp">
-      <Filter>video</Filter>
-    </ClCompile>
-    <ClCompile Include="video\monitor.cpp">
-      <Filter>video</Filter>
-    </ClCompile>
-    <ClCompile Include="video\window.cpp">
-      <Filter>video</Filter>
-    </ClCompile>
-    <ClCompile Include="input\input.cpp">
-      <Filter>input</Filter>
-    </ClCompile>
-    <ClCompile Include="input\keyboard.cpp">
-      <Filter>input</Filter>
-    </ClCompile>
-    <ClCompile Include="input\mouse.cpp">
-      <Filter>input</Filter>
-    </ClCompile>
-    <ClCompile Include="input\joystick.cpp">
-      <Filter>input</Filter>
-    </ClCompile>
-    <ClCompile Include="test\input\test_joy_recv.cpp">
-      <Filter>test\input</Filter>
-    </ClCompile>
-    <ClCompile Include="test\input\test_key_recv.cpp">
-      <Filter>test\input</Filter>
-    </ClCompile>
-    <ClCompile Include="test\input\test_mouse_recv.cpp">
-      <Filter>test\input</Filter>
-    </ClCompile>
-    <ClCompile Include="render\shaderprogram.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\shader.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="app\spinningcube.cpp">
-      <Filter>application</Filter>
-    </ClCompile>
-    <ClCompile Include="util\checkGL.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="util\exception.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="util\color.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
-    <ClCompile Include="app\rendertest.cpp">
-      <Filter>application</Filter>
-    </ClCompile>
-    <ClCompile Include="render\vertexarray.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\enumerations.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
+    <Filter Include="core">
+      <UniqueIdentifier>{e5da5ab1-33cb-488e-8eb9-f03c504240a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{f0b51d32-43fc-4686-9ae5-45ba5e4c286f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{437c5778-58e0-426e-8069-8faff0965400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{a9970849-3cca-427a-a9a4-c4d59a0ef4a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{5c920422-13e4-4034-a76a-5a6394444ab9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="video">
+      <UniqueIdentifier>{e463cb8a-ce59-4286-8970-3684bb69b5c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{374e5e8a-1e6f-40da-8b61-b15ac7b3d0a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
+    <ClInclude Include="preprocessor.h" />
+    <ClInclude Include="overdrive.h" />
     <ClInclude Include="core\logger.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="core\task.h">
+    <ClInclude Include="core\log_sink.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="test\test.h">
-      <Filter>test</Filter>
-    </ClInclude>
-    <ClInclude Include="test\core\core_test.h">
-      <Filter>test\core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\system.h">
+    <ClInclude Include="core\log_message.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="util\named.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="test\util\util_test.h">
-      <Filter>test\util</Filter>
-    </ClInclude>
-    <ClInclude Include="util\concurrent_queue.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="core\taskprocessor.h">
+    <ClInclude Include="core\log_level.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="core\settings.h">
+    <ClInclude Include="core\engine.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="core\channel.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="util\scope_guard.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="core\channelQueue.h">
+    <ClInclude Include="core\channel_queue.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="util\unique_resource.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="preprocessor.h" />
-    <ClInclude Include="core\engine.h">
+    <ClInclude Include="core\system.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="util\move_on_copy.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="util\checkRange.h">
-      <Filter>util</Filter>
+    <ClInclude Include="core\settings.h">
+      <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="app\application.h">
-      <Filter>application</Filter>
-    </ClInclude>
-    <ClInclude Include="test\input\input_test.h">
-      <Filter>test\input</Filter>
-    </ClInclude>
-    <ClInclude Include="util\concurrent_vector.h">
-      <Filter>util</Filter>
+      <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="video\video.h">
       <Filter>video</Filter>
@@ -162,7 +63,13 @@
     <ClInclude Include="video\monitor.h">
       <Filter>video</Filter>
     </ClInclude>
+    <ClInclude Include="video\videomode.h">
+      <Filter>video</Filter>
+    </ClInclude>
     <ClInclude Include="video\window.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="video\windowHints.h">
       <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="input\input.h">
@@ -174,150 +81,117 @@
     <ClInclude Include="input\mouse.h">
       <Filter>input</Filter>
     </ClInclude>
-    <ClInclude Include="input\joystick.h">
-      <Filter>input</Filter>
-    </ClInclude>
-    <ClInclude Include="render\shaderprogram.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="render\shader.h">
-      <Filter>render</Filter>
-    </ClInclude>
-    <ClInclude Include="app\spinningcube.h">
-      <Filter>application</Filter>
-    </ClInclude>
-    <ClInclude Include="math\conversions.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="util\checkGL.h">
-      <Filter>util</Filter>
-    </ClInclude>
-    <ClInclude Include="util\make_iterable.h">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="util\exception.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="util\color.h">
+    <ClInclude Include="util\supports.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="app\rendertest.h">
-      <Filter>application</Filter>
+    <ClInclude Include="input\gamepad.h">
+      <Filter>input</Filter>
     </ClInclude>
-    <ClInclude Include="render\vertexbuffer.h">
-      <Filter>render</Filter>
+    <ClInclude Include="util\active.h">
+      <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="render\vertexarray.h">
-      <Filter>render</Filter>
+    <ClInclude Include="util\exception_windows.h">
+      <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="render\enumerations.h">
-      <Filter>render</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="core">
-      <UniqueIdentifier>{fc78e2a9-8933-47da-a27c-c06d46150142}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="util">
-      <UniqueIdentifier>{35e7b45c-8e3f-4603-b1f5-a62fd3977876}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="test">
-      <UniqueIdentifier>{cbdaaf25-d8d9-4eb0-bf57-5e3b85812913}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="test\core">
-      <UniqueIdentifier>{41fcca05-7d8d-4419-af86-9e16eea67c8e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platform">
-      <UniqueIdentifier>{173c91ae-ef98-4aa7-928e-e7aa4977e9e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="test\util">
-      <UniqueIdentifier>{c4e9136f-639e-4e3c-b538-dd54a968be00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render">
-      <UniqueIdentifier>{6dd33015-887b-4c00-a6e2-320e53e400c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="application">
-      <UniqueIdentifier>{ab1b483f-aebb-4f63-b445-3674f05e8ffe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="video">
-      <UniqueIdentifier>{14523ece-37e0-4f21-8396-807b24767368}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="input">
-      <UniqueIdentifier>{85e5e9e0-73ff-454e-a698-a6fa75789f9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="math">
-      <UniqueIdentifier>{a2516a21-cd2a-45e9-93d0-2a0839710cd0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render\shape">
-      <UniqueIdentifier>{dee0fe2f-7228-4d7a-90e9-c202b3c1b739}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="test\input">
-      <UniqueIdentifier>{6896295e-c6ad-4a4f-bbc6-876ff64081fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="shaders">
-      <UniqueIdentifier>{b89a9cb2-9ec8-446c-ab5e-8279aa705147}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="render\camera">
-      <UniqueIdentifier>{082d459e-c2d5-4853-a8ad-8b4342c20fd7}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="shaders\diffuse.vs">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="shaders\diffuse.fs">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="render\vertexbuffer.inl">
-      <Filter>render</Filter>
-    </None>
-    <None Include="render\vertexarray.inl">
-      <Filter>render</Filter>
-    </None>
-    <None Include="render\enumerations.inl">
-      <Filter>render</Filter>
-    </None>
-    <None Include="math\conversions.inl">
+    <ClInclude Include="math\clamp.h">
       <Filter>math</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="core\logger.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\log_sink.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\log_message.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\log_level.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\system.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\settings.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\engine.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="app\application.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="video\videomode.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\monitor.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\video.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\windowHints.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\window.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="input\keyboard.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="input\mouse.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="util\exception.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="input\input.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="util\active.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="input\input_windows.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="util\exception_windows.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="input\gamepad.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="core\log_sink.inl">
+      <Filter>core</Filter>
+    </None>
+    <None Include="core\log_message.inl">
+      <Filter>core</Filter>
     </None>
     <None Include="core\channel.inl">
       <Filter>core</Filter>
     </None>
-    <None Include="core\channelQueue.inl">
-      <Filter>core</Filter>
-    </None>
-    <None Include="core\engine.inl">
-      <Filter>core</Filter>
-    </None>
-    <None Include="core\logger.inl">
-      <Filter>core</Filter>
-    </None>
-    <None Include="core\settings.inl">
+    <None Include="core\channel_queue.inl">
       <Filter>core</Filter>
     </None>
     <None Include="core\system.inl">
       <Filter>core</Filter>
     </None>
-    <None Include="util\checkRange.inl">
+    <None Include="core\settings.inl">
+      <Filter>core</Filter>
+    </None>
+    <None Include="core\engine.inl">
+      <Filter>core</Filter>
+    </None>
+    <None Include="util\supports.inl">
       <Filter>util</Filter>
     </None>
-    <None Include="util\make_iterable.inl">
-      <Filter>util</Filter>
-    </None>
-    <None Include="util\move_on_copy.inl">
-      <Filter>util</Filter>
-    </None>
-    <None Include="util\scope_guard.inl">
-      <Filter>util</Filter>
-    </None>
-    <None Include="util\unique_resource.inl">
-      <Filter>util</Filter>
-    </None>
-    <None Include="util\concurrent_vector.inl">
-      <Filter>util</Filter>
-    </None>
-    <None Include="util\concurrent_queue.inl">
-      <Filter>util</Filter>
+    <None Include="math\clamp.inl">
+      <Filter>math</Filter>
     </None>
   </ItemGroup>
 </Project>

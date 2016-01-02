@@ -1,14 +1,8 @@
-#include "stdafx.h"
 #include "logger.h"
-#include "logger/log_sink.h"
+#include "log_sink.h"
 
 namespace overdrive {
 	namespace core {
-		Logger::Logger():
-			mActive(util::Active::create())
-		{
-		}
-
 		Logger::Logger(const std::string& filename):
 			mActive(util::Active::create())
 		{
@@ -22,19 +16,10 @@ namespace overdrive {
 			int line
 		) {
 			return LogMessage(
+				this,
 				level,
 				filename,
-				line,
-				this
-			);
-		}
-
-		LogMessage Logger::operator()() {
-			return LogMessage(
-				eLogLevel::MESSAGE, 
-				"", 
-				0, 
-				this
+				line
 			);
 		}
 
@@ -46,7 +31,7 @@ namespace overdrive {
 			auto it = find(begin(mSinks), end(mSinks), sink);
 
 			if (it == end(mSinks))
-				mSinks.push_back(std::move(sink)); 
+				mSinks.push_back(std::move(sink));
 			else {} // silently fail when the sink is already present
 		}
 
@@ -70,17 +55,17 @@ namespace overdrive {
 			return mSinks.size();
 		}
 
-		void Logger::flush(const LogMessage& message) {
-			std::string msg = message.mBuffer.str();
+		void Logger::flush(const LogMessage* message) {
+			std::string msg = message->mBuffer.str();
 
 			/*
-			// Singlethreaded version: 
+			// Singlethreaded version:
 			for (auto&& sink: mSinks)
-				sink.write(message.mMeta, msg);
+			sink.write(message.mMeta, msg);
 			*/
 
 			auto&& sinks = mSinks;
-			auto&& meta = message.mMeta;
+			auto&& meta = message->mMeta;
 
 			mActive->send([=] {
 				for (auto&& sink : sinks)
@@ -93,5 +78,7 @@ namespace overdrive {
 
 			return gLogger;
 		}
+
+		//Logger gLogger("overdrive.log");
 	}
 }

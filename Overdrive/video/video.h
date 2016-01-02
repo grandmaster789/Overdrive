@@ -1,71 +1,69 @@
-#ifndef OVERDRIVE_VIDEO_VIDEO_H
-#define OVERDRIVE_VIDEO_VIDEO_H
+#pragma once
 
-#include "core/system.h"
-#include "core/channel.h"
-#include "video/monitor.h"
-#include "video/window.h"
+#include "../core/system.h"
+#include "../core/channel.h"
+#include "monitor.h"
+#include "window.h"
 
 namespace overdrive {
 	namespace video {
-		class Video :
+		class Video:
 			public core::System,
-			public core::MessageHandler<Monitor::OnConnected>,
-			public core::MessageHandler<Monitor::OnDisconnected>,
-			public core::MessageHandler<Window::OnCreate>,
-			public core::MessageHandler<Window::OnClose>
+			public MessageHandler<Monitor::OnConnected>,
+			public MessageHandler<Monitor::OnDisconnected>
 		{
 		private:
-			struct WindowDeleter;
 			struct MonitorDeleter;
 
 		public:
-			typedef std::unique_ptr<Window, WindowDeleter> WindowPtr;
 			typedef std::unique_ptr<Monitor, MonitorDeleter> MonitorPtr;
-			typedef std::vector<WindowPtr> WindowList;
+			typedef std::unique_ptr<Window> WindowPtr;
 			typedef std::vector<MonitorPtr> MonitorList;
+			typedef std::vector<WindowPtr> WindowList;
 
 			Video();
 
-			virtual bool initialize() override;
+			virtual void initialize() override;
 			virtual void update() override;
 			virtual void shutdown() override;
 
+			// Monitors
 			void detectMonitors();
-			unsigned int getNumMonitors() const;
+			size_t getNumMonitors() const;
 			const MonitorList& getMonitorList() const;
+			const Monitor* getPrimaryMonitor() const;
 
-			Window* createWindow(unsigned int width, unsigned int height); // creates a window object (does not spawn it yet)
+			// Windows
+			WindowHints& getWindowHints();
+			const WindowHints& getWindowHints() const;
+
+			Window* createWindow(const std::string& title, int width, int height);						// windowed mode on primary monitor
+			Window* createWindow(const std::string& title, const Monitor* m);							// borderless fullscreen
+			Window* createWindow(const std::string& title, const Monitor* m, int width, int height);	// custom fullscreen
+			
+			Window* getMainWindow();
+			const Window* getMainWindow() const;
+
+			WindowList& getWindowList();
 			const WindowList& getWindowList() const;
 
+			// ----- Handlers -----
 			void operator()(const Monitor::OnConnected& connected);
 			void operator()(const Monitor::OnDisconnected& disconnected);
-			void operator()(const Window::OnCreate& created);
-			void operator()(const Window::OnClose& closed);
 
 		private:
-			// Window stuff
 			struct MainWindowSettings {
-				unsigned int mMainWindowWidth = 800;
-				unsigned int mMainWindowHeight = 600;
-				bool mMainWindowFullscreen = false;
+				unsigned int mWidth = 800;
+				unsigned int mHeight = 600;
+				bool mFullscreen = false;
+				bool mBorderless = false;
 			} mMainWindowSettings;
 
-			struct WindowDeleter {
-				void operator()(Window* w);
-			} mWindowDeleter;;
+			MonitorList mMonitorList;
+			struct MonitorDeleter { void operator()(Monitor* m); } mMonitorDeleter;
 
-			WindowList mWindowList; // first in the list is the main window
-
-		private:
-			// Monitor stuff
-			struct MonitorDeleter {
-				void operator()(Monitor* m);
-			} mMonitorDeleter;
-
-			MonitorList mMonitorList; // first in the list is the primary monitor
+			WindowHints mWindowHints;
+			WindowList mWindowList;
 		};
 	}
 }
-
-#endif

@@ -1,225 +1,157 @@
-#include "video/video.h"
-#include "core/logger.h"
-#include "core/engine.h"
-#include "opengl.h"
-
-#include "video/monitor.h"
-#include "video/window.h"
-
-#include "util/checkGL.h"
-
+#include "video.h"
+#include "window.h"
+#include "../core/channel.h"
+#include "../core/logger.h"
+#include "../core/engine.h"
+#include "../preprocessor.h"
+#include <cassert>
 #include <unordered_map>
 
+// ----- Monitor Callbacks -----
 namespace {
-	overdrive::core::Channel chan; // shorthand
-}
+	using overdrive::video::Monitor;
 
-//**** Monitor stuff ****//
-namespace {
-	typedef std::unordered_map<GLFWmonitor*, overdrive::video::Monitor*> MonitorRegistry;
-	
-	MonitorRegistry mMonitorRegistry; // not really a member, yet not really a global either
+	typedef std::unordered_map<GLFWmonitor*, Monitor*> MonitorMapping;
+	MonitorMapping gMonitorMapping; // quasi-global
 
-	void registerMonitor(overdrive::video::Monitor* m) {
+	void registerMonitor(Monitor* m) {
 		auto handle = m->getHandle();
-		assert(mMonitorRegistry.find(handle) == mMonitorRegistry.end());
-		mMonitorRegistry[handle] = m;
+		assert(gMonitorMapping.find(handle) == gMonitorMapping.end());
+		gMonitorMapping[handle] = m;
 	}
 
-	void unregisterMonitor(GLFWmonitor* mon) {
-		auto it = mMonitorRegistry.find(mon);
-		assert(it != mMonitorRegistry.end());
-		mMonitorRegistry.erase(it);
+	void unregisterMonitor(GLFWmonitor* handle) {
+		auto it = gMonitorMapping.find(handle);
+		assert(it != gMonitorMapping.end());
+		gMonitorMapping.erase(it);
 	}
 
-	overdrive::video::Monitor* fetch(GLFWmonitor* handle) {
-		assert(mMonitorRegistry.find(handle) != mMonitorRegistry.end());
-		return mMonitorRegistry[handle];
-	}
-
-	void monitorCallback(GLFWmonitor* mon, int evt) {
-		/*
-			Note that under windows (only observed with windows 8, but probably present in other versions as well)
-			the callback is only called when physically connecting/disconnecting a new monitor - turning it off or on is not sufficient
-			to trigger the callback. This will probably be modified in future versions, but for now it's like that :P
-		*/
+	void monitorCallback(GLFWmonitor* handle, int evt) {
+		using overdrive::core::Channel;
+		using overdrive::video::fetch;
 
 		switch (evt) {
 		case GLFW_CONNECTED:
-			chan.broadcast(overdrive::video::Monitor::OnConnected{ mon });
+			Channel::broadcast(Monitor::OnConnected{ handle });
 			break;
 
 		case GLFW_DISCONNECTED:
-			assert(mMonitorRegistry.find(mon) != mMonitorRegistry.end());
-			chan.broadcast(overdrive::video::Monitor::OnDisconnected{ mMonitorRegistry.find(mon)->second });
+			Channel::broadcast(Monitor::OnDisconnected{ fetch(handle) });
 			break;
 
 		default:
-			gLog << "unsupported monitor event: " << evt;
+			gLogWarning << "Unknown monitor event received: " << evt;
 		}
 	}
 }
 
-//**** Window stuff ****//
-namespace {
-	typedef std::unordered_map<GLFWwindow*, overdrive::video::Window*> WindowRegistry;
-
-	WindowRegistry mWindowRegistry;
-
-	void registerWindow(overdrive::video::Window* win) {
-		auto handle = win->getHandle();
-		assert(mWindowRegistry.find(handle) == mWindowRegistry.end());
-		mWindowRegistry[handle] = win;
-	}
-
-	void unregisterWindow(GLFWwindow* win) {
-		auto it = mWindowRegistry.find(win);
-		assert(it != mWindowRegistry.end());
-		mWindowRegistry.erase(it);
-	}
-
-	overdrive::video::Window* fetch(GLFWwindow* handle) {
-		assert(mWindowRegistry.find(handle) != mWindowRegistry.end());
-		return mWindowRegistry[handle];
-	}
-
-	void windowPositionCallback(GLFWwindow* handle, int x, int y) {
-		chan.broadcast(overdrive::video::Window::OnMove{ fetch(handle), x, y });
-	}
-
-	void windowSizeCallback(GLFWwindow* handle, int newWidth, int newHeight) {
-		auto win = fetch(handle);
-
-		win->setWidth(newWidth);
-		win->setHeight(newHeight);
-
-		chan.broadcast(overdrive::video::Window::OnResize{ win, newWidth, newHeight });
-	}
-
-	void windowCloseCallback(GLFWwindow* handle) {
-		chan.broadcast(overdrive::video::Window::OnClose{ fetch(handle) });
-	}
-
-	void windowRefreshCallback(GLFWwindow* handle) {
-		chan.broadcast(overdrive::video::Window::OnRefresh{ fetch(handle) });
-	}
-
-	void windowFocusCallback(GLFWwindow* handle, int isFocus) {
-		auto win = fetch(handle);
-
-		if (isFocus)
-			chan.broadcast(overdrive::video::Window::OnFocus{ win });
-		else
-			chan.broadcast(overdrive::video::Window::OnDeFocus{ win });
-	}
-
-	void windowIconifyCallback(GLFWwindow* handle, int isIconify) {
-		auto win = fetch(handle);
-
-		if (isIconify)
-			chan.broadcast(overdrive::video::Window::OnIconify{ win });
-		else
-			chan.broadcast(overdrive::video::Window::OnRestore{ win });
-	}
-
-	void windowFramebufferSizeCallback(GLFWwindow* handle, int newWidth, int newHeight) {
-		chan.broadcast(overdrive::video::Window::OnFramebufferResize{ fetch(handle), newWidth, newHeight });
-	}
-}
-
+// ----- Video subsystem -----
 namespace overdrive {
 	namespace video {
+		void Video::MonitorDeleter::operator()(Monitor* m) {
+			for (auto it = gMonitorMapping.begin(); it != gMonitorMapping.end(); ++it) {
+				if (it->second == m) {
+					gMonitorMapping.erase(it);
+					break;
+				}
+			}
+
+			delete m; // custom deleter should still delete
+		}
+
 		Video::Video():
 			System("Video")
 		{
-			registerSetting<unsigned int>("Width", &mMainWindowSettings.mMainWindowWidth);
-			registerSetting<unsigned int>("Height", &mMainWindowSettings.mMainWindowHeight);
-			registerSetting<bool>("Fullscreen", &mMainWindowSettings.mMainWindowFullscreen);
+			registerSetting("Width", &mMainWindowSettings.mWidth);
+			registerSetting("Height", &mMainWindowSettings.mHeight);
+			registerSetting("Fullscreen", &mMainWindowSettings.mFullscreen);
+			registerSetting("Borderless", &mMainWindowSettings.mBorderless);
 		}
 
-		bool Video::initialize() {
+		void Video::initialize() {
 			System::initialize();
-			
+
 			// initialize monitor management
 			detectMonitors();
 			glfwSetMonitorCallback(&monitorCallback);
 
-			// initialize main window
-			auto mainWindow = createWindow(
-				mMainWindowSettings.mMainWindowWidth, 
-				mMainWindowSettings.mMainWindowHeight
-			);
+			// initialize window management
+			gLog << "Main window settings: " 
+				<< mMainWindowSettings.mWidth 
+				<< "x" 
+				<< mMainWindowSettings.mHeight 
+				<< ", " 
+				<< std::boolalpha 
+				<< mMainWindowSettings.mFullscreen;
 
-			// default to an openGL 4.3 context
-			Window::mCreationHints.mContextVersionMajor = 4;
-			Window::mCreationHints.mContextVersionMinor = 3;
+			// [NOTE] These settings *could* be configurable, but I'm keeping it straightforward for now
+			mWindowHints.mResizable = true;
+			mWindowHints.mVisible = true;
+			mWindowHints.mDecorated = true;
+			mWindowHints.mFocused = true;
+			mWindowHints.mAutoIconify = true;
+			mWindowHints.mFloating = false;
 
-			// spawn the window
-			if (mMainWindowSettings.mMainWindowFullscreen) {
-				auto primaryMonitor = mMonitorList.front().get();
-				mainWindow->createFullscreen(primaryMonitor);
+			mWindowHints.fromCurrentVideoMode(getPrimaryMonitor()); // set bit depths and refresh rate from current video mode
+
+			mWindowHints.mStereo = false;
+			mWindowHints.mSamples = 0;
+			mWindowHints.mSRGBCapable = true;
+			mWindowHints.mDoubleBuffer = true;
+
+			mWindowHints.mClientAPI = eClientAPI::OPENGL;
+			mWindowHints.mContextVersionMajor = 4;
+			mWindowHints.mContextVersionMinor = 5;
+
+			mWindowHints.mOpenGLForwardCompatible = true;
+			mWindowHints.mOpenGLProfile = eOpenGLProfile::CORE;
+#ifdef OVERDRIVE_DEBUG
+			mWindowHints.mOpenGLDebugContext = true;
+#else
+			mWindowHints.mOpenGLDebugContext = false;
+#endif
+			mWindowHints.mContextRobustness = eContextRobustness::NO_ROBUSTNESS;
+			mWindowHints.mContextReleaseBehavior = eContextReleaseBehavior::ANY;
+
+			gLogDebug << mWindowHints;
+
+			mWindowHints.apply();
+
+			// create the main window
+			if (mMainWindowSettings.mFullscreen) {
+				if (mMainWindowSettings.mBorderless)
+					createWindow("Overdrive", getPrimaryMonitor());
+				else
+					createWindow("Overdrive", getPrimaryMonitor(), mMainWindowSettings.mWidth, mMainWindowSettings.mHeight);
 			}
 			else
-				mainWindow->create();
+				createWindow("Overdrive", mMainWindowSettings.mWidth, mMainWindowSettings.mHeight);
 
-			// show what we actually got
-			gLog.debug() 
-				<< "Context info: " << mainWindow->getClientAPI()
-				<< ", v" << mainWindow->getContextVersionMajor()
-				<< "." << mainWindow->getContextVersionMinor()
-				<< "r" << mainWindow->getContextRevision()
-				<< ", " << mainWindow->getContextRobustness();
-
-			mainWindow->makeCurrent();
-
-			CHECK_GL_STATE;
-
-			// initialize GLEW (must be done after activating an openGL context)
-			glewExperimental = GL_TRUE;
-			GLenum err = glewInit();
-			if (err != GLEW_OK) {
-				gLog.error() << "Failed to initialize GLEW: " << glewGetErrorString(err);
-				return false;
-			}
-
-			gLog.debug() << "Initialized GLEW " << glewGetString(GLEW_VERSION);
-
-			// initializing GLEW with the experimental flag on can cause the GL_INVALID_ENUM error to be reported on some systems
-			// which should be safe to ignore (see http://www.opengl.org/wiki/OpenGL_Loading_Library)
-			while (glGetError() != GL_NO_ERROR); 
-
-			// configure module updates
-			mEngine->updateSystem(this, true, false); // repeatedly update this subsystem on the main thread
-
-			return true;
 		}
 
 		void Video::update() {
-			GLFWwindow* activeContext = nullptr;
+			using core::Channel;
 
-			// activate contexts and update window contents
-			for (auto it = mWindowList.begin(); it != mWindowList.end(); ) {
-				auto window = it->get();
+			if (mWindowList.empty())
+				Channel::broadcast(core::Engine::OnStop());
 
-				if (window->shouldClose()) {
+			auto it = mWindowList.begin();
+
+			// close everything when the main window closes
+			if ((*it)->shouldClose())
+				Channel::broadcast(core::Engine::OnStop());
+
+			for (; it != mWindowList.end();) {
+				if ((*it)->shouldClose())
 					it = mWindowList.erase(it);
-				}
 				else {
-					// switch active contexts, when required
-					if (activeContext != window->getHandle()) {
-						window->makeCurrent();
-						activeContext = window->getHandle();
-					}
-
-					// swap buffers
-					window->swapBuffers();
-
+					// The graphics rendering stuff should go in here. For now I'm keeping it the simplest that could possibly work.
+					(*it)->makeCurrent();
+					// [NOTE] update rendering here
+					(*it)->swapBuffers();
 					++it;
 				}
 			}
-
-			if (mWindowList.empty())
-				chan.broadcast(core::Engine::OnStop{});
 
 			glfwPollEvents();
 		}
@@ -229,35 +161,28 @@ namespace overdrive {
 		}
 
 		void Video::detectMonitors() {
-			GLFWmonitor* primaryMonitorHandle = glfwGetPrimaryMonitor();
-			
+			auto primaryHandle = glfwGetPrimaryMonitor();
+
 			int numMonitors = 0;
-			GLFWmonitor** monitors = glfwGetMonitors(&numMonitors);
+			auto monitors = glfwGetMonitors(&numMonitors);
 
-			gLog.info() << "Detected " << numMonitors << " monitors";
+			gLog << "Detected " << numMonitors << " monitors";
+			mMonitorList.reserve(static_cast<size_t>(numMonitors));
 
-			MonitorPtr primaryMonitor(new Monitor(primaryMonitorHandle), mMonitorDeleter);
+			MonitorPtr primaryMonitor(new Monitor(primaryHandle), mMonitorDeleter);
 			registerMonitor(primaryMonitor.get());
-			mMonitorList.emplace_back(std::move(primaryMonitor));
-
-			auto& primaryInfo = mMonitorList.back();
-
-			gLog.info() << "Primary monitor: " << primaryInfo->getName();
-			//gLog.info() << "(" << primaryInfo->getWidth() << "mm x" << primaryInfo->getHeight() << "mm)";
-			//gLog.info() << "[" << primaryInfo->getXPos() << ", " << primaryInfo->getYPos() << "]";
+			mMonitorList.push_back(std::move(primaryMonitor));
 
 			for (int i = 0; i < numMonitors; ++i) {
-				if (monitors[i] != primaryMonitorHandle) {
-					auto currentMonitorHandler = monitors[i];
-
-					MonitorPtr monitor(new Monitor(currentMonitorHandler), mMonitorDeleter);
+				if (monitors[i] != primaryHandle) {
+					MonitorPtr monitor(new Monitor(monitors[i]), mMonitorDeleter);
 					registerMonitor(monitor.get());
-					mMonitorList.emplace_back(std::move(monitor));
+					mMonitorList.push_back(std::move(monitor));
 				}
 			}
 		}
 
-		unsigned int Video::getNumMonitors() const {
+		size_t Video::getNumMonitors() const {
 			return mMonitorList.size();
 		}
 
@@ -265,32 +190,74 @@ namespace overdrive {
 			return mMonitorList;
 		}
 
-		Window* Video::createWindow(unsigned int width, unsigned int height) {
-			WindowPtr win(new Window, mWindowDeleter);
-			win->setSize(width, height);
-			Window* result = win.get();
-			
-			mWindowList.emplace_back(std::move(win));
-			
+		const Monitor* Video::getPrimaryMonitor() const {
+			return mMonitorList.front().get();
+		}
+
+		WindowHints& Video::getWindowHints() {
+			return mWindowHints;
+		}
+
+		const WindowHints& Video::getWindowHints() const {
+			return mWindowHints;
+		}
+
+		Window* Video::createWindow(const std::string& title, int width, int height) {
+			auto window = std::make_unique<Window>(title, width, height);
+			Window* result = window.get();
+
+			mWindowList.push_back(std::move(window));
+
 			return result;
+		}
+
+		Window* Video::createWindow(const std::string& title, const Monitor* m) {
+			auto window = std::make_unique<Window>(title, m);
+			Window* result = window.get();
+
+			mWindowList.push_back(std::move(window));
+
+			return result;
+		}
+
+		Window* Video::createWindow(const std::string& title, const Monitor* m, int width, int height) {
+			auto window = std::make_unique<Window>(title, m, width, height);
+			Window* result = window.get();
+
+			mWindowList.push_back(std::move(window));
+
+			return result;
+		}
+
+		Window* Video::getMainWindow() {
+			assert(!mWindowList.empty());
+			return mWindowList.front().get();
+		}
+
+		const Window* Video::getMainWindow() const {
+			assert(!mWindowList.empty());
+			return mWindowList.front().get();
+		}
+
+		Video::WindowList& Video::getWindowList() {
+			return mWindowList;
 		}
 
 		const Video::WindowList& Video::getWindowList() const {
 			return mWindowList;
 		}
 
-		//**** Handlers ****//
-
 		void Video::operator()(const Monitor::OnConnected& connected) {
-			MonitorPtr monitor(new Monitor(connected.mMonitor), mMonitorDeleter);
-			gLog.debug() << "Monitor connected: " << monitor->getName();
-			registerMonitor(monitor.get());
-			mMonitorList.emplace_back(std::move(monitor));
+			MonitorPtr ptr(new Monitor(connected.mMonitor), mMonitorDeleter);
+
+			gLogDebug << "Monitor connected: " << ptr->getName();
+			registerMonitor(ptr.get());
+			mMonitorList.push_back(std::move(ptr));
 		}
 
 		void Video::operator()(const Monitor::OnDisconnected& disconnected) {
-			gLog.debug() << "Monitor disconnected: " << disconnected.mMonitor->getName();
-			
+			gLogDebug << "Monitor disconnected: " << disconnected.mMonitor->getName();
+
 			for (auto it = mMonitorList.begin(); it != mMonitorList.end(); ++it) {
 				if (it->get() == disconnected.mMonitor) {
 					mMonitorList.erase(it);
@@ -299,49 +266,9 @@ namespace overdrive {
 			}
 		}
 
-		void Video::operator()(const Window::OnCreate& created) {
-			GLFWwindow* handle = created.mWindow->getHandle();
-
-			registerWindow(created.mWindow);
-
-			//set all callbacks
-			glfwSetWindowCloseCallback(handle, &windowCloseCallback);
-			glfwSetWindowFocusCallback(handle, &windowFocusCallback);
-			glfwSetWindowIconifyCallback(handle, &windowIconifyCallback);
-			glfwSetWindowPosCallback(handle, &windowPositionCallback);
-			glfwSetWindowRefreshCallback(handle, &windowRefreshCallback);
-			glfwSetWindowSizeCallback(handle, &windowSizeCallback);
-			glfwSetFramebufferSizeCallback(handle, &windowFramebufferSizeCallback);
-		}
-
-		void Video::operator()(const Window::OnClose& closed) {
-			gLog.debug() << "Window closed: " << closed.mWindow->getTitle();
-
-			glfwSetWindowShouldClose(closed.mWindow->getHandle(), GL_TRUE);
-		}
-
-		void Video::WindowDeleter::operator()(Window* w) {
-			for (auto it = mWindowRegistry.begin(); it != mWindowRegistry.end(); ++it) {
-				if (it->second == w) {
-					mWindowRegistry.erase(it);
-					break;
-				}
-			}
-
-			glfwDestroyWindow(w->getHandle());
-
-			delete w;
-		}
-
-		void Video::MonitorDeleter::operator()(Monitor* m) {
-			for (auto it = mMonitorRegistry.begin(); it != mMonitorRegistry.end(); ++it) {
-				if (it->second == m) {
-					mMonitorRegistry.erase(it);
-					break;
-				}
-			}
-
-			delete m;
+		Monitor* fetch(GLFWmonitor* handle) {
+			assert(gMonitorMapping.find(handle) != gMonitorMapping.end());
+			return gMonitorMapping[handle];
 		}
 	}
 }

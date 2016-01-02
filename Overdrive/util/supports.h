@@ -7,7 +7,7 @@
 namespace overdrive {
 	namespace util {
 		// SFINAE test for type functionality
-	
+
 		// "Supports" allows for compile-time switching based on type traits (see unit test for examples)
 		// In effect, this helps with compile-time code reflection (up to a point)
 		//
@@ -16,8 +16,8 @@ namespace overdrive {
 		template <typename Fn>
 		struct Supports;
 
-		template <typename T> using supports_equality	= Supports<std::equal_to<>(T, T)>;
-		template <typename T> using supports_less		= Supports<std::less<>(T, T)>;	
+		template <typename T> using supports_equality = Supports<std::equal_to<>(T, T)>;
+		template <typename T> using supports_less = Supports<std::less<>(T, T)>;
 	}
 }
 

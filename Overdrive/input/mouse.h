@@ -1,104 +1,104 @@
-#ifndef OVERDRIVE_INPUT_MOUSE_H
-#define OVERDRIVE_INPUT_MOUSE_H
+#pragma once
 
-#include "opengl.h"
-
-/*
-	TODO: decide on sticky button states (see glfwSetInputMode documentation)
-*/
+#include <ostream>
+#include <memory>
+#include <utility>
+#include "../opengl.h"
 
 namespace overdrive {
+	namespace video {
+		class Window;
+	}
+
 	namespace input {
+		/*
+			[TODO] custom cursor shapes
+			[TODO] higer-level events ~ dragging, double-click
+		*/
+
 		class Mouse {
+		private:
+			friend class video::Window;
+
+			Mouse(video::Window* sourceWindow = nullptr);
+
 		public:
-			// Shorter names; coincidentally, the actual integer values range from 0-7
-			enum eButton : int {
-				BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT,
-				BUTTON_RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
-				BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE,
-				BUTTON_1 = GLFW_MOUSE_BUTTON_1,
-				BUTTON_2 = GLFW_MOUSE_BUTTON_2,
-				BUTTON_3 = GLFW_MOUSE_BUTTON_3,
-				BUTTON_4 = GLFW_MOUSE_BUTTON_4,
-				BUTTON_5 = GLFW_MOUSE_BUTTON_5,
-				BUTTON_6 = GLFW_MOUSE_BUTTON_6,
-				BUTTON_7 = GLFW_MOUSE_BUTTON_7,
-				BUTTON_8 = GLFW_MOUSE_BUTTON_8,
-				BUTTON_LAST = GLFW_MOUSE_BUTTON_LAST
-			};
+			Mouse(const Mouse&) = delete;
+			Mouse(Mouse&& m);
+			Mouse& operator = (const Mouse&) = delete;
+			Mouse& operator = (Mouse&& m);
 
 			enum class eCursorState {
-				NORMAL,		// visible cursor, behaving normally
-				HIDDEN,		// hidden cursor, still behaving normally
-				DISABLED	// hidden cursor, disabled window clipping (useful for 3d camera controls)
+				VISIBLE,	// makes the cursor visible and behaving normally
+				HIDDEN,		// makes the cursor invisible when it is over the client area of the window but does not restrict the cursor from leaving
+				DISABLED	// hides and grabs the cursor, providing virtual and unlimited cursor movement
 			};
 
-			// An overview of modifiers can be found at http://www.glfw.org/docs/latest/group__mods.html
+			enum class eCursorShape {
+				ARROW,
+				IBEAM,
+				CROSSHAIR,
+				HAND,
+				HRESIZE,
+				VRESIZE
+			};
 
-			// Signals
+			enum eButton: int {
+				LEFT,
+				RIGHT,
+				MIDDLE
+			};
+
+			void setCursorState(eCursorState state);
+			eCursorState getCursorState() const;
+			void setStandardCursorShape(eCursorShape shape);
+			void resetCursorShape();
+
+			void setPosition(double x, double y); // in screencoordinates
+			std::pair<double, double> getPosition() const; // [NOTE] clipped by the window bounds; or unbounded when in disabled input state
+
+			// ----- Events -----
+			struct OnEntered { Mouse* mMouse; video::Window* mWindow; };
+			struct OnLeft { Mouse* mMouse; video::Window* mWindow; };
+			
 			struct OnButtonPress {
-				eButton mButton;
+				Mouse* mMouse; 
+				int mButton;
 				int mModifiers;
-				Mouse* mMouse;
 			};
 
 			struct OnButtonRelease {
-				eButton button;
-				int mModifiers;
 				Mouse* mMouse;
+				int mButton;
+				int mModifiers;
+			};
+
+			struct OnMoved {
+				Mouse* mMouse;
+				double mPositionX;
+				double mPositionY;
+				double mDeltaX;
+				double mDeltaY;
 			};
 
 			struct OnScroll {
-				double mXOffset;
-				double mYOffset;
 				Mouse* mMouse;
+				double mOffsetX;
+				double mOffsetY;
 			};
 
-			struct OnEnter {
-				Mouse* mMouse;
-			};
-
-			struct OnLeave {
-				Mouse* mMouse;
-			};
-
-			struct OnMove {
-				double mX;	// in screen coordinates
-				double mY;	// in screen coordinates
-				double mDeltaX;
-				double mDeltaY;
-				Mouse* mMouse;
-			};
-
-			// Functions
-			Mouse(GLFWwindow* handle);
-
-			void hideCursor();
-			void disableCursor();
-			void restoreCursor();
-			void setCursorState(eCursorState state);
-			eCursorState getCursorState() const;
-
-			void setPosition(double x, double y); // the pointer will be moved to the indicated position, triggering an OnMouseMove
-			void getPosition(double& x, double& y) const;
-
-			void setInsideClientArea(bool isInside);
-			bool isInsideClientArea() const;
-
-			bool operator [] (eButton button) const; // usage -- bool pressed = (mouse[Mouse::MOUSE_BUTTON_LEFT]);
-
-			bool mButtonState[BUTTON_LAST];
-			double mX = 0;
-			double mY = 0;
-
-			GLFWwindow* getHandle() const;
+			double mPositionX;
+			double mPositionY;
+			bool mButtonState[GLFW_MOUSE_BUTTON_LAST];
 
 		private:
-			bool mIsInsideClientArea;
+			video::Window* mSourceWindow;
+			std::unique_ptr<GLFWcursor, void(*)(GLFWcursor*)> mMouseCursor;
 
-			GLFWwindow* mHandle;
+			
 		};
+
+		std::ostream& operator << (std::ostream& os, const Mouse::eCursorState& state);
+		std::ostream& operator << (std::ostream& os, const Mouse::eCursorShape& shape);
 	}
 }
-
-#endif

@@ -31,3 +31,10 @@ Experimental
 /Overdrive/Release
 *.lastcodeanalysissucceeded
 Release
+/ipch
+/x64
+/Assault/x64
+/Overdrive/x64
+/OverdriveTest/x64
+/Overdrive.VC.VC.opendb
+/Overdrive.VC.db

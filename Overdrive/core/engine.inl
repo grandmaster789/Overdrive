@@ -1,14 +1,11 @@
-#ifndef OVERDRIVE_CORE_ENGINE_INL
-#define OVERDRIVE_CORE_ENGINE_INL
+#pragma once
 
-#include "core/engine.h"
-#include "util/exception.h"
+#include "engine.h"
+#include <exception>
 
 namespace overdrive {
 	namespace core {
-		// Note -- if systems are removed regularly, from non-main threads this needs to become threadsafe as well
-		//		   I don't expect this to be the typical use case, so I'll leave it for later
-
+		// NOTE -- this is neither fast nor threadsafe, but may prove useful
 		template <typename T>
 		T* Engine::get() const {
 			T* result = nullptr;
@@ -20,9 +17,7 @@ namespace overdrive {
 					return result;
 			}
 
-			throw std::exception("System type not found");
+			throw std::runtime_error("System type not found");
 		}
 	}
 }
-
-#endif

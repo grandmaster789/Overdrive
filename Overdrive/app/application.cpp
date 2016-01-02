@@ -1,8 +1,8 @@
-#include "app/application.h"
+#include "application.h"
 
 namespace overdrive {
 	namespace app {
-		Application::Application(std::string name):
+		Application::Application(const std::string& name):
 			System(name)
 		{
 		}

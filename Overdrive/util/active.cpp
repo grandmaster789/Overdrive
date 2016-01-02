@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "active.h"
 
 namespace overdrive {
@@ -26,7 +25,7 @@ namespace overdrive {
 		}
 
 		void Active::send(Callback message) {
-			mMessageQueue.push_back(
+			mMessageQueue.push(
 				std::move(message)
 			);
 		}
@@ -35,7 +34,7 @@ namespace overdrive {
 			while (!mIsDone) {
 				Callback fn;
 
-				mMessageQueue.wait_pull_front(fn);
+				mMessageQueue.wait_pull(fn);
 
 				fn();
 			}

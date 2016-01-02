@@ -1,16 +1,15 @@
-#include "core/system.h"
-#include "core/logger.h"
+#include "system.h"
+#include "logger.h"
 
 namespace overdrive {
 	namespace core {
-		System::System(std::string name):
-			Named{ std::move(name) }
+		System::System(const std::string& name):
+			mName(name)
 		{
 		}
 
-		bool System::initialize() {
+		void System::initialize() {
 			gLog << "Initializing " << getName();
-			return true;
 		}
 
 		void System::update() {
@@ -18,6 +17,19 @@ namespace overdrive {
 
 		void System::shutdown() {
 			gLog << "Shutting down " << getName();
+		}
+
+		const std::string& System::getName() const {
+			return mName;
+		}
+
+		void System::addDependency(const std::string& name) {
+			mDependencies.push_back(name);
+			// [TODO] -- check for duplicates
+		}
+
+		const std::vector<std::string>& System::getDependencies() const {
+			return mDependencies;
 		}
 	}
 }

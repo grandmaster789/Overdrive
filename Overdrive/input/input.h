@@ -1,47 +1,43 @@
-#ifndef OVERDRIVE_INPUT_INPUT_H
-#define OVERDRIVE_INPUT_INPUT_H
+#pragma once
 
-#include "core/system.h"
-#include "core/channel.h"
-
-#include "video/window.h"
-
-#include "input/joystick.h"
-
-#include "opengl.h" // for GLFW_JOYSTICK_LAST
+#include <vector>
+#include "../core/system.h"
+#include "../video/window.h"
+#include "gamepad.h"
 
 namespace overdrive {
 	namespace input {
 		class Keyboard;
 		class Mouse;
 
-		class Input :
+		class Input:
 			public core::System,
-			public core::MessageHandler<video::Window::OnCreate>,
-			public core::MessageHandler<video::Window::OnClose>
+			public MessageHandler<video::Window::OnCreated>,
+			public MessageHandler<video::Window::OnClosed>
 		{
 		public:
-			typedef std::vector<Keyboard*> KeyboardList;
-			typedef std::vector<Mouse*> MouseList;
-
 			Input();
 
-			virtual bool initialize() override;
+			virtual void initialize() override;
 			virtual void update() override;
 			virtual void shutdown() override;
 
-			const KeyboardList& getKeyboardList() const;
-			const MouseList& getMouseList() const;
+			const std::vector<Keyboard*>& getKeyboardList() const;
+			const std::vector<Mouse*>& getMouseList() const;
+			const std::vector<Gamepad>& getGamepadList() const;
 
-			void operator()(const video::Window::OnCreate& created);
-			void operator()(const video::Window::OnClose& closed);
+			void operator()(const video::Window::OnCreated& created);
+			void operator()(const video::Window::OnClosed& closed);
 
 		private:
-			KeyboardList mKeyboardList;
-			MouseList mMouseList;
-			Joystick mJoystickList[GLFW_JOYSTICK_LAST];
+			std::vector<Keyboard*> mKeyboardList;
+			std::vector<Mouse*> mMouseList;
+			std::vector<Gamepad> mGamepadList;
 		};
+
+		namespace detail {
+			void loadXInput();
+			void unloadXInput();
+		}
 	}
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef OVERDRIVE_PREPROCESSOR_H
-#define OVERDRIVE_PREPROCESSOR_H
+#pragma once
 
 // lay down some constants
 #define OVERDRIVE_PLATFORM_WINDOWS 1
@@ -33,6 +32,4 @@
 
 #ifdef max
 	#undef max
-#endif
-
 #endif

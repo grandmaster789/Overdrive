@@ -1,367 +1,315 @@
-#include "video/window.h"
-#include "core/logger.h"
-#include "core/channel.h"
-#include "util/checkRange.h"
+#include "window.h"
+#include "../core/logger.h"
+#include "../core/channel.h"
+#include "../input/keyboard.h"
+#include "../input/mouse.h"
+
+// ----- Window Callbacks -----
+namespace {
+	using overdrive::core::Channel;
+	using overdrive::video::Window;
+
+	void framebufferSizeCallback(GLFWwindow* handle, int width, int height) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		assert(w);
+		Channel::broadcast(Window::OnFramebufferResized{ w, width, height });
+	}
+
+	void windowCloseCallback(GLFWwindow* handle) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		assert(w);
+		Channel::broadcast(Window::OnClosed{ w });
+	}
+
+	void windowFocusCallback(GLFWwindow* handle, int state) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		assert(w);
+
+		switch (state) {
+		case GL_TRUE:
+			Channel::broadcast(Window::OnFocused{ w });
+			break;
+
+		case GL_FALSE:
+			Channel::broadcast(Window::OnFocusLost{ w });
+			break;
+
+		default:
+			gLogWarning << "Unsupported window focus state from callback: " << state;
+		}
+	}
+
+	void windowIconifyCallback(GLFWwindow* handle, int state) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		assert(w);
+
+		switch (state) {
+		case GL_TRUE:
+			Channel::broadcast(Window::OnIconify{ w });
+			break;
+
+		case GL_FALSE:
+			Channel::broadcast(Window::OnRestore{ w });
+			break;
+
+		default:
+			gLogWarning << "Unsupported window iconify state from callback: " << state;
+		}
+	}
+
+	void windowPositionCallback(GLFWwindow* handle, int x, int y) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		assert(w);
+
+		auto oldPosition = w->getPosition();
+
+		Channel::broadcast(Window::OnMoved{ w, oldPosition.first, oldPosition.second, x, y });
+	}
+
+	void windowRefreshCallback(GLFWwindow* handle) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		assert(w);
+
+		Channel::broadcast(Window::OnRefreshed{ w });
+	}
+
+	void windowResizeCallback(GLFWwindow* handle, int width, int height) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		assert(w);
+
+		auto oldSize = w->getSize();
+		Channel::broadcast(Window::OnResized{ w, oldSize.first, oldSize.second, width, height });
+	}
+}
 
 namespace overdrive {
 	namespace video {
-		Window::CreationHints Window::mCreationHints;
+		using core::Channel;
 
-		Window::Window() {
+		Window::Window(const std::string& title, int width, int height):
+			mTitle(title),
+			mWidth(width),
+			mHeight(height)
+		{
+			mHandle = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+			glfwSetWindowUserPointer(mHandle, this);
+
+			glfwGetWindowPos(mHandle, &mPositionX, &mPositionY);
+
+			glfwSetFramebufferSizeCallback(mHandle, &framebufferSizeCallback);
+			glfwSetWindowCloseCallback(mHandle, &windowCloseCallback);
+			glfwSetWindowFocusCallback(mHandle, &windowFocusCallback);
+			glfwSetWindowIconifyCallback(mHandle, &windowIconifyCallback);
+			glfwSetWindowPosCallback(mHandle, &windowPositionCallback);
+			glfwSetWindowRefreshCallback(mHandle, &windowRefreshCallback);
+			glfwSetWindowSizeCallback(mHandle, &windowResizeCallback);
+
+			Channel::add<OnMoved>(this);
+			Channel::add<OnResized>(this);
+
+			mKeyboard.reset(new input::Keyboard(this));
+			mMouse.reset(new input::Mouse(this));
+
+			Channel::broadcast(OnCreated{ this });
 		}
 
-		void Window::setWidth(int width) {
-			setSize(width, mHeight);
+		Window::Window(const std::string& title, const Monitor* m):
+			mTitle(title)
+		{
+			auto videomode = m->getCurrentVideoMode();
+
+			mHandle = glfwCreateWindow(videomode.mWidth, videomode.mHeight, title.c_str(), m->getHandle(), nullptr);
+			glfwSetWindowUserPointer(mHandle, this);
+			glfwGetWindowPos(mHandle, &mPositionX, &mPositionY);
+
+			mWidth = videomode.mWidth;
+			mHeight = videomode.mHeight;
+
+			glfwSetFramebufferSizeCallback(mHandle, &framebufferSizeCallback);
+			glfwSetWindowCloseCallback(mHandle, &windowCloseCallback);
+			glfwSetWindowFocusCallback(mHandle, &windowFocusCallback);
+			glfwSetWindowIconifyCallback(mHandle, &windowIconifyCallback);
+			glfwSetWindowPosCallback(mHandle, &windowPositionCallback);
+			glfwSetWindowRefreshCallback(mHandle, &windowRefreshCallback);
+			glfwSetWindowSizeCallback(mHandle, &windowResizeCallback);
+
+			Channel::add<OnMoved>(this);
+			Channel::add<OnResized>(this);
+
+			mKeyboard.reset(new input::Keyboard(this));
+			mMouse.reset(new input::Mouse(this));
+
+			Channel::broadcast(OnCreated{ this });
 		}
 
-		void Window::setHeight(int height) {
-			setSize(mWidth, height);
+		Window::Window(const std::string& title, const Monitor* m, int width, int height):
+			mTitle(title),
+			mWidth(width),
+			mHeight(height)
+		{
+			mHandle = glfwCreateWindow(width, height, title.c_str(), m->getHandle(), nullptr);
+			glfwSetWindowUserPointer(mHandle, this);
+			glfwGetWindowPos(mHandle, &mPositionX, &mPositionY);
+
+			glfwSetFramebufferSizeCallback(mHandle, &framebufferSizeCallback);
+			glfwSetWindowCloseCallback(mHandle, &windowCloseCallback);
+			glfwSetWindowFocusCallback(mHandle, &windowFocusCallback);
+			glfwSetWindowIconifyCallback(mHandle, &windowIconifyCallback);
+			glfwSetWindowPosCallback(mHandle, &windowPositionCallback);
+			glfwSetWindowRefreshCallback(mHandle, &windowRefreshCallback);
+			glfwSetWindowSizeCallback(mHandle, &windowResizeCallback);
+
+			Channel::add<OnMoved>(this);
+			Channel::add<OnResized>(this);
+
+			mKeyboard.reset(new input::Keyboard(this));
+			mMouse.reset(new input::Mouse(this));
+
+			Channel::broadcast(OnCreated{ this });
 		}
 
-		int Window::getWidth() const {
-			return mWidth;
-		}
-
-		int Window::getHeight() const {
-			return mHeight;
-		}
-
-		bool Window::isFullscreen() const {
-			return mIsFullscreen;
-		}
-
-		const std::string& Window::getTitle() const {
-			return mTitle;
-		}
-
-		void Window::create() {
-			if (mHandle != nullptr)
-				throw std::runtime_error("Window already created");
-
-			mIsFullscreen = false;
-			mCreationHints.apply();
-
-			mHandle = glfwCreateWindow(
-				mWidth,
-				mHeight,
-				mTitle.c_str(),
-				nullptr,	//not running fullscreen, so no specific monitor associated
-				nullptr	//no shared context
-			);
-
-			if (mHandle) {
-				mKeyboard = std::make_unique<input::Keyboard>(mHandle);
-				mMouse = std::make_unique<input::Mouse>(mHandle);
-
-				gLog.info() << "Created window " << getWidth() << "x" << getHeight() << " " << getTitle();
-				core::Channel::broadcast(OnCreate{ this });
-			}
-		}
-		void Window::createFullscreen(Monitor* m) {
-			if (mHandle != nullptr)
-				throw std::runtime_error("Window already created");
+		Window::Window(Window&& w):
+			mHandle(std::move(w.mHandle)),
+			mTitle(std::move(w.mTitle)),
+			mWidth(std::move(w.mWidth)),
+			mHeight(std::move(w.mHeight)),
+			mPositionX(std::move(w.mPositionY)),
+			mPositionY(std::move(w.mPositionY))
+		{
+			w.mHandle = nullptr;
 			
-			mIsFullscreen = true;
-			mCreationHints.apply();
+			if (mHandle)
+				glfwSetWindowUserPointer(mHandle, this);
 
-			mHandle = glfwCreateWindow(
-				mWidth,
-				mHeight,
-				mTitle.c_str(),
-				m->getHandle(),
-				nullptr	//no shared context
-			);
+			Channel::add<OnMoved>(this);
+			Channel::add<OnResized>(this);
 
-			if (mHandle) {
-				mKeyboard = std::make_unique<input::Keyboard>(mHandle);
-				mMouse = std::make_unique<input::Mouse>(mHandle);
+			mKeyboard.reset(new input::Keyboard(this));
+			mMouse.reset(new input::Mouse(this));
 
-				gLog.info() << "Created window " << getWidth() << "x" << getHeight() << " " << getTitle();
-				core::Channel::broadcast(OnCreate{ this });
-			}
+			Channel::broadcast(OnCreated{ this });
 		}
 
-		void Window::destroy() {
-			assert(mHandle);
-			
-			glfwSetWindowShouldClose(mHandle, GL_TRUE);
+		Window& Window::operator = (Window&& w) {
+			if (mHandle)
+				glfwDestroyWindow(mHandle);
 
-			core::Channel::broadcast(OnClose{ this });
-			// actually destroying the window is done by the Video System
+			mHandle = std::move(w.mHandle);
+			mTitle = std::move(w.mTitle);
+			mWidth = std::move(w.mWidth);
+			mHeight = std::move(w.mHeight);
+			mPositionX = std::move(w.mPositionX);
+			mPositionY = std::move(w.mPositionY);
+
+			if (mHandle)
+				glfwSetWindowUserPointer(mHandle, this);
+
+			mKeyboard.reset(new input::Keyboard(this));
+			mMouse.reset(new input::Mouse(this));
+
+			Channel::broadcast(OnCreated{ this });
+
+			return *this;
 		}
 
-		void Window::swapBuffers() const {
-			assert(mHandle);
-			glfwSwapBuffers(mHandle);
+		Window::~Window() {
+			if (mHandle)
+				glfwDestroyWindow(mHandle);
+
+			Channel::remove<OnMoved>(this);
+			Channel::remove<OnResized>(this);
 		}
 
-		void Window::makeCurrent() const {
-			assert(mHandle);
-			glfwMakeContextCurrent(mHandle);
+		GLFWwindow* Window::getHandle() const {
+			return mHandle;
 		}
 
 		bool Window::shouldClose() const {
-			if (mHandle)
-				return (glfwWindowShouldClose(mHandle) != 0);
-			else
-				return false;
+			return (glfwWindowShouldClose(mHandle) != 0);
 		}
 
-		bool Window::isFocused() const {
-			assert(mHandle);
-			return (glfwGetWindowAttrib(mHandle, GLFW_FOCUSED) != 0);
+		void Window::setShouldClose(bool value) {
+			glfwSetWindowShouldClose(mHandle, value ? 1 : 0);
 		}
 
-		bool Window::isIconified() const {
-			assert(mHandle);
-			return (glfwGetWindowAttrib(mHandle, GLFW_ICONIFIED) != 0);
+		void Window::setTitle(const std::string& title) {
+			mTitle = title;
+			glfwSetWindowTitle(mHandle, title.c_str());
 		}
-
-		bool Window::isVisible() const {
-			assert(mHandle);
-			return (glfwGetWindowAttrib(mHandle, GLFW_VISIBLE) != 0);
-		}
-
-		bool Window::isResizable() const {
-			assert(mHandle);
-			return (glfwGetWindowAttrib(mHandle, GLFW_RESIZABLE) != 0);
-		}
-
-		bool Window::isDecorated() const {
-			assert(mHandle);
-			return (glfwGetWindowAttrib(mHandle, GLFW_DECORATED) != 0);
-		}
-
-		void Window::getPosition(int& x, int& y) const {
-			assert(mHandle);
-			glfwGetWindowPos(mHandle, &x, &y);
-		}
-
-		void Window::getSize(int& width, int& height) const {
-			assert(mHandle);
-			glfwGetWindowSize(mHandle, &width, &height);
-		}
-
-		void Window::getFramebufferSize(int& width, int& height) const {
-			assert(mHandle);
-			glfwGetFramebufferSize(mHandle, &width, &height);
-		}
-
-		Window::eClientAPI Window::getClientAPI() const {
-			assert(mHandle);
-			
-			switch (glfwGetWindowAttrib(mHandle, GLFW_CLIENT_API)) {
-			case GLFW_OPENGL_API:
-				return eClientAPI::OPENGL;
-
-			case GLFW_OPENGL_ES_API:
-				return eClientAPI::OPENGL_ES;
-
-			default:
-				return eClientAPI::UNKNOWN;
-			}
-		}
-
-		int Window::getContextVersionMajor() const {
-			assert(mHandle);
-			return glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_VERSION_MAJOR);
-		}
-
-		int Window::getContextVersionMinor() const {
-			assert(mHandle);
-			return glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_VERSION_MINOR);
-		}
-
-		int Window::getContextRevision() const {
-			assert(mHandle);
-			return glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_REVISION);
-		}
-
-		bool Window::isOpenGLForwardCompatible() const {
-			assert(mHandle);
-			return (glfwGetWindowAttrib(mHandle, GLFW_OPENGL_FORWARD_COMPAT) == GL_TRUE);
-		}
-
-		bool Window::isOpenGLDebugContext() const {
-			assert(mHandle);
-			return (glfwGetWindowAttrib(mHandle, GLFW_OPENGL_DEBUG_CONTEXT) == GL_TRUE);
-		}
-
-		Window::eContextRobustness Window::getContextRobustness() const {
-			assert(mHandle);
-
-			switch (glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_ROBUSTNESS)) {
-			case GLFW_LOSE_CONTEXT_ON_RESET:
-				return eContextRobustness::LOSE_CONTEXT_ON_RESET;
-
-			case GLFW_NO_RESET_NOTIFICATION:
-				return eContextRobustness::NO_RESET_NOTIFICATION;
-
-			case GLFW_NO_ROBUSTNESS:
-				return eContextRobustness::NO_ROBUSTNESS;
-
-			default:
-				return eContextRobustness::UNKNOWN;
-			}
-		}
-
-		Window::eOpenGLProfile Window::getOpenGLProfile() const {
-			assert(mHandle);
-
-			switch (glfwGetWindowAttrib(mHandle, GLFW_OPENGL_PROFILE)) {
-			case GLFW_OPENGL_CORE_PROFILE:
-				return eOpenGLProfile::CORE;
-
-			case GLFW_OPENGL_COMPAT_PROFILE:
-				return eOpenGLProfile::COMPATIBILITY;
-
-			case GLFW_OPENGL_ANY_PROFILE:
-				return eOpenGLProfile::ANY;
-
-			default:
-				return eOpenGLProfile::UNKNOWN;
-			}
-		}
-
-		void Window::setTitle(std::string title) {
-			if (title == mTitle)
-				return;
-
-			mTitle = std::move(title);
-			if (mHandle)
-				glfwSetWindowTitle(mHandle, mTitle.c_str());
-		}
+		
 		void Window::setPosition(int x, int y) {
-			assert(mHandle);
 			glfwSetWindowPos(mHandle, x, y);
 		}
 
 		void Window::setSize(int width, int height) {
-			mWidth = width;
-			mHeight = height;
-
-			if (mHandle)
-				glfwSetWindowSize(mHandle, mWidth, mHeight);
+			glfwSetWindowSize(mHandle, width, height);
 		}
 
 		void Window::iconify() {
-			assert(mHandle);
 			glfwIconifyWindow(mHandle);
 		}
 
 		void Window::restore() {
-			assert(mHandle);
 			glfwRestoreWindow(mHandle);
 		}
 
 		void Window::show() {
-			assert(mHandle);
 			glfwShowWindow(mHandle);
 		}
 
 		void Window::hide() {
-			assert(mHandle);
 			glfwHideWindow(mHandle);
 		}
 
-		void Window::setDefaultCreationHints() {
-			CreationHints defaults; // explicit default values can be found in window.h
-			mCreationHints = defaults;
+		namespace {
+			static GLFWwindow* gLastActiveContext = nullptr;
 		}
 
-		void Window::CreationHints::apply() {
-			using util::checkRange;
-			glfwWindowHint(GLFW_RESIZABLE, mResizable ? GL_TRUE : GL_FALSE);
-			glfwWindowHint(GLFW_VISIBLE, mVisible ? GL_TRUE : GL_FALSE);
-			glfwWindowHint(GLFW_DECORATED, mDecorated ? GL_TRUE : GL_FALSE);
-
-			// can't really test for correct values before attempting to create a window, to my knowledge...
-			// so let's perform minimal checking on user input (docs says these support 0..INT_MAX)
-			if (checkRange(mRedBits, 0, INT_MAX))
-				glfwWindowHint(GLFW_RED_BITS, mRedBits);
-			if (checkRange(mGreenBits, 0, INT_MAX))
-				glfwWindowHint(GLFW_GREEN_BITS, mGreenBits);
-			if (checkRange(mBlueBits, 0, INT_MAX))
-				glfwWindowHint(GLFW_BLUE_BITS, mBlueBits);
-			if (checkRange(mAlphaBits, 0, INT_MAX))
-				glfwWindowHint(GLFW_ALPHA_BITS, mAlphaBits);
-			if (checkRange(mDepthBits, 0, INT_MAX))
-
-				glfwWindowHint(GLFW_DEPTH_BITS, mDepthBits);
-			if (checkRange(mStencilBits, 0, INT_MAX))
-				glfwWindowHint(GLFW_STENCIL_BITS, mStencilBits);
-			if (checkRange(mAccumulationRedBits, 0, INT_MAX))
-
-				glfwWindowHint(GLFW_ACCUM_RED_BITS, mAccumulationRedBits);
-			if (checkRange(mAccumulationBlueBits, 0, INT_MAX))
-				glfwWindowHint(GLFW_ACCUM_GREEN_BITS, mAccumulationGreenBits);
-			if (checkRange(mAccumulationBlueBits, 0, INT_MAX))
-				glfwWindowHint(GLFW_ACCUM_BLUE_BITS, mAccumulationBlueBits);
-			if (checkRange(mAccumulationAlphaBits, 0, INT_MAX))
-				glfwWindowHint(GLFW_ACCUM_ALPHA_BITS, mAccumulationAlphaBits);
-
-			if (checkRange(mSamples, 0, INT_MAX))
-				glfwWindowHint(GLFW_SAMPLES, mSamples);
-			if (checkRange(mRefreshRate, 0, INT_MAX))
-				glfwWindowHint(GLFW_REFRESH_RATE, mRefreshRate);
-
-			glfwWindowHint(GLFW_STEREO, mStereo ? GL_TRUE : GL_FALSE);
-			glfwWindowHint(GLFW_SRGB_CAPABLE, mSRGB ? GL_TRUE : GL_FALSE);
-
-			switch (mClientAPI) {
-			case eClientAPI::OPENGL:
-				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-				break;
-			case eClientAPI::OPENGL_ES:
-				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-				break;
-			default:
-				gLog.warning() << "Unsupported client API requested: " << mClientAPI;
-				break;
-			}
-
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, mContextVersionMajor);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, mContextVersionMinor);
-
-			switch (mContextRobustness) {
-			case eContextRobustness::NO_ROBUSTNESS:
-				glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_NO_ROBUSTNESS);
-				break;
-
-			case eContextRobustness::NO_RESET_NOTIFICATION:
-				glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_NO_RESET_NOTIFICATION);
-				break;
-
-			case eContextRobustness::LOSE_CONTEXT_ON_RESET:
-				glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_LOSE_CONTEXT_ON_RESET);
-				break;
-
-			default:
-				gLog.warning() << "Unsupported context robustness setting requested: " << mContextRobustness;
-			}
-
-			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, mOpenGLForwardCompatible ? GL_TRUE : GL_FALSE);
-			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, mOpenGLDebugContext ? GL_TRUE : GL_FALSE);
-
-			switch (mOpenGLProfile) {
-			case eOpenGLProfile::ANY:
-				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
-				break;
-
-			case eOpenGLProfile::COMPATIBILITY:
-				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-				break;
-
-			case eOpenGLProfile::CORE:
-				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-				break;
-
-			default:
-				gLog.warning() << "Unsupported openGL profile requested: " << mOpenGLProfile;
+		void Window::makeCurrent() {
+			// [NOTE] does this need to be threadsafe?
+			if (gLastActiveContext != mHandle) {
+				glfwMakeContextCurrent(mHandle);
+				gLastActiveContext = mHandle;
 			}
 		}
-		GLFWwindow* Window::getHandle() const {
-			return mHandle;
+
+		void Window::swapBuffers() {
+			glfwSwapBuffers(mHandle);
+		}
+
+		std::pair<int, int> Window::getPosition() const {
+			return std::make_pair(mPositionX, mPositionY);
+		}
+
+		std::pair<int, int> Window::getSize() const {
+			return std::make_pair(mWidth, mHeight);
+		}
+
+		std::pair<int, int> Window::getFramebufferSize() const {
+			int width;
+			int height;
+
+			glfwGetFramebufferSize(mHandle, &width, &height);
+
+			return std::make_pair(width, height);
+		}
+
+		Window::Frame Window::getFrame() const {
+			Frame result;
+
+			glfwGetWindowFrameSize(
+				mHandle, 
+				&result.mLeft, 
+				&result.mTop,
+				&result.mRight,
+				&result.mBottom
+			);
+
+			return result;
+		}
+
+		Monitor* Window::getMonitor() const {
+			return fetch(glfwGetWindowMonitor(mHandle));
 		}
 
 		input::Keyboard* Window::getKeyboard() const {
@@ -371,67 +319,104 @@ namespace overdrive {
 		input::Mouse* Window::getMouse() const {
 			return mMouse.get();
 		}
+
+		bool Window::isFocused() const {
+			return (glfwGetWindowAttrib(mHandle, GLFW_FOCUSED) != 0);
+		}
+
+		bool Window::isIconified() const {
+			return (glfwGetWindowAttrib(mHandle, GLFW_ICONIFIED) != 0);
+		}
+
+		bool Window::isVisible() const {
+			return (glfwGetWindowAttrib(mHandle, GLFW_VISIBLE) != 0);
+		}
+
+		bool Window::isResizable() const {
+			return (glfwGetWindowAttrib(mHandle, GLFW_RESIZABLE) != 0);
+		}
+
+		bool Window::isDecorated() const {
+			return (glfwGetWindowAttrib(mHandle, GLFW_DECORATED) != 0);
+		}
+
+		bool Window::isFloating() const {
+			return (glfwGetWindowAttrib(mHandle, GLFW_FLOATING) != 0);
+		}
+
+		Window::ContextAttributes Window::getContextAttributes() const {
+			ContextAttributes result = {}; // zero-initialize the entire thing
+
+			int api = glfwGetWindowAttrib(mHandle, GLFW_CLIENT_API);
+			int versionMajor = glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_VERSION_MAJOR);
+			int versionMinor = glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_VERSION_MINOR);
+			int versionRevision = glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_REVISION);
+			int forwardCompatible = glfwGetWindowAttrib(mHandle, GLFW_OPENGL_FORWARD_COMPAT);
+			int debugContext = glfwGetWindowAttrib(mHandle, GLFW_OPENGL_DEBUG_CONTEXT);
+			int profile = glfwGetWindowAttrib(mHandle, GLFW_OPENGL_PROFILE);
+			int robustness = glfwGetWindowAttrib(mHandle, GLFW_CONTEXT_ROBUSTNESS);
+
+			switch (api) {
+			case GLFW_OPENGL_API: result.mAPI = eClientAPI::OPENGL; break;
+			case GLFW_OPENGL_ES_API: result.mAPI = eClientAPI::OPENGL_ES; break;
+			default:
+				gLogError << "Unsupported client API: " << api;
+			}
+
+			result.mVersionMajor = versionMajor;
+			result.mVersionMinor = versionMinor;
+			result.mVersionRevision = versionRevision;
+
+			result.mOpenGLForwardCompatible = (forwardCompatible != GL_FALSE);
+			result.mOpenGLDebugContext = (debugContext != GL_FALSE);
+
+			switch (profile) {
+			case GLFW_OPENGL_CORE_PROFILE: result.mProfile = eOpenGLProfile::CORE; break;
+			case GLFW_OPENGL_COMPAT_PROFILE: result.mProfile = eOpenGLProfile::COMPATIBILITY; break;
+			case GLFW_OPENGL_ANY_PROFILE: result.mProfile = eOpenGLProfile::ANY; break; //  if the OpenGL profile is unknown or the context is an OpenGL ES context
+			default:
+				gLogError << "Unsupported openGL profile: " << profile;
+			}
+
+			switch (robustness) {
+			case GLFW_LOSE_CONTEXT_ON_RESET: result.mContextRobustness = eContextRobustness::LOSE_CONTEXT_ON_RESET; break;
+			case GLFW_NO_RESET_NOTIFICATION: result.mContextRobustness = eContextRobustness::NO_RESET_NOTIFICATION; break;
+			case GLFW_NO_ROBUSTNESS: result.mContextRobustness = eContextRobustness::NO_ROBUSTNESS; break;
+			default:
+				gLogError << "Unsupported context robustness: " << robustness;
+			}
+
+			return result;
+		}
+
+		Window::FramebufferAttributes Window::getFramebufferAttributes() const {
+			FramebufferAttributes result = {}; // zero-initialize the entire thing
+
+			glGetIntegerv(GL_RED_BITS, &result.mRedBits);
+			glGetIntegerv(GL_GREEN_BITS, &result.mGreenBits);
+			glGetIntegerv(GL_BLUE_BITS, &result.mBlueBits);
+			glGetIntegerv(GL_ALPHA_BITS, &result.mAlphaBits);
+			glGetIntegerv(GL_DEPTH_BITS, &result.mDepthBits);
+			glGetIntegerv(GL_STENCIL_BITS, &result.mStencilBits);
+			glGetIntegerv(GL_SAMPLES, &result.mSamples);
+
+			return result;
+		}
+
+		void Window::operator()(const OnMoved& moved) {
+			if (moved.mWindow == this) {
+				// update cached values
+				mPositionX = moved.mPositionX;
+				mPositionY = moved.mPositionY;
+			}
+		}
+
+		void Window::operator()(const OnResized& resized) {
+			if (resized.mWindow == this) {
+				// update cached values
+				mWidth = resized.mWidth;
+				mHeight = resized.mHeight;
+			}
+		}
 	}
-}
-
-std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eClientAPI& api) {
-	switch (api) {
-	case overdrive::video::Window::eClientAPI::OPENGL:
-		os << "openGL";
-		break;
-
-	case overdrive::video::Window::eClientAPI::OPENGL_ES:
-		os << "openGLES";
-		break;
-
-	case overdrive::video::Window::eClientAPI::UNKNOWN:
-	default:
-		os << "unknown";
-	}
-
-	return os;
-}
-
-std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eContextRobustness& robust) {
-	switch (robust) {
-	case overdrive::video::Window::eContextRobustness::NO_ROBUSTNESS:
-		os << "no robustness";
-		break;
-
-	case overdrive::video::Window::eContextRobustness::NO_RESET_NOTIFICATION:
-		os << "no reset notification";
-		break;
-
-	case overdrive::video::Window::eContextRobustness::LOSE_CONTEXT_ON_RESET:
-		os << "lose context on reset";
-		break;
-
-	case overdrive::video::Window::eContextRobustness::UNKNOWN:
-	default:
-		os << "unknown";
-	}
-
-	return os;
-}
-
-std::ostream& operator << (std::ostream& os, const overdrive::video::Window::eOpenGLProfile& profile) {
-	switch (profile) {
-	case overdrive::video::Window::eOpenGLProfile::ANY:
-		os << "any";
-		break;
-
-	case overdrive::video::Window::eOpenGLProfile::COMPATIBILITY:
-		os << "compatibility";
-		break;
-
-	case overdrive::video::Window::eOpenGLProfile::CORE:
-		os << "core";
-		break;
-
-	case overdrive::video::Window::eOpenGLProfile::UNKNOWN:
-	default:
-		os << "unknown";
-	}
-
-	return os;
 }

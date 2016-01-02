@@ -1,88 +1,55 @@
-#include "video/monitor.h"
+#include "monitor.h"
 
 namespace overdrive {
 	namespace video {
-		Monitor::Monitor(GLFWmonitor* src):
-			mGLFWhandle(src)
+		Monitor::Monitor(GLFWmonitor* handle):
+			mHandle(handle)
 		{
-			glfwGetMonitorPhysicalSize(src, &mPhysicalWidth, &mPhysicalHeight);
-			glfwGetMonitorPos(src, &mXPos, &mYPos);
+			glfwGetMonitorPhysicalSize(handle, &mPhysicalWidth, &mPhysicalHeight);
+			glfwGetMonitorPos(handle, &mPositionX, &mPositionY);
 			
-			mName = glfwGetMonitorName(src);
-
-			mIsPrimaryMonitor = (src == glfwGetPrimaryMonitor());
+			mName = glfwGetMonitorName(handle);
 
 			int numModes = 0;
-			const GLFWvidmode* modes = glfwGetVideoModes(src, &numModes);
+			const GLFWvidmode* modes = glfwGetVideoModes(handle, &numModes);
+			mSupportedVideoModes.reserve(static_cast<size_t>(numModes));
 
 			for (int i = 0; i < numModes; ++i)
-				mSupportedVideoModes.emplace_back(detail::VideoMode(modes[i]));
-		}
-
-		int Monitor::getWidth() const {
-			return mPhysicalWidth;
-		}
-
-		int Monitor::getHeight() const {
-			return mPhysicalHeight;
-		}
-
-		int Monitor::getXPos() const {
-			return mXPos;
-		}
-
-		int Monitor::getYPos() const {
-			return mYPos;
-		}
-
-		std::string Monitor::getName() const {
-			return mName;
-		}
-
-		bool Monitor::isPrimary() const {
-			return mIsPrimaryMonitor;
-		}
-
-		void Monitor::setGamma(float value) {
-			glfwSetGamma(mGLFWhandle, value);
+				mSupportedVideoModes.push_back(VideoMode(modes[i]));
 		}
 
 		GLFWmonitor* Monitor::getHandle() const {
-			return mGLFWhandle;
+			return mHandle;
 		}
 
-		detail::VideoMode Monitor::getCurrentVideoMode() const {
-			auto mode = glfwGetVideoMode(mGLFWhandle);
-			return detail::VideoMode(mode);
+		bool Monitor::isPrimary() const {
+			return (glfwGetPrimaryMonitor() == mHandle);
 		}
 
-		const std::vector<detail::VideoMode>& Monitor::getSupportedVideoModes() const {
+		const std::string& Monitor::getName() const {
+			return mName;
+		}
+
+		std::pair<int, int> Monitor::getPosition() const {
+			return std::make_pair(mPositionX, mPositionY);
+		}
+
+		std::pair<int, int> Monitor::getPhysicalSize() const {
+			return std::make_pair(mPhysicalWidth, mPhysicalHeight);
+		}
+
+		double Monitor::getDPI() const {
+			auto currentMode = getCurrentVideoMode();
+
+			return currentMode.mWidth / (mPhysicalWidth / 25.4);
+		}
+
+		VideoMode Monitor::getCurrentVideoMode() const {
+			return glfwGetVideoMode(mHandle);
+		}
+
+		const std::vector<VideoMode>& Monitor::getSupportedVideoModes() const {
 			return mSupportedVideoModes;
-		}
-
-		namespace detail {
-			VideoMode::VideoMode() {
-			}
-
-			VideoMode::VideoMode(const GLFWvidmode& source) :
-				mWidth(source.width),
-				mHeight(source.height),
-				mRedBits(source.redBits),
-				mGreenBits(source.greenBits),
-				mBlueBits(source.blueBits),
-				mRefreshRate(source.refreshRate)
-			{
-			}
-
-			VideoMode::VideoMode(const GLFWvidmode* source) :
-				mWidth(source->width),
-				mHeight(source->height),
-				mRedBits(source->redBits),
-				mGreenBits(source->greenBits),
-				mBlueBits(source->blueBits),
-				mRefreshRate(source->refreshRate)
-			{
-			}
 		}
 	}
 }

@@ -1,46 +1,44 @@
-#ifndef OVERDRIVE_CORE_SYSTEM_H
-#define OVERDRIVE_CORE_SYSTEM_H
+#pragma once
 
-#include "util/named.h"
-#include "core/channel.h"
+#include "channel.h"
 #include <boost/program_options.hpp>
+#include <vector>
 
 namespace overdrive {
 	namespace core {
-		class Engine;
-
-		// Abstract 'system' (aka module)
-		class System:
-			public util::Named
-		{
+		class System {
 		public:
 			friend class Engine;
 
 			typedef boost::program_options::options_description Settings;
 
-			System(std::string name);
-
+			System(const std::string& name);
 			System(const System&) = delete;
 			System& operator = (const System&) = delete;
 
-			virtual bool initialize();
+			virtual void initialize();
 			virtual void update();
 			virtual void shutdown();
 
+			const std::string& getName() const;
+
 			template <typename T>
-			void registerSetting(
-				const std::string& nameInConfigFile, 
-				T* correspondingVariable
-			);
+			void registerSetting(const std::string& nameInConfigFile, T* correspondingVar);
+			
+			// used to determine startup order
+			void addDependency(const std::string& name);
+			const std::vector<std::string>& getDependencies() const;
 
 		protected:
 			Channel mChannel;
-			Engine* mEngine;
+			Engine* mEngine; // this is set by the Engine before initializing the system
 			Settings mSettings;
+			
+		private:
+			std::string mName;
+			std::vector<std::string> mDependencies; 
 		};
 	}
 }
 
 #include "system.inl"
-
-#endif

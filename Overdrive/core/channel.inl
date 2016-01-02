@@ -1,37 +1,43 @@
-#ifndef OVERDRIVE_CORE_CHANNEL_INL
-#define OVERDRIVE_CORE_CHANNEL_INL
+#pragma once
 
-#include "core/channel.h"
+#include "channel.h"
+#include "channel_queue.h"
 
 namespace overdrive {
 	namespace core {
-		// ------------------------------ Channel -----------------------------
-		template <typename tEvent, class tHandler>
-		void Channel::add(tHandler* handler) {
-			detail::ChannelQueue<tEvent>::instance().add(handler);
+		template <typename T, typename U>
+		void Channel::add(U* handler) {
+			ChannelQueue<T>::instance().add(handler);
 		}
 
-		template <typename tEvent, class tHandler>
-		void Channel::remove(tHandler* handler) {
-			detail::ChannelQueue<tEvent>::instance().remove(handler);
-		}
-
-		template <typename tEvent>
-		void Channel::broadcast(const tEvent& message) {
-			detail::ChannelQueue<tEvent>::instance().broadcast(message);
-		}
-
-		// ------------------------------ MessageHandler ------------------------
-		template <typename T>
-		MessageHandler<T>::MessageHandler() {
-			Channel::add<T>(this);
+		template <typename T, typename U>
+		void Channel::remove(U* handler) {
+			ChannelQueue<T>::instance().remove(handler);
 		}
 
 		template <typename T>
-		MessageHandler<T>::~MessageHandler() {
-			Channel::remove<T>(this);
+		void Channel::removeAll() {
+			ChannelQueue<T>::instance().removeAll();
+		}
+
+		template <typename T>
+		size_t Channel::getNumHandlers() {
+			return ChannelQueue<T>::instance().getNumHandlers();
+		}
+
+		template <typename T>
+		void Channel::broadcast(const T& message) {
+			ChannelQueue<T>::instance().broadcast(message);
 		}
 	}
-}
 
-#endif
+	template <typename T>
+	MessageHandler<T>::MessageHandler() {
+		core::Channel::add<T>(this);
+	}
+
+	template <typename T>
+	MessageHandler<T>::~MessageHandler() {
+		core::Channel::remove<T>(this);
+	}
+}

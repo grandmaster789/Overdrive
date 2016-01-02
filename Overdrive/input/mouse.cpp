@@ -1,95 +1,176 @@
-#include "input/mouse.h"
-#include "core/logger.h"
-#include "core/channel.h"
+#include "mouse.h"
+#include "../video/window.h"
+#include "../core/logger.h"
+#include "../core/channel.h"
+#include "../opengl.h"
+
+namespace {
+	using overdrive::core::Channel;
+	using overdrive::video::Window;
+	using overdrive::input::Mouse;
+
+	void mouseButtonCallback(
+		GLFWwindow* handle, 
+		int button, 
+		int action, 
+		int mods
+	) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		Mouse* m = w->getMouse();
+
+		switch (action) {
+		case GLFW_PRESS:
+			m->mButtonState[button] = true;
+			Channel::broadcast(Mouse::OnButtonPress{ m,  button, mods });
+			break;
+
+		case GLFW_RELEASE:
+			m->mButtonState[button] = false;
+			Channel::broadcast(Mouse::OnButtonRelease{ m, button, mods });
+			break;
+
+			// [NOTE] are there other events that could occur?
+		}
+	}
+
+	void mouseScrollCallback(
+		GLFWwindow* handle,
+		double xoffset,
+		double yoffset
+	) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		Mouse* m = w->getMouse();
+
+		Channel::broadcast(Mouse::OnScroll{ m, xoffset, yoffset });
+	}
+
+	void mousePositionCallback(
+		GLFWwindow* handle,
+		double xpos,
+		double ypos
+	) {
+		Window* w = static_cast<Window*>(glfwGetWindowUserPointer(handle));
+		Mouse* m = w->getMouse();
+
+		auto oldPosition = m->getPosition();
+		m->mPositionX = xpos;
+		m->mPositionY = ypos;
+
+		Channel::broadcast(Mouse::OnMoved{
+			m,
+			xpos,
+			ypos,
+			xpos - oldPosition.first,
+			ypos - oldPosition.second
+		});
+	}
+}
 
 namespace overdrive {
 	namespace input {
-		Mouse::Mouse(GLFWwindow* handle) :
-			mHandle(handle)
+		Mouse::Mouse(video::Window* sourceWindow):
+			mSourceWindow(sourceWindow),
+			mMouseCursor(glfwCreateStandardCursor(GLFW_ARROW_CURSOR), glfwDestroyCursor),
+			mPositionX(0),
+			mPositionY(0)
 		{
-			assert(mHandle != nullptr);
-
-			std::uninitialized_fill(
-				std::begin(mButtonState),
-				std::end(mButtonState),
-				false
-			);
-		}
-
-		void Mouse::hideCursor() {
-			setCursorState(eCursorState::HIDDEN);
-		}
-
-		void Mouse::disableCursor() {
-			setCursorState(eCursorState::DISABLED);
-		}
-
-		void Mouse::restoreCursor() {
-			setCursorState(eCursorState::NORMAL);
+			glfwSetMouseButtonCallback(sourceWindow->getHandle(), mouseButtonCallback);
+			glfwSetScrollCallback(sourceWindow->getHandle(), mouseScrollCallback);
+			glfwSetCursorPosCallback(sourceWindow->getHandle(), mousePositionCallback);
 		}
 
 		void Mouse::setCursorState(eCursorState state) {
-			int value = GLFW_CURSOR_NORMAL;
+			int mode = GLFW_CURSOR_NORMAL;
 
 			switch (state) {
-			case eCursorState::NORMAL:
-				value = GLFW_CURSOR_NORMAL;
-				break;
-
-			case eCursorState::HIDDEN:
-				value = GLFW_CURSOR_HIDDEN;
-				break;
-
-			case eCursorState::DISABLED:
-				value = GLFW_CURSOR_DISABLED;
-				break;
+			case eCursorState::VISIBLE: mode = GLFW_CURSOR_NORMAL; break;
+			case eCursorState::HIDDEN: mode = GLFW_CURSOR_HIDDEN; break;
+			case eCursorState::DISABLED: mode = GLFW_CURSOR_DISABLED; break;
+			default:
+				gLogWarning << "Unsupported cursor state: " << static_cast<std::underlying_type<eCursorState>::type>(state);
 			}
 
-			glfwSetInputMode(mHandle, GLFW_CURSOR, value);
+			glfwSetInputMode(mSourceWindow->getHandle(), GLFW_CURSOR, mode);
 		}
 
 		Mouse::eCursorState Mouse::getCursorState() const {
-			int mode = glfwGetInputMode(mHandle, GLFW_CURSOR);
+			int mode = glfwGetInputMode(mSourceWindow->getHandle(), GLFW_CURSOR);
+
+			eCursorState result = eCursorState::VISIBLE;
 
 			switch (mode) {
-			case GLFW_CURSOR_HIDDEN:
-				return eCursorState::HIDDEN;
-
-			case GLFW_CURSOR_DISABLED:
-				return eCursorState::DISABLED;
-
-			case GLFW_CURSOR_NORMAL:
+			case GLFW_CURSOR_NORMAL: result = eCursorState::VISIBLE; break;
+			case GLFW_CURSOR_HIDDEN: result = eCursorState::HIDDEN; break;
+			case GLFW_CURSOR_DISABLED: result = eCursorState::DISABLED; break;
 			default:
-				return eCursorState::NORMAL;
+				gLogWarning << "Unsupported cursor state: " << mode;
 			}
+
+			return result;
+		}
+
+		void Mouse::setStandardCursorShape(eCursorShape shape) {
+			int value = GLFW_ARROW_CURSOR;
+
+			switch (shape) {
+			case eCursorShape::ARROW: value = GLFW_ARROW_CURSOR; break;
+			case eCursorShape::IBEAM: value = GLFW_IBEAM_CURSOR; break;
+			case eCursorShape::CROSSHAIR: value = GLFW_CROSSHAIR_CURSOR; break;
+			case eCursorShape::HAND: value = GLFW_HAND_CURSOR; break;
+			case eCursorShape::HRESIZE: value = GLFW_HRESIZE_CURSOR; break;
+			case eCursorShape::VRESIZE: value = GLFW_VRESIZE_CURSOR; break;
+			default:
+				gLogWarning << "Unsupported standard cursor shape: " << static_cast<std::underlying_type<eCursorShape>::type>(shape);
+			}
+
+			auto newCursor = glfwCreateStandardCursor(value);
+			glfwSetCursor(mSourceWindow->getHandle(), newCursor);
+			mMouseCursor.reset(newCursor);
+		}
+
+		void Mouse::resetCursorShape() {
+			glfwSetCursor(mSourceWindow->getHandle(), nullptr);
+			mMouseCursor.reset();
 		}
 
 		void Mouse::setPosition(double x, double y) {
-			mX = x;
-			mY = y;
-
-			glfwSetCursorPos(mHandle, mX, mY);
+			glfwSetCursorPos(mSourceWindow->getHandle(), x, y);
 		}
 
-		void Mouse::getPosition(double& x, double& y) const {
-			x = mX;
-			y = mY;
+		std::pair<double, double> Mouse::getPosition() const {
+			return std::make_pair(mPositionX, mPositionY);
 		}
 
-		void Mouse::setInsideClientArea(bool isInside) {
-			mIsInsideClientArea = isInside;
+		std::ostream& operator << (std::ostream& os, const Mouse::eCursorState& state) {
+			os << "CursorState: ";
+
+			switch (state) {
+			case Mouse::eCursorState::VISIBLE: os << "visible"; break;
+			case Mouse::eCursorState::HIDDEN: os << "hidden"; break;
+			case Mouse::eCursorState::DISABLED: os << "disabled"; break;
+
+			default:
+				os << "unknown";
+			}
+
+			return os;
 		}
 
-		bool Mouse::isInsideClientArea() const {
-			return mIsInsideClientArea;
-		}
+		std::ostream& operator << (std::ostream& os, const Mouse::eCursorShape& shape) {
+			os << "CursorShape: ";
 
-		bool Mouse::operator [] (eButton button) const {
-			return mButtonState[button];
-		}
-		
-		GLFWwindow* Mouse::getHandle() const {
-			return mHandle;
+			switch (shape) {
+			case Mouse::eCursorShape::ARROW: os << "arrow"; break;
+			case Mouse::eCursorShape::IBEAM: os << "I-beam"; break;
+			case Mouse::eCursorShape::CROSSHAIR: os << "crosshair"; break;
+			case Mouse::eCursorShape::HAND: os << "hand"; break;
+			case Mouse::eCursorShape::HRESIZE: os << "h resize"; break;
+			case Mouse::eCursorShape::VRESIZE: os << "v resize"; break;
+			default:
+				os << "unknown";
+			}
+
+			return os;
 		}
 	}
 }

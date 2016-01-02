@@ -1,12 +1,10 @@
-#ifndef OVERDRIVE_CORE_ENGINE_H
-#define OVERDRIVE_CORE_ENGINE_H
+#pragma once
 
-#include <memory>
 #include <vector>
-#include <map>
-#include "core/channel.h"
-#include "core/taskprocessor.h"
-#include "core/settings.h"
+#include <memory>
+#include <unordered_map>
+#include "system.h"
+#include "settings.h"
 
 namespace overdrive {
 	namespace app {
@@ -14,58 +12,49 @@ namespace overdrive {
 	}
 
 	namespace core {
-		class System;
-
 		class Engine {
 		public:
 			typedef std::unique_ptr<System> SystemPtr;
 			typedef std::vector<SystemPtr> SystemList;
-			typedef std::map<std::string, System*> SystemMapping;
+			typedef std::unordered_map<std::string, System*> SystemMapping;
 
 			Engine();
+			~Engine();
 
-			void setApplication(app::Application* application); // the Engine will take ownership of the application
+			void setApplication(app::Application* application);
 
-			void add(System* system); //note that the Engine will take ownership of the system added
-			
+			void add(System* s); // [NOTE] the Engine will take ownership of the system, no need to delete it later
+			void add(std::unique_ptr<System>&& s);
+			void remove(const std::string& systemName);
+			void remove(System* s);
+
 			template <typename T>
 			T* get() const;
 
-			void remove(std::string systemName);
-			void remove(System* system);
-
-			bool initialize(); // initializes all subsystems (except for the Application)
 			void run();
 			void stop();
 
-			void updateSystem(System* system, bool repeating = false, bool background = false);
-
-			// Signals
+			// ----- Signals -----
 			struct OnStop {};
 
-			// Handlers
+			// ----- Handlers -----
 			void operator()(const OnStop&);
 
 		private:
-			void setApplication(std::unique_ptr<app::Application>&& application);
-			void add(std::unique_ptr<System>&& system);
+			void initialize(); // initializes 3rd party libraries and all subsystems
 
-			void initializeSystems();
-			void shutdownSystems();
-
-			bool initializeDependencies();
-			void shutdownDependencies();
+			// 3rd party libraries (GLFW, ...)
+			void initLibraries(); 
+			void shutdownLibraries();
 
 			SystemList mSystems;
 			SystemMapping mSystemLookup;
-			TaskProcessor mTaskProcessor;
 			Settings mSettings;
+			bool mRunning;
 
 			std::unique_ptr<app::Application> mApplication;
+
+			std::vector<System*> mInitOrder; // order in which the systems were initialized
 		};
 	}
 }
-
-#include "engine.inl"
-
-#endif
