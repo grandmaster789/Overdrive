@@ -25,36 +25,30 @@
     <Filter Include="render\state">
       <UniqueIdentifier>{0bd164b9-2a61-4386-8a8c-75cc1f521b69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core\logger">
+      <UniqueIdentifier>{c531b775-c7d6-40d4-a229-b1f967f36673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\clock">
+      <UniqueIdentifier>{f567f7ab-e798-4781-a936-5c71894b3d61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\channel">
+      <UniqueIdentifier>{83ba05e3-f46e-47ee-bab7-235cadee7dfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\system">
+      <UniqueIdentifier>{8d6633f3-13a6-4bc2-aa01-725b1adc139b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\settings">
+      <UniqueIdentifier>{e9031e24-82b0-40c5-8bce-c2b41eb5a336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\buffer">
+      <UniqueIdentifier>{3c9cd58b-68e9-4b20-9703-cbb9a8472e7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
     <ClInclude Include="preprocessor.h" />
     <ClInclude Include="overdrive.h" />
-    <ClInclude Include="core\logger.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\log_sink.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\log_message.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\log_level.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="core\engine.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\channel.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\channel_queue.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\system.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\settings.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="app\application.h">
@@ -102,36 +96,42 @@
     <ClInclude Include="math\clamp.h">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="core\clock.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="render\renderstate.h">
       <Filter>render\state</Filter>
     </ClInclude>
     <ClInclude Include="render\renderdebug.h">
       <Filter>render\state</Filter>
     </ClInclude>
-    <ClInclude Include="render\stdafx.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="core\log_level.h">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="core\log_message.h">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="core\log_sink.h">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="core\logger.h">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="core\clock.h">
+      <Filter>core\clock</Filter>
+    </ClInclude>
+    <ClInclude Include="core\channel.h">
+      <Filter>core\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\channel_queue.h">
+      <Filter>core\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\system.h">
+      <Filter>core\system</Filter>
+    </ClInclude>
+    <ClInclude Include="core\settings.h">
+      <Filter>core\settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\logger.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\log_sink.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\log_message.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\log_level.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\system.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\settings.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="core\engine.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -177,36 +177,36 @@
     <ClCompile Include="input\gamepad.cpp">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="core\clock.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="render\renderstate.cpp">
       <Filter>render\state</Filter>
     </ClCompile>
     <ClCompile Include="render\renderdebug.cpp">
       <Filter>render\state</Filter>
     </ClCompile>
-    <ClCompile Include="render\stdafx.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="core\log_level.cpp">
+      <Filter>core\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="core\log_message.cpp">
+      <Filter>core\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="core\log_sink.cpp">
+      <Filter>core\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="core\logger.cpp">
+      <Filter>core\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="core\clock.cpp">
+      <Filter>core\clock</Filter>
+    </ClCompile>
+    <ClCompile Include="core\system.cpp">
+      <Filter>core\system</Filter>
+    </ClCompile>
+    <ClCompile Include="core\settings.cpp">
+      <Filter>core\settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="core\log_sink.inl">
-      <Filter>core</Filter>
-    </None>
-    <None Include="core\log_message.inl">
-      <Filter>core</Filter>
-    </None>
-    <None Include="core\channel.inl">
-      <Filter>core</Filter>
-    </None>
-    <None Include="core\channel_queue.inl">
-      <Filter>core</Filter>
-    </None>
-    <None Include="core\system.inl">
-      <Filter>core</Filter>
-    </None>
-    <None Include="core\settings.inl">
-      <Filter>core</Filter>
-    </None>
     <None Include="core\engine.inl">
       <Filter>core</Filter>
     </None>
@@ -215,6 +215,24 @@
     </None>
     <None Include="math\clamp.inl">
       <Filter>math</Filter>
+    </None>
+    <None Include="core\log_message.inl">
+      <Filter>core\logger</Filter>
+    </None>
+    <None Include="core\log_sink.inl">
+      <Filter>core\logger</Filter>
+    </None>
+    <None Include="core\channel.inl">
+      <Filter>core\channel</Filter>
+    </None>
+    <None Include="core\channel_queue.inl">
+      <Filter>core\channel</Filter>
+    </None>
+    <None Include="core\system.inl">
+      <Filter>core\system</Filter>
+    </None>
+    <None Include="core\settings.inl">
+      <Filter>core\settings</Filter>
     </None>
   </ItemGroup>
 </Project>

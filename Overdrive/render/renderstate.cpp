@@ -1,42 +1,9 @@
 #include "stdafx.h"
 #include "renderstate.h"
 
-namespace {
-	void debugOutputCallback(
-		GLenum source,
-		GLenum type,
-		GLuint id,
-		GLenum severity,
-		GLsizei length,
-		const GLchar* message,
-		const void* userParam
-	) {
-		(void)source;
-		(void)type;
-		(void)id;
-		(void)severity;
-		(void)length;
-		(void)message;
-		(void)userParam;
-	}
-}
-
 namespace overdrive {
 	namespace render {
 		RenderState::RenderState() {
-		}
-
-		void RenderState::setDebugOutput(bool enabled, bool synchronous) {
-			if (enabled) {
-				glEnable(GL_DEBUG_OUTPUT);
-			}
-			else
-				glDisable(GL_DEBUG_OUTPUT);
-
-			if (synchronous)
-				glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-			else
-				glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		}
 
 		void RenderState::clear(eClearOptions buffers) {

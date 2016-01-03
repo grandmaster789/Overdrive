@@ -1,7 +1,10 @@
 #pragma once
 
+#include "preprocessor.h"
+
 // --- std ---
 #include <algorithm>
+#include <stdexcept>
 #include <memory>
 #include <string>
 #include <utility>
@@ -12,3 +15,4 @@
 #include <boost/filesystem.hpp>
 
 // --- openGL ---
+#include "openGL.h"

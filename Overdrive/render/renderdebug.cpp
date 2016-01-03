@@ -60,10 +60,12 @@ namespace overdrive {
 
 		void RenderDebug::enable() {
 			glDebugMessageCallback(&RenderDebug::callback, mUserParam);
+			glEnable(GL_DEBUG_OUTPUT);
 		}
 
 		void RenderDebug::disable() {
 			glDebugMessageCallback(nullptr, nullptr);
+			glDisable(GL_DEBUG_OUTPUT);
 		}
 
 		void RenderDebug::enableLowSeverityMessages(bool toggle) {

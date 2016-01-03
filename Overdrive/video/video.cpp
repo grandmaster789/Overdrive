@@ -136,9 +136,9 @@ namespace overdrive {
 			if (err != GLEW_OK)
 				gLogError << "GLEW failed to initialize: " << glewGetErrorString(err);
 
-#ifdef OVERDRIVE_DEBUG
-			render::RenderDebug::init();
-#endif
+			// when debuggin is turned on, enable logging openGL errors
+			if (mWindowHints.mOpenGLDebugContext)
+				render::RenderDebug::init();
 		}
 
 		void Video::update() {

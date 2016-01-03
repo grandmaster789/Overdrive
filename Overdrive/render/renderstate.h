@@ -23,8 +23,6 @@ namespace overdrive {
 		public:
 			RenderState();
 
-			void setDebugOutput(bool enabled, bool synchronous = false);
-			
 			void clear(eClearOptions buffers = eClearOptions::ALL);
 			void setClearColor(const glm::vec4& color);
 			void setClearColor(float r, float g, float b, float a = 1.0f);

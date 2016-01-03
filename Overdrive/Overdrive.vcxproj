@@ -40,7 +40,7 @@
     <ClInclude Include="preprocessor.h" />
     <ClInclude Include="render\renderdebug.h" />
     <ClInclude Include="render\renderstate.h" />
-    <ClInclude Include="render\stdafx.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="util\active.h" />
     <ClInclude Include="util\exception.h" />
     <ClInclude Include="util\exception_windows.h" />
@@ -68,7 +68,7 @@
     <ClCompile Include="input\mouse.cpp" />
     <ClCompile Include="render\renderdebug.cpp" />
     <ClCompile Include="render\renderstate.cpp" />
-    <ClCompile Include="render\stdafx.cpp">
+    <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
