@@ -5,6 +5,7 @@
 #include "../core/logger.h"
 #include "../core/engine.h"
 #include "../preprocessor.h"
+#include "../render/renderdebug.h"
 #include <cassert>
 #include <unordered_map>
 
@@ -128,6 +129,16 @@ namespace overdrive {
 			else
 				createWindow("Overdrive", mMainWindowSettings.mWidth, mMainWindowSettings.mHeight);
 
+			// initialize GLEW
+			glewExperimental = true;
+			auto err = glewInit();
+
+			if (err != GLEW_OK)
+				gLogError << "GLEW failed to initialize: " << glewGetErrorString(err);
+
+#ifdef OVERDRIVE_DEBUG
+			render::RenderDebug::init();
+#endif
 		}
 
 		void Video::update() {
