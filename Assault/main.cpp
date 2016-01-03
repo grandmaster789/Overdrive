@@ -1,11 +1,13 @@
 #include "overdrive.h"
+#include "render/renderstate.h"
 
 #include <iostream>
 
 using namespace overdrive;
 
 class Test :
-	public core::System,
+	public app::Application,
+	public MessageHandler<video::Window::OnCreated>,
 	public MessageHandler<video::Window::OnResized>,
 	public MessageHandler<input::Keyboard::OnKeyPress>,
 	public MessageHandler<input::Mouse::OnButtonPress>,
@@ -16,17 +18,35 @@ class Test :
 {
 public:
 	int counter = 0;
+	render::RenderState mRenderState;
 
-	Test() :
-		System("Test")
+	Test():
+		Application("Test")
 	{
+		addDependency("Video");
+	}
+
+	virtual void initialize() override {
+		System::initialize();
+		
 	}
 
 	virtual void update() override {
+		//gLog << mEngine->getClock();
 		//std::cout << ".";
 
 		//if (counter++ > 100)
 			//mChannel.broadcast(overdrive::core::Engine::OnStop());
+
+		mRenderState.clear();
+	}
+
+	virtual void shutdown() override {
+		System::shutdown();
+	}
+
+	void operator()(const video::Window::OnCreated&) {
+		mRenderState.setClearColor(0.2f, 0.2f, 0.0f);
 	}
 
 	void operator()(const video::Window::OnResized& msg) {
@@ -77,7 +97,7 @@ int main() {
 	core::Engine engine;
 	engine.add(new overdrive::video::Video);
 	engine.add(new overdrive::input::Input);
-	engine.add(new Test);
+	engine.setApplication(new Test);
 
 	engine.run();
 

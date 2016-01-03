@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "windowHints.h"
 #include "monitor.h"
 #include "../core/logger.h"

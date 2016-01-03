@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "active.h"
 
 namespace overdrive {

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "window.h"
 #include "../core/logger.h"
 #include "../core/channel.h"
@@ -110,6 +111,8 @@ namespace overdrive {
 			mKeyboard.reset(new input::Keyboard(this));
 			mMouse.reset(new input::Mouse(this));
 
+			makeCurrent();
+
 			Channel::broadcast(OnCreated{ this });
 		}
 
@@ -139,6 +142,8 @@ namespace overdrive {
 			mKeyboard.reset(new input::Keyboard(this));
 			mMouse.reset(new input::Mouse(this));
 
+			makeCurrent();
+
 			Channel::broadcast(OnCreated{ this });
 		}
 
@@ -165,6 +170,8 @@ namespace overdrive {
 			mKeyboard.reset(new input::Keyboard(this));
 			mMouse.reset(new input::Mouse(this));
 
+			makeCurrent();
+
 			Channel::broadcast(OnCreated{ this });
 		}
 
@@ -187,6 +194,8 @@ namespace overdrive {
 			mKeyboard.reset(new input::Keyboard(this));
 			mMouse.reset(new input::Mouse(this));
 
+			makeCurrent();
+
 			Channel::broadcast(OnCreated{ this });
 		}
 
@@ -206,6 +215,8 @@ namespace overdrive {
 
 			mKeyboard.reset(new input::Keyboard(this));
 			mMouse.reset(new input::Mouse(this));
+
+			makeCurrent();
 
 			Channel::broadcast(OnCreated{ this });
 

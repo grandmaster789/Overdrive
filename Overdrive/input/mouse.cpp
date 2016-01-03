@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "mouse.h"
 #include "../video/window.h"
 #include "../core/logger.h"

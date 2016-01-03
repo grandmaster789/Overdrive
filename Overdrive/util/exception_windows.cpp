@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "exception_windows.h"
 
 #if OVERDRIVE_PLATFORM == OVERDRIVE_PLATFORM_WINDOWS

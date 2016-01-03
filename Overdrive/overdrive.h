@@ -1,5 +1,7 @@
 #pragma once
 
+#include "app/application.h"
+
 #include "core/logger.h"
 #include "core/channel.h"
 #include "core/engine.h"

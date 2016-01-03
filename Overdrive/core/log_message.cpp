@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "log_message.h"
 #include "logger.h"
 #include <utility>

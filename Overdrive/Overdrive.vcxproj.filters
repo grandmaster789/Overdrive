@@ -22,6 +22,9 @@
     <Filter Include="math">
       <UniqueIdentifier>{374e5e8a-1e6f-40da-8b61-b15ac7b3d0a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="render\state">
+      <UniqueIdentifier>{0bd164b9-2a61-4386-8a8c-75cc1f521b69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -99,6 +102,16 @@
     <ClInclude Include="math\clamp.h">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="core\clock.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="render\renderstate.h">
+      <Filter>render\state</Filter>
+    </ClInclude>
+    <ClInclude Include="render\renderdebug.h">
+      <Filter>render\state</Filter>
+    </ClInclude>
+    <ClInclude Include="render\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\logger.cpp">
@@ -164,6 +177,16 @@
     <ClCompile Include="input\gamepad.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="core\clock.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="render\renderstate.cpp">
+      <Filter>render\state</Filter>
+    </ClCompile>
+    <ClCompile Include="render\renderdebug.cpp">
+      <Filter>render\state</Filter>
+    </ClCompile>
+    <ClCompile Include="render\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="core\log_sink.inl">

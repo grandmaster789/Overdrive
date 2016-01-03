@@ -5,6 +5,10 @@
 #include "../video/window.h"
 #include "gamepad.h"
 
+/*
+	[TODO] -- Non-gamepad inputs (racing wheels, arcade sticks, flight sticks, dance pads, guitar, drumkid, arcade pad are mentioned in xinput subtypes)
+*/
+
 namespace overdrive {
 	namespace input {
 		class Keyboard;
@@ -36,6 +40,7 @@ namespace overdrive {
 		};
 
 		namespace detail {
+			// [TODO]  These are platform-specific. Until there's a need for it (or someone else wants to do it for me) I'm leaving it as it is.
 			void loadXInput();
 			void unloadXInput();
 		}

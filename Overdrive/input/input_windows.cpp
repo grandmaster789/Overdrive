@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "../preprocessor.h"
 
 #if OVERDRIVE_PLATFORM == OVERDRIVE_PLATFORM_WINDOWS
@@ -16,50 +17,7 @@
 namespace overdrive {
 	namespace input {
 		namespace {
-			/*
-			// straight from xinput.h
-
-			DWORD XInputGetState(
-				_In_  DWORD         userIndex,		// Index of the gamer associated with the device
-				_Out_ XINPUT_STATE* state			// Receives the current state
-			);
-
-			DWORD XInputSetState (
-				_In_ DWORD             userIndex,	// Index of the gamer associated with the device
-				_In_ XINPUT_VIBRATION* vibration    // The vibration information to send to the controller
-			);
-
-			DWORD XInputGetCapabilities(
-				_In_  DWORD                userIndex,		// Index of the gamer associated with the device
-				_In_  DWORD                dwFlags,			// Input flags that identify the device type
-				_Out_ XINPUT_CAPABILITIES* pCapabilities	// Receives the capabilities
-			);
-
-			void XInputEnable(
-				_In_ BOOL enable     // [in] Indicates whether xinput is enabled or disabled.
-			);
-
-			DWORD XInputGetAudioDeviceIds(
-				_In_  DWORD					userIndex,         // Index of the gamer associated with the device
-				_Out_writes_opt_ LPWSTR		renderDeviceId,    // Windows Core Audio device ID string for render (speakers)
-				_Inout_opt_ UINT*			renderCount,       // Size of render device ID string buffer (in wide-chars)
-				_Out_writes_opt_ LPWSTR		captureDeviceId,   // Windows Core Audio device ID string for capture (microphone)
-				_Inout_opt_ UINT*			captureCount       // Size of capture device ID string buffer (in wide-chars)
-			);
-
-			DWORD XInputGetBatteryInformation (
-				_In_  DWORD                       userIndex,        // Index of the gamer associated with the device
-				_In_  BYTE                        devType,            // Which device on this user index
-				_Out_ XINPUT_BATTERY_INFORMATION* pBatteryInformation // Contains the level and types of batteries
-			);
-
-			DWORD XInputGetKeystroke(
-				_In_       DWORD userIndex,					 // Index of the gamer associated with the device
-				_Reserved_ DWORD reserved,					 // Reserved for future use
-				_Out_      PXINPUT_KEYSTROKE pKeystroke		 // Pointer to an XINPUT_KEYSTROKE structure that receives an input event.
-			);
-
-			*/
+			// look in xinput.h for descriptions of parameters
 
 			HMODULE gXInputLib = nullptr;
 			int gNumGamepads = 0;

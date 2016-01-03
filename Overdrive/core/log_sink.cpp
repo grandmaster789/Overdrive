@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "log_sink.h"
 
 #include <iostream>

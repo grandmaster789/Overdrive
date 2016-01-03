@@ -19,6 +19,11 @@
 
 	#include <windows.h>
 	#include <winsdkver.h> // this defines the _WIN32_WINNT value (relevant for boost::asio)
+	//#include <DbgHelp.h> // [TODO] -- implement stack tracing
+
+	#define STDCALL __stdcall
+#else
+	#define STDCALL 
 #endif
 
 // with MSVC we can figure out wheter this is a debug build

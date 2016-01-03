@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "exception.h"
 #include "../core/logger.h"
 

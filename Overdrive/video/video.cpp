@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "video.h"
 #include "window.h"
 #include "../core/channel.h"
@@ -147,7 +148,9 @@ namespace overdrive {
 				else {
 					// The graphics rendering stuff should go in here. For now I'm keeping it the simplest that could possibly work.
 					(*it)->makeCurrent();
+					
 					// [NOTE] update rendering here
+					
 					(*it)->swapBuffers();
 					++it;
 				}

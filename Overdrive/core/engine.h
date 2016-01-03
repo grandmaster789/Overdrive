@@ -5,11 +5,14 @@
 #include <unordered_map>
 #include "system.h"
 #include "settings.h"
+#include "clock.h"
 
 namespace overdrive {
 	namespace app {
 		class Application;
 	}
+
+	// [TODO] -- Diagnostic mode (or is the unit test sufficient?)
 
 	namespace core {
 		class Engine {
@@ -34,6 +37,8 @@ namespace overdrive {
 			void run();
 			void stop();
 
+			const Clock& getClock() const;
+
 			// ----- Signals -----
 			struct OnStop {};
 
@@ -50,6 +55,7 @@ namespace overdrive {
 			SystemList mSystems;
 			SystemMapping mSystemLookup;
 			Settings mSettings;
+			Clock mClock;
 			bool mRunning;
 
 			std::unique_ptr<app::Application> mApplication;

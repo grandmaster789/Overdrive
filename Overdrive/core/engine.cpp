@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "engine.h"
 #include "channel.h"
 #include "logger.h"
@@ -22,7 +23,7 @@ namespace {
 	}
 
 	void glfwErrorCallback(int error, const char* description) {
-		gLogError << "GLFW error (" << error << "): " << description;
+		gLogError << "GLFW error (" << intepretGLFWerrorcode(error) << "): " << description;
 	}
 }
 
@@ -126,8 +127,13 @@ namespace overdrive {
 			mRunning = true;
 
 			while (mRunning) {
+				mClock.update();
+
 				for (auto& system: mSystems)
 					system->update();
+
+				if (mApplication)
+					mApplication->update();
 			}
 
 			if (mApplication)
@@ -139,6 +145,10 @@ namespace overdrive {
 
 		void Engine::stop() {
 			mRunning = false;
+		}
+
+		const Clock& Engine::getClock() const {
+			return mClock;
 		}
 
 		void Engine::operator()(const OnStop&) {

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "keyboard.h"
 #include "../video/window.h"
 #include "../core/channel.h"

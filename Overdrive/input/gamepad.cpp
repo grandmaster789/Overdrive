@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include "gamepad.h"
 #include "../core/channel.h"
 #include <cmath>
