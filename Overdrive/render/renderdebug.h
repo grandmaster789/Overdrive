@@ -38,10 +38,11 @@ namespace overdrive {
 			};
 
 			enum class eSeverity: GLenum {
-				LOW			= GL_DEBUG_SEVERITY_LOW,
-				MEDIUM		= GL_DEBUG_SEVERITY_MEDIUM, 
-				HIGH		= GL_DEBUG_SEVERITY_HIGH,
-				DONTCARE	= GL_DONT_CARE
+				NOTIFICATION	= GL_DEBUG_SEVERITY_NOTIFICATION,
+				LOW				= GL_DEBUG_SEVERITY_LOW,
+				MEDIUM			= GL_DEBUG_SEVERITY_MEDIUM, 
+				HIGH			= GL_DEBUG_SEVERITY_HIGH,
+				DONTCARE		= GL_DONT_CARE
 			};
 
 			static void init();

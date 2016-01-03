@@ -1,5 +1,6 @@
 #include "overdrive.h"
 #include "render/renderstate.h"
+#include "render/shaderprogram.h"
 
 #include <iostream>
 
@@ -7,7 +8,6 @@ using namespace overdrive;
 
 class Test :
 	public app::Application,
-	public MessageHandler<video::Window::OnCreated>,
 	public MessageHandler<video::Window::OnResized>,
 	public MessageHandler<input::Keyboard::OnKeyPress>,
 	public MessageHandler<input::Mouse::OnButtonPress>,
@@ -19,6 +19,10 @@ class Test :
 public:
 	int counter = 0;
 	render::RenderState mRenderState;
+	render::ShaderProgram mProgram;
+
+	GLuint vbo = 0;
+	GLuint vao = 0;
 
 	Test():
 		Application("Test")
@@ -29,6 +33,48 @@ public:
 	virtual void initialize() override {
 		System::initialize();
 		
+		gLogDebug << "**********";
+
+		mRenderState.setClearColor(0.2f, 0.2f, 0.0f);
+
+		const char* vertex_shader =
+			"#version 400\n"
+			"in vec3 vp;"
+			"void main () {"
+			"  gl_Position = vec4 (vp, 1.0);"
+			"}";
+
+		const char* fragment_shader =
+			"#version 400\n"
+			"out vec4 frag_colour;"
+			"void main () {"
+			"  frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);"
+			"}";
+
+		mProgram.attachShader(vertex_shader, render::eShaderType::VERTEX);
+		mProgram.attachShader(fragment_shader, render::eShaderType::FRAGMENT);
+
+		gLogDebug << "V: " << mProgram.getShader(render::eShaderType::VERTEX)->getSource();
+		gLogDebug << "F: " << mProgram.getShader(render::eShaderType::FRAGMENT)->getSource();
+
+		mProgram.link();
+		mProgram.bind();
+
+		float points[] = {
+			0.0f,  0.5f,  0.0f,
+			0.5f, -0.5f,  0.0f,
+			-0.5f, -0.5f,  0.0f
+		};
+
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	}
 
 	virtual void update() override {
@@ -39,14 +85,13 @@ public:
 			//mChannel.broadcast(overdrive::core::Engine::OnStop());
 
 		mRenderState.clear();
+
+		glBindVertexArray(vao);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 
 	virtual void shutdown() override {
 		System::shutdown();
-	}
-
-	void operator()(const video::Window::OnCreated&) {
-		mRenderState.setClearColor(0.2f, 0.2f, 0.0f);
 	}
 
 	void operator()(const video::Window::OnResized& msg) {

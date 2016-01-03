@@ -1,0 +1,25 @@
+* Various things that are on my to-do list
+
+
+[Debugging tools]
+- Stack tracing
+- Convert thrown exceptions into logged messages
+
+[Core]
+- Customizable allocator system (notably a per-frame scratch allocator)
+- Redo the entire task system
+- Design the core loop to make use of fibers and threads
+
+[File interface]
+
+[Rendering interface]
+
+[Sound interface]
+
+[GUI]
+
+[Physics]
+
+[Scene]
+
+[Game interface]

@@ -38,10 +38,11 @@ namespace overdrive {
 
 			RenderDebug::eSeverity fromSeverity(GLenum severity) {
 				switch (severity) {
-				case GL_DEBUG_SEVERITY_LOW:		return RenderDebug::eSeverity::LOW;
-				case GL_DEBUG_SEVERITY_MEDIUM:	return RenderDebug::eSeverity::MEDIUM;
-				case GL_DEBUG_SEVERITY_HIGH:	return RenderDebug::eSeverity::HIGH;
-				case GL_DONT_CARE:				return RenderDebug::eSeverity::DONTCARE;
+				case GL_DEBUG_SEVERITY_LOW:				return RenderDebug::eSeverity::LOW;
+				case GL_DEBUG_SEVERITY_MEDIUM:			return RenderDebug::eSeverity::MEDIUM;
+				case GL_DEBUG_SEVERITY_HIGH:			return RenderDebug::eSeverity::HIGH;
+				case GL_DEBUG_SEVERITY_NOTIFICATION:	return RenderDebug::eSeverity::NOTIFICATION;
+				case GL_DONT_CARE:						return RenderDebug::eSeverity::DONTCARE;
 				default:
 					throw std::runtime_error("unexpected severity from openGL debug callback");
 				}
@@ -154,10 +155,11 @@ namespace overdrive {
 
 		std::ostream& operator << (std::ostream& os, const RenderDebug::eSeverity& severity) {
 			switch (severity) {
-			case RenderDebug::eSeverity::LOW:		os << "Low"; break;
-			case RenderDebug::eSeverity::MEDIUM:	os << "Medium"; break;
-			case RenderDebug::eSeverity::HIGH:		os << "High"; break;
-			case RenderDebug::eSeverity::DONTCARE:	os << "Don't care"; break;
+			case RenderDebug::eSeverity::NOTIFICATION:	os << "Notification"; break;
+			case RenderDebug::eSeverity::LOW:			os << "Low"; break;
+			case RenderDebug::eSeverity::MEDIUM:		os << "Medium"; break;
+			case RenderDebug::eSeverity::HIGH:			os << "High"; break;
+			case RenderDebug::eSeverity::DONTCARE:		os << "Don't care"; break;
 			default:
 				os << "Unknown severity: " << static_cast<std::underlying_type<RenderDebug::eType>::type>(severity);
 			}

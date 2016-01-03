@@ -43,6 +43,9 @@
     <Filter Include="render\buffer">
       <UniqueIdentifier>{3c9cd58b-68e9-4b20-9703-cbb9a8472e7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="render\shader">
+      <UniqueIdentifier>{6b6b7681-846b-4a10-b1fb-99e3fa6a47df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -130,6 +133,12 @@
     <ClInclude Include="core\settings.h">
       <Filter>core\settings</Filter>
     </ClInclude>
+    <ClInclude Include="render\shaderprogram.h">
+      <Filter>render\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shader.h">
+      <Filter>render\shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -204,6 +213,12 @@
     </ClCompile>
     <ClCompile Include="core\settings.cpp">
       <Filter>core\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shader.cpp">
+      <Filter>render\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shaderprogram.cpp">
+      <Filter>render\shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
