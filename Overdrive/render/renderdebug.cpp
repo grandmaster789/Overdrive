@@ -78,6 +78,15 @@ namespace overdrive {
 				nullptr,						// array ptr
 				(toggle ? GL_TRUE : GL_FALSE)	// enabled flag
 			);
+
+			glDebugMessageControl(
+				GL_DONT_CARE,
+				GL_DONT_CARE,
+				GL_DEBUG_SEVERITY_NOTIFICATION,
+				0,
+				nullptr,
+				(toggle ? GL_TRUE : GL_FALSE)
+			);
 		}
 
 		void RenderDebug::setUserParam(void* p) {

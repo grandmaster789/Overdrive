@@ -130,7 +130,7 @@ namespace overdrive {
 				createWindow("Overdrive", mMainWindowSettings.mWidth, mMainWindowSettings.mHeight);
 
 			// initialize GLEW
-			glewExperimental = true;
+			glewExperimental = true; // [NOTE] can't believe this is still a thing -_-
 			auto err = glewInit();
 
 			if (err != GLEW_OK)

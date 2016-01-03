@@ -33,33 +33,28 @@ public:
 	virtual void initialize() override {
 		System::initialize();
 		
-		gLogDebug << "**********";
-
 		mRenderState.setClearColor(0.2f, 0.2f, 0.0f);
 
 		const char* vertex_shader =
 			"#version 400\n"
-			"in vec3 vp;"
-			"void main () {"
-			"  gl_Position = vec4 (vp, 1.0);"
-			"}";
+			"in vec3 vp;\n"
+			"void main () {\n"
+			"  gl_Position = vec4 (vp, 1.0);\n"
+			"}\n";
 
 		const char* fragment_shader =
 			"#version 400\n"
-			"out vec4 frag_colour;"
-			"void main () {"
-			"  frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);"
-			"}";
+			"out vec4 frag_colour;\n"
+			"void main () {\n"
+			"  frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);\n"
+			"}\n";
 
 		mProgram.attachShader(vertex_shader, render::eShaderType::VERTEX);
 		mProgram.attachShader(fragment_shader, render::eShaderType::FRAGMENT);
 
-		gLogDebug << "V: " << mProgram.getShader(render::eShaderType::VERTEX)->getSource();
-		gLogDebug << "F: " << mProgram.getShader(render::eShaderType::FRAGMENT)->getSource();
-
 		mProgram.link();
 		mProgram.bind();
-
+		
 		float points[] = {
 			0.0f,  0.5f,  0.0f,
 			0.5f, -0.5f,  0.0f,
@@ -103,6 +98,9 @@ public:
 
 		if (kp.mKey == GLFW_KEY_ESCAPE)
 			mChannel.broadcast(core::Engine::OnStop());
+
+		if (kp.mKey == GLFW_KEY_F1)
+			gLog << mProgram;
 	}
 
 	void operator()(const input::Mouse::OnButtonPress& bp) {
