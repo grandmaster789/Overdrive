@@ -399,6 +399,218 @@ namespace overdrive {
 			}
 		}
 
+		void ShaderProgram::setUniform(GLint location, GLfloat x) {
+			glUniform1f(location, x);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLfloat x, GLfloat y) {
+			glUniform2f(location, x, y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLfloat x, GLfloat y, GLfloat z) {
+			glUniform3f(location, x, y, z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+			glUniform4f(location, x, y, z, w);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::vec2& v) {
+			glUniform2f(location, v.x, v.y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::vec3& v) {
+			glUniform3f(location, v.x, v.y, v.z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::vec4& v) {
+			glUniform4f(location, v.x, v.y, v.z, v.w);
+		}
+			 
+		void ShaderProgram::setUniform(GLint location, GLdouble x) {
+			glUniform1d(location, x);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLdouble x, GLdouble y) {
+			glUniform2d(location, x, y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLdouble x, GLdouble y, GLdouble z) {
+			glUniform3d(location, x, y, z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
+			glUniform4d(location, x, y, z, w);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dvec2& v) {
+			glUniform2d(location, v.x, v.y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dvec3& v) {
+			glUniform3d(location, v.x, v.y, v.z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dvec4& v) {
+			glUniform4d(location, v.x, v.y, v.z, v.w);
+		}
+			 
+		void ShaderProgram::setUniform(GLint location, GLint x) {
+			glUniform1i(location, x);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLint x, GLint y) {
+			glUniform2i(location, x, y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLint x, GLint y, GLint z) {
+			glUniform3i(location, x, y, z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLint x, GLint y, GLint z, GLint w) {
+			glUniform4i(location, x, y, z, w);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::ivec2& v) {
+			glUniform2i(location, v.x, v.y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::ivec3& v) {
+			glUniform3i(location, v.x, v.y, v.z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::ivec4& v) {
+			glUniform4i(location, v.x, v.y, v.z, v.w);
+		}
+			 
+		void ShaderProgram::setUniform(GLint location, GLuint x) {
+			glUniform1ui(location, x);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLuint x, GLuint y) {
+			glUniform2ui(location, x, y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLuint x, GLuint y, GLuint z) {
+			glUniform3ui(location, x, y, z);
+		}
+		
+		void ShaderProgram::setUniform(GLint location, GLuint x, GLuint y, GLuint z, GLuint w) {
+			glUniform4ui(location, x, y, z, w);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::uvec2& v) {
+			glUniform2ui(location, v.x, v.y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::uvec3& v) {
+			glUniform3ui(location, v.x, v.y, v.z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::uvec4& v) {
+			glUniform4ui(location, v.x, v.y, v.z, v.w);
+		}
+			 
+		void ShaderProgram::setUniform(GLint location, GLboolean x) {
+			glUniform1i(location, x);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLboolean x, GLboolean y) {
+			glUniform2i(location, x, y);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLboolean x, GLboolean y, GLboolean z) {
+			glUniform3i(location, x, y, z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, GLboolean x, GLboolean y, GLboolean z, GLboolean w) {
+			glUniform4i(location, x, y, z, w);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::bvec2& v) {
+			glUniform2i(location, v.x, v.y);
+		}
+		
+		void ShaderProgram::setUniform(GLint location, const glm::bvec3& v) {
+			glUniform3i(location, v.x, v.y, v.z);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::bvec4& v) {
+			glUniform4i(location, v.x, v.y, v.z, v.w);
+		}
+			 
+		void ShaderProgram::setUniform(GLint location, const glm::mat2& m) {
+			glUniformMatrix2fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::mat3& m) {
+			glUniformMatrix3fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::mat4& m) {
+			glUniformMatrix4fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::mat2x3& m) {
+			glUniformMatrix2x3fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::mat2x4& m) {
+			glUniformMatrix2x4fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::mat3x2& m) {
+			glUniformMatrix3x2fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::mat3x4& m) {
+			glUniformMatrix3x4fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::mat4x2& m) {
+			glUniformMatrix4x2fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::mat4x3& m) {
+			glUniformMatrix4x3fv(location, 1, GL_FALSE, &m[0][0]);
+		}
+			 
+		void ShaderProgram::setUniform(GLint location, const glm::dmat2& m) {
+			glUniformMatrix2dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dmat3& m) {
+			glUniformMatrix3dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dmat4& m) {
+			glUniformMatrix4dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+		
+		void ShaderProgram::setUniform(GLint location, const glm::dmat2x3& m) {
+			glUniformMatrix2x3dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dmat2x4& m) {
+			glUniformMatrix2x4dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dmat3x2& m) {
+			glUniformMatrix3x2dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dmat3x4& m) {
+			glUniformMatrix3x4dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dmat4x2& m) {
+			glUniformMatrix4x2dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
+		void ShaderProgram::setUniform(GLint location, const glm::dmat4x3& m) {
+			glUniformMatrix4x3dv(location, 1, GL_FALSE, &m[0][0]);
+		}
+
 		std::ostream& operator << (std::ostream& os, const ShaderProgram& program) {
 			os
 				<< "Shader program: "
