@@ -14,6 +14,7 @@
 #endif
 
 // consider all angles radians -- none of that 'degree' stuff
+// GLM v0.9.7.2 (downloaded on 6th of januari 2016)
 #define GLM_FORCE_RADIANS
 	#include <glm/glm.hpp>
 	#include <glm/gtc/matrix_transform.hpp>

@@ -139,6 +139,12 @@
     <ClInclude Include="render\shader.h">
       <Filter>render\shader</Filter>
     </ClInclude>
+    <ClInclude Include="render\shaderattribute.h">
+      <Filter>render\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shaderUniform.h">
+      <Filter>render\shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -220,6 +226,12 @@
     <ClCompile Include="render\shaderprogram.cpp">
       <Filter>render\shader</Filter>
     </ClCompile>
+    <ClCompile Include="render\shaderAttribute.cpp">
+      <Filter>render\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shaderUniform.cpp">
+      <Filter>render\shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="core\engine.inl">
@@ -248,6 +260,9 @@
     </None>
     <None Include="core\settings.inl">
       <Filter>core\settings</Filter>
+    </None>
+    <None Include="render\shaderprogram.inl">
+      <Filter>render\shader</Filter>
     </None>
   </ItemGroup>
 </Project>
