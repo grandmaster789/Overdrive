@@ -1,6 +1,7 @@
 #include "overdrive.h"
 #include "render/renderstate.h"
 #include "render/shaderprogram.h"
+#include "render/vertexbuffer.h"
 
 #include <iostream>
 

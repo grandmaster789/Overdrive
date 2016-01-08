@@ -145,6 +145,18 @@
     <ClInclude Include="render\shaderUniform.h">
       <Filter>render\shader</Filter>
     </ClInclude>
+    <ClInclude Include="render\buffer.h">
+      <Filter>render\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="util\enum_bitfield.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="render\vertexbuffer.h">
+      <Filter>render\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="render\common_vertex_formats.h">
+      <Filter>render\buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -263,6 +275,15 @@
     </None>
     <None Include="render\shaderprogram.inl">
       <Filter>render\shader</Filter>
+    </None>
+    <None Include="util\enum_bitfield.inl">
+      <Filter>util</Filter>
+    </None>
+    <None Include="render\buffer.inl">
+      <Filter>render\buffer</Filter>
+    </None>
+    <None Include="render\vertexbuffer.inl">
+      <Filter>render\buffer</Filter>
     </None>
   </ItemGroup>
 </Project>

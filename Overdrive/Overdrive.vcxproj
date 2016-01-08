@@ -38,14 +38,18 @@
     <ClInclude Include="opengl.h" />
     <ClInclude Include="overdrive.h" />
     <ClInclude Include="preprocessor.h" />
+    <ClInclude Include="render\buffer.h" />
+    <ClInclude Include="render\common_vertex_formats.h" />
     <ClInclude Include="render\renderdebug.h" />
     <ClInclude Include="render\renderstate.h" />
     <ClInclude Include="render\shader.h" />
     <ClInclude Include="render\shaderattribute.h" />
     <ClInclude Include="render\shaderprogram.h" />
     <ClInclude Include="render\shaderUniform.h" />
+    <ClInclude Include="render\vertexbuffer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="util\active.h" />
+    <ClInclude Include="util\enum_bitfield.h" />
     <ClInclude Include="util\exception.h" />
     <ClInclude Include="util\exception_windows.h" />
     <ClInclude Include="util\supports.h" />
@@ -98,7 +102,10 @@
     <None Include="core\settings.inl" />
     <None Include="core\system.inl" />
     <None Include="math\clamp.inl" />
+    <None Include="render\buffer.inl" />
     <None Include="render\shaderprogram.inl" />
+    <None Include="render\vertexbuffer.inl" />
+    <None Include="util\enum_bitfield.inl" />
     <None Include="util\supports.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
