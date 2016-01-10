@@ -90,9 +90,8 @@ namespace overdrive {
 		void VertexBuffer<T>::unbind() {
 			Base::unbind();
 
-			for (GLuint i = 0; i < getNumAttributes(); ++i) {
-				glDisableVertexArray(i);
-			}
+			for (GLuint i = 0; i < getNumAttributes(); ++i)
+				glDisableVertexAttribArray(i);
 		}
 
 		template <typename T>

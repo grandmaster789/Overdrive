@@ -1,6 +1,8 @@
 #pragma once
 
 #include "indexbuffer.h"
+#include "gltypes.h"
+#include <cassert>
 
 namespace overdrive {
 	namespace render {
@@ -11,6 +13,11 @@ namespace overdrive {
 		):
 			Buffer<T>(eBufferTarget::ELEMENT_ARRAY, numElements, usage)
 		{
+			assert(
+				(ToValue<T>::value == GL_UNSIGNED_BYTE) ||
+				(ToValue<T>::value == GL_UNSIGNED_SHORT) ||
+				(ToValue<T>::value == GL_UNSIGNED_INT)
+			);
 		}
 
 		template <typename T>

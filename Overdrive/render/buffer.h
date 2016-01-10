@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../opengl.h"
+#include <ostream>
 
 namespace overdrive {
 	namespace render {
@@ -91,6 +92,7 @@ namespace overdrive {
 			GLuint getHandle() const;
 			eBufferTarget getTarget() const;
 			eBufferUsage getUsage() const;
+			size_t getSize() const;
 
 			template <typename... Pack>
 			Data map(eBufferAccess access, Pack... pack); // ex: auto data = map(eBufferAccess::WRITE, eBufferAccess::INVALIDATE_BUFFER);
@@ -106,6 +108,10 @@ namespace overdrive {
 			size_t mNumItems;
 			bool mIsMapped;
 		};
+
+		inline std::ostream& operator << (std::ostream& os, const eBufferAccess& value);
+		inline std::ostream& operator << (std::ostream& os, const eBufferUsage& value);
+		inline std::ostream& operator << (std::ostream& os, const eBufferTarget& value);
 	}
 }
 

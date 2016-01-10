@@ -48,6 +48,7 @@
     <ClInclude Include="render\shaderprogram.h" />
     <ClInclude Include="render\shaderUniform.h" />
     <ClInclude Include="render\gltypes.h" />
+    <ClInclude Include="render\vertexarray.h" />
     <ClInclude Include="render\vertexbuffer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="util\active.h" />
@@ -82,6 +83,7 @@
     <ClCompile Include="render\shaderAttribute.cpp" />
     <ClCompile Include="render\shaderprogram.cpp" />
     <ClCompile Include="render\shaderUniform.cpp" />
+    <ClCompile Include="render\vertexarray.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -107,7 +109,8 @@
     <None Include="render\buffer.inl" />
     <None Include="render\indexbuffer.inl" />
     <None Include="render\shaderprogram.inl" />
-    <None Include="render\gltypes.cpp" />
+    <ClCompile Include="render\gltypes.cpp" />
+    <None Include="render\vertexarray.inl" />
     <None Include="render\vertexbuffer.inl" />
     <None Include="util\enum_bitfield.inl" />
     <None Include="util\supports.inl" />

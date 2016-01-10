@@ -4,6 +4,23 @@
 
 namespace overdrive {
 	namespace render {
+		size_t getTypeSize(GLenum value) {
+			switch (value) {
+			case GL_BYTE:			return sizeof(GLbyte);
+			case GL_UNSIGNED_BYTE:	return sizeof(GLubyte);
+			case GL_SHORT:			return sizeof(GLshort);
+			case GL_UNSIGNED_SHORT: return sizeof(GLushort);
+			case GL_INT:			return sizeof(GLint);
+			case GL_UNSIGNED_INT:	return sizeof(GLuint);
+			case GL_FLOAT:			return sizeof(GLfloat);
+			case GL_DOUBLE:			return sizeof(GLdouble);
+			case GL_HALF_FLOAT:		return sizeof(GLhalf);
+			case GL_FIXED:			return sizeof(GLfixed);
+			default:
+				throw std::runtime_error("Unsupported openGL type constant");
+			}
+		}
+
 		GLenum asColorAttachment(GLuint index) {
 			switch (index) {
 			case 0: return GL_COLOR_ATTACHMENT0;

@@ -135,6 +135,11 @@ namespace overdrive {
 		}
 
 		template <typename T>
+		size_t Buffer<T>::getSize() const {
+			return mNumItems;
+		}
+
+		template <typename T>
 		template <typename... Pack>
 		typename Buffer<T>::Data Buffer<T>::map(eBufferAccess access, Pack... pack) {
 			if (mIsMapped)
@@ -161,6 +166,66 @@ namespace overdrive {
 		void Buffer<T>::unbind() {
 			GLenum target = static_cast<GLenum>(mTarget);
 			glBindBuffer(target, 0);
+		}
+
+		// ----- ostream << -----
+		std::ostream& operator << (std::ostream& os, const eBufferAccess& value) {
+			switch (value) {
+			case eBufferAccess::READ:				os << "read"; break;
+			case eBufferAccess::WRITE:				os << "write"; break;
+			case eBufferAccess::PERSISTENT:			os << "persistent"; break;
+			case eBufferAccess::COHERENT:			os << "coherent"; break;
+			case eBufferAccess::INVALIDATE_BUFFER:	os << "invalidate buffer"; break;
+			case eBufferAccess::INVALIDATE_RANGE:	os << "invalidate range"; break;
+			case eBufferAccess::FLUSH_EXPLICIT:		os << "flush explicit"; break;
+			case eBufferAccess::UNSYNCHRONIZED:		os << "unsynchronized"; break;
+
+			default:
+				os << "Unknown buffer access type: " << static_cast<std::underlying_type<eBufferAccess>::type>(value);
+			}
+
+			return os;
+		}
+
+		std::ostream& operator << (std::ostream& os, const eBufferUsage& value) {
+			switch (value) {
+			case eBufferUsage::STREAM_DRAW: os << "stream draw"; break;
+			case eBufferUsage::STREAM_READ: os << "stream draw"; break;
+			case eBufferUsage::STREAM_COPY: os << "stream draw"; break;
+
+			case eBufferUsage::STATIC_DRAW: os << "static draw"; break;
+			case eBufferUsage::STATIC_READ: os << "static draw"; break;
+			case eBufferUsage::STATIC_COPY: os << "static draw"; break;
+
+			case eBufferUsage::DYNAMIC_DRAW: os << "dynamic draw"; break;
+			case eBufferUsage::DYNAMIC_READ: os << "dynamic draw"; break;
+			case eBufferUsage::DYNAMIC_COPY: os << "dynamic draw"; break;
+
+			default:
+				os << "Unknown buffer usage: " << static_cast<std::underlying_type<eBufferAccess>::type>(value);
+			}
+
+			return os;
+		}
+
+		std::ostream& operator << (std::ostream& os, const eBufferTarget& value) {
+			switch (value) {
+			case eBufferTarget::ARRAY:				os << "array"; break;
+			case eBufferTarget::ATOMIC_COUNTER:		os << "atomic counter"; break;
+			case eBufferTarget::COPY_READ:			os << "copy read"; break;
+			case eBufferTarget::COPY_WRITE:			os << "copy write"; break;
+			case eBufferTarget::DISPATCH_INDIRECT:	os << "dispatch indirect"; break;
+			case eBufferTarget::DRAW_INDIRECT:		os << "draw indirect"; break;
+			case eBufferTarget::ELEMENT_ARRAY:		os << "element array"; break;
+			case eBufferTarget::PIXEL_PACK:			os << "pixel pack"; break;
+			case eBufferTarget::PIXEL_UNPACK:		os << "pixel unpack"; break;
+			case eBufferTarget::QUERY:				os << "query"; break;
+			case eBufferTarget::SHADER_STORAGE:		os << "shader storage"; break;
+			case eBufferTarget::TEXTURE:			os << "texture"; break;
+			case eBufferTarget::TRANSFORM_FEEDBACK: os << "transform feedback"; break;
+			case eBufferTarget::UNIFORM:			os << "uniform"; break;
+			}
+			return os;
 		}
 	}
 }

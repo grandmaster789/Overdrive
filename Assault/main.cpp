@@ -3,6 +3,7 @@
 #include "render/shaderprogram.h"
 #include "render/vertexbuffer.h"
 #include "render/indexbuffer.h"
+#include "render/vertexarray.h"
 
 #include <iostream>
 
@@ -24,9 +25,7 @@ public:
 	render::ShaderProgram mProgram;
 
 	std::unique_ptr<render::VertexBuffer<render::attributes::PositionColor>> mVBO;
-
-	GLuint vbo = 0;
-	GLuint vao = 0;
+	std::unique_ptr<render::VertexArray> mVAO;
 
 	Test():
 		Application("Test")
@@ -73,9 +72,8 @@ public:
 			data[2] = PositionColor{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec4(0, 0, 1, 1) };
 		}
 
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		mVBO->bind();
+		mVAO = std::make_unique<render::VertexArray>();
+		mVAO->attach(*mVBO);
 	}
 
 	virtual void update() override {
@@ -86,9 +84,7 @@ public:
 			//mChannel.broadcast(overdrive::core::Engine::OnStop());
 
 		mRenderState.clear();
-
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		mVAO->draw();
 	}
 
 	virtual void shutdown() override {

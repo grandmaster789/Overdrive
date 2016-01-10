@@ -35,6 +35,8 @@ namespace overdrive {
 		//template <> struct ToValue<GLhalf>		{ static const GLenum value = GL_HALF_FLOAT; }; // GLhalf == GLshort so this can't work
 		//template <> struct ToValue<GLfixed>		{ static const GLenum value = GL_FIXED; }; // GLfixed == GLint so this can't work
 		
+		size_t getTypeSize(GLenum value);
+
 		GLenum asColorAttachment(GLuint index);
 		GLenum asTextureUnit(GLuint index);
 	}

@@ -163,6 +163,9 @@
     <ClInclude Include="render\indexbuffer.h">
       <Filter>render\buffer</Filter>
     </ClInclude>
+    <ClInclude Include="render\vertexarray.h">
+      <Filter>render\buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -250,6 +253,9 @@
     <ClCompile Include="render\shaderUniform.cpp">
       <Filter>render\shader</Filter>
     </ClCompile>
+    <ClCompile Include="render\vertexarray.cpp">
+      <Filter>render\buffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="core\engine.inl">
@@ -295,6 +301,9 @@
       <Filter>render\buffer</Filter>
     </None>
     <None Include="render\indexbuffer.inl">
+      <Filter>render\buffer</Filter>
+    </None>
+    <None Include="render\vertexarray.inl">
       <Filter>render\buffer</Filter>
     </None>
   </ItemGroup>
