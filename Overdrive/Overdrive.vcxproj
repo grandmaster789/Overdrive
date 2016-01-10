@@ -40,6 +40,7 @@
     <ClInclude Include="preprocessor.h" />
     <ClInclude Include="render\buffer.h" />
     <ClInclude Include="render\common_vertex_formats.h" />
+    <ClInclude Include="render\framebuffer.h" />
     <ClInclude Include="render\indexbuffer.h" />
     <ClInclude Include="render\renderdebug.h" />
     <ClInclude Include="render\renderstate.h" />
@@ -48,6 +49,12 @@
     <ClInclude Include="render\shaderprogram.h" />
     <ClInclude Include="render\shaderUniform.h" />
     <ClInclude Include="render\gltypes.h" />
+    <ClInclude Include="render\texture.h" />
+    <ClInclude Include="render\texture1D.h" />
+    <ClInclude Include="render\texture2D.h" />
+    <ClInclude Include="render\texture2DMultisample.h" />
+    <ClInclude Include="render\texture3D.h" />
+    <ClInclude Include="render\textureBuffer.h" />
     <ClInclude Include="render\vertexarray.h" />
     <ClInclude Include="render\vertexbuffer.h" />
     <ClInclude Include="stdafx.h" />
@@ -77,12 +84,19 @@
     <ClCompile Include="input\input_windows.cpp" />
     <ClCompile Include="input\keyboard.cpp" />
     <ClCompile Include="input\mouse.cpp" />
+    <ClCompile Include="render\framebuffer.cpp" />
     <ClCompile Include="render\renderdebug.cpp" />
     <ClCompile Include="render\renderstate.cpp" />
     <ClCompile Include="render\shader.cpp" />
     <ClCompile Include="render\shaderAttribute.cpp" />
     <ClCompile Include="render\shaderprogram.cpp" />
     <ClCompile Include="render\shaderUniform.cpp" />
+    <ClCompile Include="render\texture1D.cpp" />
+    <ClCompile Include="render\texture2D.cpp" />
+    <ClCompile Include="render\texture2DMultisample.cpp" />
+    <ClCompile Include="render\texture3D.cpp" />
+    <ClCompile Include="render\textureBuffer.cpp" />
+    <ClCompile Include="render\textureInfo.cpp" />
     <ClCompile Include="render\vertexarray.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

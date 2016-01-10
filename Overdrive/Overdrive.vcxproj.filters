@@ -46,6 +46,9 @@
     <Filter Include="render\shader">
       <UniqueIdentifier>{6b6b7681-846b-4a10-b1fb-99e3fa6a47df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="render\texture">
+      <UniqueIdentifier>{0a53cf66-f3ee-4024-9fec-8ff80a5d6978}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -166,6 +169,27 @@
     <ClInclude Include="render\vertexarray.h">
       <Filter>render\buffer</Filter>
     </ClInclude>
+    <ClInclude Include="render\framebuffer.h">
+      <Filter>render\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture2D.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture3D.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture2DMultisample.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="render\textureBuffer.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture1D.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -254,6 +278,27 @@
       <Filter>render\shader</Filter>
     </ClCompile>
     <ClCompile Include="render\vertexarray.cpp">
+      <Filter>render\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="render\textureInfo.cpp">
+      <Filter>render\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture2D.cpp">
+      <Filter>render\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture2DMultisample.cpp">
+      <Filter>render\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture3D.cpp">
+      <Filter>render\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="render\textureBuffer.cpp">
+      <Filter>render\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture1D.cpp">
+      <Filter>render\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="render\framebuffer.cpp">
       <Filter>render\buffer</Filter>
     </ClCompile>
   </ItemGroup>
