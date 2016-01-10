@@ -8,12 +8,14 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
 // --- boost ---
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/fusion/include/vector.hpp>
 
 // --- openGL ---
 #include "openGL.h"

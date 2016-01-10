@@ -1,11 +1,6 @@
 #pragma once
 
 #include "buffer.h"
-#include "../opengl.h"
-#include "common_vertex_formats.h"
-
-#include <boost/fusion/include/vector.hpp>
-#include <boost/fusion/include/for_each.hpp>
 
 namespace overdrive {
 	namespace render {
@@ -17,25 +12,17 @@ namespace overdrive {
 		//			- the component type should be exposed as ::value_type
 		//		  this was made to conform to glm vector types as much as possible (but is still flexible enough for other custom types)
 		template <typename Seq>
-		class VertexBuffer:
+		class IndexBuffer:
 			public Buffer<Seq>
 		{
 		public:
 			typedef Buffer<Seq> Base;
 
-			VertexBuffer(size_t numElements, eBufferUsage usage = eBufferUsage::STATIC_DRAW);
+			IndexBuffer(size_t numElements, eBufferUsage usage = eBufferUsage::STATIC_DRAW);
 
 			Data map(); // ~> WRITE | INVALIDATE_BUFFER
-
-			void bind();
-			void unbind();
-
-			GLuint getNumAttributes() const;
-
-		private:
-			
 		};
 	}
 }
 
-#include "vertexbuffer.inl"
+#include "indexbuffer.inl"

@@ -16,13 +16,14 @@ namespace overdrive {
 			assert(buffer);
 
 			GLenum target = static_cast<GLenum>(buffer->getTarget());
+			GLsizeiptr numBytes = mNumItems * sizeof(T);
 
 			glBindBuffer(target, buffer->getHandle());
 
 			mHostMemory = reinterpret_cast<T*>(glMapBufferRange(
 				target,		// Specifies the name of the buffer object
-				nullptr,	// Specifies the starting offset within the buffer of the range to be mapped
-				mNumBytes,	// Specifies the length of the range to be mapped
+				0,			// Specifies the starting offset within the buffer of the range to be mapped
+				numBytes,	// Specifies the length of the range to be mapped
 				access		// Specifies a combination of access flags indicating the desired access to the mapped range
 			));
 
@@ -97,17 +98,18 @@ namespace overdrive {
 			size_t numItems, 
 			eBufferUsage usage
 		):
-			mTarget(target),
+			mTarget(target_),
 			mUsage(usage),
 			mHandle(0),
 			mNumItems(numItems),
 			mIsMapped(false)
 		{
 			GLenum target = static_cast<GLenum>(target_);
+			size_t numBytes = numItems * sizeof(T);
 
 			glGenBuffers(1, &mHandle);
 			glBindBuffer(target, mHandle);
-			glBufferData(target, mNumItems * sizeof(T), nullptr, static_cast<GLenum>(usage));
+			glBufferData(target, numBytes, nullptr, static_cast<GLenum>(usage));
 			glBindBuffer(target, 0);
 		}
 

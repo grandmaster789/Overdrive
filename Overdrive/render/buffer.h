@@ -54,7 +54,7 @@ namespace overdrive {
 		// [NOTE] perhaps cache the bind/unbind status and provide an interface to query it?
 		template <typename T>
 		class Buffer {
-		private:
+		protected:
 			class Data {
 			public:
 				Data(Buffer* buffer, GLbitfield access);

@@ -2,6 +2,7 @@
 #include "render/renderstate.h"
 #include "render/shaderprogram.h"
 #include "render/vertexbuffer.h"
+#include "render/indexbuffer.h"
 
 #include <iostream>
 
@@ -22,6 +23,8 @@ public:
 	render::RenderState mRenderState;
 	render::ShaderProgram mProgram;
 
+	std::unique_ptr<render::VertexBuffer<render::attributes::PositionColor>> mVBO;
+
 	GLuint vbo = 0;
 	GLuint vao = 0;
 
@@ -39,15 +42,19 @@ public:
 		const char* vertex_shader =
 			"#version 400\n"
 			"in vec3 vp;\n"
+			"in vec4 vc;\n"
+			"out vec4 color;\n"
 			"void main () {\n"
 			"  gl_Position = vec4 (vp, 1.0);\n"
+			"  color = vc;\n"
 			"}\n";
 
 		const char* fragment_shader =
 			"#version 400\n"
-			"out vec4 frag_colour;\n"
+			"in vec4 color;\n"
+			"out vec4 frag_color;\n"
 			"void main () {\n"
-			"  frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);\n"
+			"   frag_color = color;\n"
 			"}\n";
 
 		mProgram.attachShader(vertex_shader, render::eShaderType::VERTEX);
@@ -55,22 +62,20 @@ public:
 
 		mProgram.link();
 		mProgram.bind();
-		
-		float points[] = {
-			0.0f,  0.5f,  0.0f,
-			0.5f, -0.5f,  0.0f,
-			-0.5f, -0.5f,  0.0f
-		};
 
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+		using render::attributes::PositionColor;
+
+		mVBO = std::make_unique<render::VertexBuffer<PositionColor>>(3);
+		{
+			auto data = mVBO->map();
+			data[0] = PositionColor{ glm::vec3(0.f, 0.5f, 0.0f),	glm::vec4(1, 0, 0, 1) };
+			data[1] = PositionColor{ glm::vec3(0.5f, -0.5f, 0.0f),	glm::vec4(0, 1, 0, 1) };
+			data[2] = PositionColor{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec4(0, 0, 1, 1) };
+		}
 
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		mVBO->bind();
 	}
 
 	virtual void update() override {

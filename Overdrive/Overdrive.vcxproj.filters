@@ -157,6 +157,12 @@
     <ClInclude Include="render\common_vertex_formats.h">
       <Filter>render\buffer</Filter>
     </ClInclude>
+    <ClInclude Include="render\gltypes.h">
+      <Filter>render\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="render\indexbuffer.h">
+      <Filter>render\buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -283,6 +289,12 @@
       <Filter>render\buffer</Filter>
     </None>
     <None Include="render\vertexbuffer.inl">
+      <Filter>render\buffer</Filter>
+    </None>
+    <None Include="render\gltypes.cpp">
+      <Filter>render\buffer</Filter>
+    </None>
+    <None Include="render\indexbuffer.inl">
       <Filter>render\buffer</Filter>
     </None>
   </ItemGroup>
