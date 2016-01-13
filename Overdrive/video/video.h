@@ -4,6 +4,7 @@
 #include "../core/channel.h"
 #include "monitor.h"
 #include "window.h"
+#include "oculusvr.h"
 
 namespace overdrive {
 	namespace video {
@@ -64,6 +65,8 @@ namespace overdrive {
 
 			WindowHints mWindowHints;
 			WindowList mWindowList;
+
+			OculusVR mHMD;
 		};
 	}
 }

@@ -190,6 +190,9 @@
     <ClInclude Include="render\shaderprogram.h">
       <Filter>render\shader</Filter>
     </ClInclude>
+    <ClInclude Include="video\oculusvr.h">
+      <Filter>video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -301,6 +304,9 @@
     <ClCompile Include="render\gltypes.cpp" />
     <ClCompile Include="render\shaderProgram.cpp">
       <Filter>render\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="video\oculusvr.cpp">
+      <Filter>video</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -64,6 +64,7 @@
     <ClInclude Include="util\exception_windows.h" />
     <ClInclude Include="util\supports.h" />
     <ClInclude Include="video\monitor.h" />
+    <ClInclude Include="video\oculusvr.h" />
     <ClInclude Include="video\video.h" />
     <ClInclude Include="video\videomode.h" />
     <ClInclude Include="video\window.h" />
@@ -106,6 +107,7 @@
     <ClCompile Include="util\exception.cpp" />
     <ClCompile Include="util\exception_windows.cpp" />
     <ClCompile Include="video\monitor.cpp" />
+    <ClCompile Include="video\oculusvr.cpp" />
     <ClCompile Include="video\video.cpp" />
     <ClCompile Include="video\videomode.cpp" />
     <ClCompile Include="video\window.cpp" />
@@ -207,7 +209,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;LibOVR.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>../dependencies/lib/$(Platform)</AdditionalLibraryDirectories>
@@ -247,7 +249,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;LibOVR.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>../dependencies/lib/$(Platform)</AdditionalLibraryDirectories>
