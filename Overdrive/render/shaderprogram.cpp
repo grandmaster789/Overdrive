@@ -614,12 +614,41 @@ namespace overdrive {
 		std::ostream& operator << (std::ostream& os, const ShaderProgram& program) {
 			os
 				<< "Shader program: "
-				<< program.getHandle();
+				<< program.getHandle()
+				<< "\n";
 
 			if (program.isLinked()) {
 				program.listAttributes();
 				program.listUniforms();
 			}
+
+			/*
+			auto vtx = program.getShader(eShaderType::VERTEX);
+			auto frag = program.getShader(eShaderType::FRAGMENT);
+			auto geom = program.getShader(eShaderType::GEOMETRY);
+			auto tess_ctrl = program.getShader(eShaderType::TESSELATION_CONTROL);
+			auto tess_eval = program.getShader(eShaderType::TESSELATION_EVAL);
+			auto compute = program.getShader(eShaderType::COMPUTE);
+
+			if (vtx)
+				os << "\nVertex shader:\n" << vtx->getSource();
+
+			if (frag)
+				os << "\nFragment shader:\n" << frag->getSource();
+
+			if (geom)
+				os << "\nGeometry shader:\n" << geom->getSource();
+
+			if (tess_ctrl)
+				os << "\nTesselation control:\n" << tess_ctrl->getSource();
+
+			if (tess_eval)
+				os << "\nTesselation evaluation:\n" << tess_eval->getSource();
+
+			if (compute)
+				os << "\nCompute shader:\n" << compute->getSource();
+			*/
+
 
 			return os;
 		}

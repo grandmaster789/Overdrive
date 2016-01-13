@@ -139,6 +139,7 @@ namespace overdrive {
 			return mNumItems;
 		}
 
+		/*
 		template <typename T>
 		template <typename... Pack>
 		typename Buffer<T>::Data Buffer<T>::map(eBufferAccess access, Pack... pack) {
@@ -146,6 +147,16 @@ namespace overdrive {
 				throw std::runtime_error("Buffer is already mapped");
 
 			return Data(this, util::toBitfield(access, pack...));
+		}
+		*/
+		template <typename T>
+		typename Buffer<T>::Data Buffer<T>::map(std::initializer_list<eBufferAccess> access) {
+			if (mIsMapped)
+				throw std::runtime_error("Buffer is already mapped");
+
+			util::Bitfield<eBufferAccess> bits(access);
+
+			return Data(this, bits.value());
 		}
 
 		template <typename T>

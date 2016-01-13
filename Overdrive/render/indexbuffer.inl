@@ -22,10 +22,10 @@ namespace overdrive {
 
 		template <typename T>
 		typename IndexBuffer<T>::Data IndexBuffer<T>::map() {
-			return Base::map(
-				eBufferAccess::WRITE, 
+			return Base::map({
+				eBufferAccess::WRITE,
 				eBufferAccess::INVALIDATE_BUFFER
-			);
+			});
 		}		
 	}
 }

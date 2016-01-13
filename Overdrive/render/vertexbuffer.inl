@@ -17,10 +17,10 @@ namespace overdrive {
 
 		template <typename T>
 		typename VertexBuffer<T>::Data VertexBuffer<T>::map() {
-			return Base::map(
-				eBufferAccess::WRITE, 
+			return Base::map({
+				eBufferAccess::WRITE,
 				eBufferAccess::INVALIDATE_BUFFER
-			);
+			});
 		}
 
 		namespace detail {

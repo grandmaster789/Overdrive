@@ -94,8 +94,11 @@ namespace overdrive {
 			eBufferUsage getUsage() const;
 			size_t getSize() const;
 
+			/*
 			template <typename... Pack>
 			Data map(eBufferAccess access, Pack... pack); // ex: auto data = map(eBufferAccess::WRITE, eBufferAccess::INVALIDATE_BUFFER);
+			*/
+			Data map(std::initializer_list<eBufferAccess> access); // auto data = map({ eBufferAccess::WRITE, eBufferAccess::INVALIDATE_BUFFER });
 			bool isMapped() const;
 
 			void bind();

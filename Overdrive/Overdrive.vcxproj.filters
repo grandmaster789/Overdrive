@@ -136,13 +136,7 @@
     <ClInclude Include="core\settings.h">
       <Filter>core\settings</Filter>
     </ClInclude>
-    <ClInclude Include="render\shaderprogram.h">
-      <Filter>render\shader</Filter>
-    </ClInclude>
     <ClInclude Include="render\shader.h">
-      <Filter>render\shader</Filter>
-    </ClInclude>
-    <ClInclude Include="render\shaderattribute.h">
       <Filter>render\shader</Filter>
     </ClInclude>
     <ClInclude Include="render\shaderUniform.h">
@@ -189,6 +183,12 @@
     </ClInclude>
     <ClInclude Include="render\texture1D.h">
       <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shaderAttribute.h">
+      <Filter>render\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shaderprogram.h">
+      <Filter>render\shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -268,9 +268,6 @@
     <ClCompile Include="render\shader.cpp">
       <Filter>render\shader</Filter>
     </ClCompile>
-    <ClCompile Include="render\shaderprogram.cpp">
-      <Filter>render\shader</Filter>
-    </ClCompile>
     <ClCompile Include="render\shaderAttribute.cpp">
       <Filter>render\shader</Filter>
     </ClCompile>
@@ -301,6 +298,10 @@
     <ClCompile Include="render\framebuffer.cpp">
       <Filter>render\buffer</Filter>
     </ClCompile>
+    <ClCompile Include="render\gltypes.cpp" />
+    <ClCompile Include="render\shaderProgram.cpp">
+      <Filter>render\shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="core\engine.inl">
@@ -330,9 +331,6 @@
     <None Include="core\settings.inl">
       <Filter>core\settings</Filter>
     </None>
-    <None Include="render\shaderprogram.inl">
-      <Filter>render\shader</Filter>
-    </None>
     <None Include="util\enum_bitfield.inl">
       <Filter>util</Filter>
     </None>
@@ -342,14 +340,14 @@
     <None Include="render\vertexbuffer.inl">
       <Filter>render\buffer</Filter>
     </None>
-    <None Include="render\gltypes.cpp">
-      <Filter>render\buffer</Filter>
-    </None>
     <None Include="render\indexbuffer.inl">
       <Filter>render\buffer</Filter>
     </None>
     <None Include="render\vertexarray.inl">
       <Filter>render\buffer</Filter>
+    </None>
+    <None Include="render\shaderprogram.inl">
+      <Filter>render\shader</Filter>
     </None>
   </ItemGroup>
 </Project>

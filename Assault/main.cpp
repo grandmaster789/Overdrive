@@ -25,6 +25,7 @@ public:
 	render::ShaderProgram mProgram;
 
 	std::unique_ptr<render::VertexBuffer<render::attributes::PositionColor>> mVBO;
+	std::unique_ptr<render::IndexBuffer<GLuint>> mIBO;
 	std::unique_ptr<render::VertexArray> mVAO;
 
 	Test():
@@ -72,8 +73,17 @@ public:
 			data[2] = PositionColor{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec4(0, 0, 1, 1) };
 		}
 
+		mIBO = std::make_unique<render::IndexBuffer<GLuint>>(3);
+		{
+			auto data = mIBO->map();
+			data[0] = 0;
+			data[1] = 1;
+			data[2] = 2;
+		}
+
 		mVAO = std::make_unique<render::VertexArray>();
 		mVAO->attach(*mVBO);
+		mVAO->attach(*mIBO);
 	}
 
 	virtual void update() override {

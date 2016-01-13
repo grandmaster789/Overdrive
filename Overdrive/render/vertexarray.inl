@@ -17,11 +17,11 @@ namespace overdrive {
 		template <typename T>
 		void VertexArray::attach(IndexBuffer<T>& indexbuffer) {
 			bind();
-			indexBuffer.bind();
+			indexbuffer.bind();
 			unbind();
-			indexBuffer.unbind();
+			indexbuffer.unbind();
 
-			mIndexBufferSize = indexbuffer.getSize();
+			mIndexBufferSize = static_cast<GLsizei>(indexbuffer.getSize());
 			mIndexBufferType = ToValue<T>::value;
 		}
 
