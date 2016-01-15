@@ -144,8 +144,6 @@ namespace overdrive {
 			using std::tie;
 
 			if (window) {
-				gLog << "Window resized";
-
 				mWindow = window;
 
 				mViewportX = 0;
@@ -192,11 +190,11 @@ namespace overdrive {
 			// update projection matrix
 			switch (mCameraMode) {
 			case eMode::ORTHO:
-				mProjection = glm::perspective(mFOVy, mAspectRatio, mNearClip, mFarClip);
+				mProjection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 				break;
 
 			case eMode::PERSPECTIVE:
-				mProjection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+				mProjection = glm::perspective(mFOVy, mAspectRatio, mNearClip, mFarClip);
 				break;
 
 			default:
