@@ -35,6 +35,9 @@
     <ClInclude Include="input\keyboard.h" />
     <ClInclude Include="input\mouse.h" />
     <ClInclude Include="math\clamp.h" />
+    <ClInclude Include="math\frustum.h" />
+    <ClInclude Include="math\intersection.h" />
+    <ClInclude Include="math\plane.h" />
     <ClInclude Include="opengl.h" />
     <ClInclude Include="overdrive.h" />
     <ClInclude Include="preprocessor.h" />
@@ -57,6 +60,7 @@
     <ClInclude Include="render\textureBuffer.h" />
     <ClInclude Include="render\vertexarray.h" />
     <ClInclude Include="render\vertexbuffer.h" />
+    <ClInclude Include="scene\camera.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="util\active.h" />
     <ClInclude Include="util\enum_bitfield.h" />
@@ -85,6 +89,8 @@
     <ClCompile Include="input\input_windows.cpp" />
     <ClCompile Include="input\keyboard.cpp" />
     <ClCompile Include="input\mouse.cpp" />
+    <ClCompile Include="math\frustum.cpp" />
+    <ClCompile Include="math\plane.cpp" />
     <ClCompile Include="render\framebuffer.cpp" />
     <ClCompile Include="render\renderdebug.cpp" />
     <ClCompile Include="render\renderstate.cpp" />
@@ -99,6 +105,7 @@
     <ClCompile Include="render\textureBuffer.cpp" />
     <ClCompile Include="render\textureInfo.cpp" />
     <ClCompile Include="render\vertexarray.cpp" />
+    <ClCompile Include="scene\camera.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

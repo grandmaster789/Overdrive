@@ -16,6 +16,7 @@
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/fusion/include/vector.hpp>
+#include <boost/math/constants/constants.hpp>
 
 // --- openGL ---
 #include "openGL.h"

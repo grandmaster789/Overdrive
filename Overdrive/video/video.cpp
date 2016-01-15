@@ -154,7 +154,7 @@ namespace overdrive {
 			// close everything when the main window closes
 			if ((*it)->shouldClose())
 				Channel::broadcast(core::Engine::OnStop());
-
+			
 			for (; it != mWindowList.end();) {
 				if ((*it)->shouldClose())
 					it = mWindowList.erase(it);

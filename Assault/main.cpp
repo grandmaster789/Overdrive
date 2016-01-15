@@ -4,6 +4,8 @@
 #include "render/vertexbuffer.h"
 #include "render/indexbuffer.h"
 #include "render/vertexarray.h"
+#include "video/video.h"
+#include "scene/camera.h"
 
 #include <iostream>
 
@@ -11,7 +13,6 @@ using namespace overdrive;
 
 class Test :
 	public app::Application,
-	public MessageHandler<video::Window::OnResized>,
 	public MessageHandler<input::Keyboard::OnKeyPress>,
 	public MessageHandler<input::Mouse::OnButtonPress>,
 	public MessageHandler<input::Mouse::OnMoved>,
@@ -23,6 +24,7 @@ public:
 	int counter = 0;
 	render::RenderState mRenderState;
 	render::ShaderProgram mProgram;
+	scene::Camera mCamera;
 
 	std::unique_ptr<render::VertexBuffer<render::attributes::PositionColor>> mVBO;
 	std::unique_ptr<render::IndexBuffer<GLuint>> mIBO;
@@ -41,12 +43,14 @@ public:
 
 		const char* vertex_shader =
 			"#version 400\n"
-			"in vec3 vp;\n"
-			"in vec4 vc;\n"
+			"in vec3 vertexPosition;\n"
+			"in vec4 vertexColor;\n"
+			"uniform mat4 viewMatrix;\n"
+			"uniform mat4 projectionMatrix;\n"
 			"out vec4 color;\n"
 			"void main () {\n"
-			"  gl_Position = vec4 (vp, 1.0);\n"
-			"  color = vc;\n"
+			"  gl_Position = projectionMatrix * viewMatrix * vec4(vertexPosition, 1.0);\n"
+			"  color = vertexColor;\n"
 			"}\n";
 
 		const char* fragment_shader =
@@ -84,6 +88,9 @@ public:
 		mVAO = std::make_unique<render::VertexArray>();
 		mVAO->attach(*mVBO);
 		mVAO->attach(*mIBO);
+
+		mCamera.setPosition(0.0f, 0.0f, 1.0f);
+		mCamera.setViewportWindow(mEngine->get<video::Video>()->getMainWindow());
 	}
 
 	virtual void update() override {
@@ -92,17 +99,19 @@ public:
 
 		//if (counter++ > 100)
 			//mChannel.broadcast(overdrive::core::Engine::OnStop());
+		glm::quat slightRotationZ = glm::quat_cast(glm::rotate(0.01f, glm::vec3(0, 0, 1)));
+		mCamera.setPosition(mCamera.getPosition() + glm::vec3(0, 0, 0.01f));
+		mCamera.setOrientation(slightRotationZ * mCamera.getOrientation());
+		mCamera.update();
 
 		mRenderState.clear();
+		mProgram.setUniform("viewMatrix", mCamera.getView());
+		mProgram.setUniform("projectionMatrix", mCamera.getProjection());
 		mVAO->draw();
 	}
 
 	virtual void shutdown() override {
 		System::shutdown();
-	}
-
-	void operator()(const video::Window::OnResized& msg) {
-		gLog << "Window resized: " << msg.mWidth << "x" << msg.mHeight;
 	}
 
 	void operator()(const input::Keyboard::OnKeyPress& kp) {

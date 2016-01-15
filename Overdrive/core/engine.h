@@ -64,3 +64,5 @@ namespace overdrive {
 		};
 	}
 }
+
+#include "engine.inl"

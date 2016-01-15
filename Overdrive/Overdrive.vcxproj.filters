@@ -49,6 +49,9 @@
     <Filter Include="render\texture">
       <UniqueIdentifier>{0a53cf66-f3ee-4024-9fec-8ff80a5d6978}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{4caa63aa-107d-40e8-b863-cf3e53d95952}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -193,6 +196,18 @@
     <ClInclude Include="video\oculusvr.h">
       <Filter>video</Filter>
     </ClInclude>
+    <ClInclude Include="scene\camera.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="math\frustum.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\plane.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\intersection.h">
+      <Filter>math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -307,6 +322,15 @@
     </ClCompile>
     <ClCompile Include="video\oculusvr.cpp">
       <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="math\plane.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\camera.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="math\frustum.cpp">
+      <Filter>math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
