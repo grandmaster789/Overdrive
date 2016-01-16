@@ -16,8 +16,15 @@ namespace overdrive {
 			ALL				= (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
 		};
 
+		// [NOTE] when doing state sorting, it would be better if this wasn't using GLenum as the underlying type...
+		enum class eRenderOptions: GLenum {
+			DEPTH_TEST		= GL_DEPTH_TEST
+		};
+
 		// [NOTE] As I make use of various openGL state functions, this'll gradually get completed
+		// [TODO] implement operators for state comparision/sorting
 		// http://docs.gl/gl4/glEnable
+		// http://docs.gl/gl4/glIsEnabled
 		// http://docs.gl/gl4/glClear
 		class RenderState {
 		public:
@@ -33,10 +40,15 @@ namespace overdrive {
 			double getClearDepth() const;
 			int getClearStencil() const;
 
+			void enable(eRenderOptions option);
+			void disable(eRenderOptions option);
+			bool isEnabled(eRenderOptions option) const;
+
 		private:
 
 		};
 
-		std::ostream& operator << (std::ostream& os, const eClearOptions& options);
+		std::ostream& operator << (std::ostream& os, const eClearOptions& option);
+		std::ostream& operator << (std::ostream& os, const eRenderOptions& option);
 	}
 }
