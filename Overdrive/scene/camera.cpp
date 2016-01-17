@@ -120,6 +120,16 @@ namespace overdrive {
 			return rotationMatrix[0];
 		}
 
+		std::tuple<glm::vec3, glm::vec3, glm::vec3> Camera::getDirections() const {
+			auto rotationMatrix = glm::mat3_cast(mOrientation);
+
+			return std::make_tuple(
+				rotationMatrix[2],	// forward
+				rotationMatrix[1],	// up
+				rotationMatrix[0]	// right
+			);
+		}
+
 		void Camera::setFOV(float radians) {
 			mFOVy = radians;
 		}

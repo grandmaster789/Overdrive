@@ -229,6 +229,9 @@
     <ClInclude Include="render\shape_cube.h">
       <Filter>render\shapes</Filter>
     </ClInclude>
+    <ClInclude Include="render\shape_fullquad.h">
+      <Filter>render\shapes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -362,6 +365,9 @@
       <Filter>render</Filter>
     </ClCompile>
     <ClCompile Include="render\shape_cube.cpp">
+      <Filter>render\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shape_fullquad.cpp">
       <Filter>render\shapes</Filter>
     </ClCompile>
   </ItemGroup>

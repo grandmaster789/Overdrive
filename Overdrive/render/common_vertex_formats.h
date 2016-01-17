@@ -16,6 +16,11 @@ namespace overdrive {
 				glm::vec4 mColor;
 			};
 
+			struct PositionTexCoord {
+				glm::vec3 mPosition;
+				glm::vec2 mTexCoord;
+			};
+
 			struct PositionNormalColor {
 				glm::vec3 mPosition;
 				glm::vec3 mNormal;
@@ -47,6 +52,12 @@ BOOST_FUSION_ADAPT_STRUCT(
 	overdrive::render::attributes::PositionColor,
 	(glm::vec3, mPosition)
 	(glm::vec4, mColor)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+	overdrive::render::attributes::PositionTexCoord,
+	(glm::vec3, mPosition)
+	(glm::vec2, mTexCoord)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

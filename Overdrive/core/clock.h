@@ -20,7 +20,7 @@ namespace overdrive {
 			Clock();
 
 			TimePoint currentFrame() const; // yields the time at the start of the current frame
-			Duration deltaFrame() const; // yields the duration since the last frame
+			std::chrono::milliseconds deltaFrame() const; // yields the duration since the last frame
 			
 			friend std::ostream& operator << (std::ostream& os, const Clock& clock);
 

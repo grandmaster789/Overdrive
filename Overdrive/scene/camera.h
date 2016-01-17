@@ -6,6 +6,7 @@
 #include "../core/channel.h"
 #include "../video/window.h"
 #include <ostream>
+#include <tuple>
 
 namespace overdrive {
 	namespace scene {
@@ -46,6 +47,7 @@ namespace overdrive {
 			glm::vec3 getForward() const;
 			glm::vec3 getUp() const;
 			glm::vec3 getRight() const;
+			std::tuple<glm::vec3, glm::vec3, glm::vec3> getDirections() const; // yields forward + up + right, in that order
 
 			void setFOV(float radians);
 			void setAspect(float ratio);

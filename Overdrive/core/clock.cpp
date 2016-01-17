@@ -11,8 +11,8 @@ namespace overdrive {
 			return mCurrentTimePoint;
 		}
 
-		Clock::Duration Clock::deltaFrame() const {
-			return mSinceLastFrame;
+		std::chrono::milliseconds Clock::deltaFrame() const {
+			return std::chrono::duration_cast<std::chrono::milliseconds>(mSinceLastFrame);
 		}
 
 		void Clock::update() {

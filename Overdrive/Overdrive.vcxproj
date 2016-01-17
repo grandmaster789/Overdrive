@@ -55,6 +55,7 @@
     <ClInclude Include="render\shaderUniform.h" />
     <ClInclude Include="render\gltypes.h" />
     <ClInclude Include="render\shape_cube.h" />
+    <ClInclude Include="render\shape_fullquad.h" />
     <ClInclude Include="render\texture.h" />
     <ClInclude Include="render\texture1D.h" />
     <ClInclude Include="render\texture2D.h" />
@@ -104,6 +105,7 @@
     <ClCompile Include="render\shaderProgram.cpp" />
     <ClCompile Include="render\shaderUniform.cpp" />
     <ClCompile Include="render\shape_cube.cpp" />
+    <ClCompile Include="render\shape_fullquad.cpp" />
     <ClCompile Include="render\texture1D.cpp" />
     <ClCompile Include="render\texture2D.cpp" />
     <ClCompile Include="render\texture2DMultisample.cpp" />

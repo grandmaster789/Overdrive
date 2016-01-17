@@ -4,43 +4,47 @@
 namespace overdrive {
 	namespace render {
 		namespace shape {
+			using attributes::PositionNormalTexCoord;
+			using glm::vec3;
+			using glm::vec2;
+
 			Cube::Cube(float size):
 				mVertexBuffer({
 					// Front
-					attributes::PositionNormalTexCoord { glm::vec3(-0.5f * size, -0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
-					attributes::PositionNormalTexCoord { glm::vec3( 0.5f * size, -0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) },
-					attributes::PositionNormalTexCoord { glm::vec3( 0.5f * size,  0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
-					attributes::PositionNormalTexCoord { glm::vec3(-0.5f * size,  0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size, -0.5f * size,  0.5f * size), vec3(0.0f, 0.0f, 1.0f), vec2(0.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size, -0.5f * size,  0.5f * size), vec3(0.0f, 0.0f, 1.0f), vec2(1.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size,  0.5f * size,  0.5f * size), vec3(0.0f, 0.0f, 1.0f), vec2(1.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size,  0.5f * size,  0.5f * size), vec3(0.0f, 0.0f, 1.0f), vec2(0.0f, 1.0f) },
 
 					// Right
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size, -0.5f * size,  0.5f * size), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size, -0.5f * size, -0.5f * size), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size,  0.5f * size, -0.5f * size), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size,  0.5f * size,  0.5f * size), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size, -0.5f * size,  0.5f * size), vec3(1.0f, 0.0f, 0.0f), vec2(0.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size, -0.5f * size, -0.5f * size), vec3(1.0f, 0.0f, 0.0f), vec2(1.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size,  0.5f * size, -0.5f * size), vec3(1.0f, 0.0f, 0.0f), vec2(1.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size,  0.5f * size,  0.5f * size), vec3(1.0f, 0.0f, 0.0f), vec2(0.0f, 1.0f) },
 
 					// Back
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size, -0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size,  0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size,  0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size, -0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size, -0.5f * size, -0.5f * size), vec3(0.0f, 0.0f, -1.0f), vec2(0.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size,  0.5f * size, -0.5f * size), vec3(0.0f, 0.0f, -1.0f), vec2(1.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size,  0.5f * size, -0.5f * size), vec3(0.0f, 0.0f, -1.0f), vec2(1.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size, -0.5f * size, -0.5f * size), vec3(0.0f, 0.0f, -1.0f), vec2(0.0f, 1.0f) },
 
 					// Left
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size, -0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size,  0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size,  0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size, -0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size, -0.5f * size,  0.5f * size), vec3(-1.0f, 0.0f, 0.0f), vec2(0.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size,  0.5f * size,  0.5f * size), vec3(-1.0f, 0.0f, 0.0f), vec2(1.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size,  0.5f * size, -0.5f * size), vec3(-1.0f, 0.0f, 0.0f), vec2(1.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size, -0.5f * size, -0.5f * size), vec3(-1.0f, 0.0f, 0.0f), vec2(0.0f, 1.0f) },
 
 					// Bottom
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size, -0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size, -0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size, -0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size, -0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size, -0.5f * size,  0.5f * size), vec3(0.0f, -1.0f, 0.0f), vec2(0.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size, -0.5f * size, -0.5f * size), vec3(0.0f, -1.0f, 0.0f), vec2(1.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size, -0.5f * size, -0.5f * size), vec3(0.0f, -1.0f, 0.0f), vec2(1.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size, -0.5f * size,  0.5f * size), vec3(0.0f, -1.0f, 0.0f), vec2(0.0f, 1.0f) },
 
 					// Top
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size,  0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size,  0.5f * size,  0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3( 0.5f * size,  0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
-					attributes::PositionNormalTexCoord{ glm::vec3(-0.5f * size,  0.5f * size, -0.5f * size), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size,  0.5f * size,  0.5f * size), vec3(0.0f, 1.0f, 0.0f), vec2(0.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size,  0.5f * size,  0.5f * size), vec3(0.0f, 1.0f, 0.0f), vec2(1.0f, 0.0f) },
+					PositionNormalTexCoord{ vec3( 0.5f * size,  0.5f * size, -0.5f * size), vec3(0.0f, 1.0f, 0.0f), vec2(1.0f, 1.0f) },
+					PositionNormalTexCoord{ vec3(-0.5f * size,  0.5f * size, -0.5f * size), vec3(0.0f, 1.0f, 0.0f), vec2(0.0f, 1.0f) },
 				}),
 				mIndexBuffer({
 					0, 1, 2, 0, 2, 3,
