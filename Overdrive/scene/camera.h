@@ -1,5 +1,6 @@
 #pragma once
 
+#include "entity.h"
 #include "../opengl.h"
 #include "../math/frustum.h"
 #include "../core/channel.h"

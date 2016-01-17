@@ -52,6 +52,12 @@
     <Filter Include="scene">
       <UniqueIdentifier>{4caa63aa-107d-40e8-b863-cf3e53d95952}</UniqueIdentifier>
     </Filter>
+    <Filter Include="render\mesh">
+      <UniqueIdentifier>{533eee89-3341-45c2-9e1e-52b82065624d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\shapes">
+      <UniqueIdentifier>{a7b7a7e4-d5b1-443c-a075-8a256a5afc2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -157,9 +163,6 @@
     <ClInclude Include="render\common_vertex_formats.h">
       <Filter>render\buffer</Filter>
     </ClInclude>
-    <ClInclude Include="render\gltypes.h">
-      <Filter>render\buffer</Filter>
-    </ClInclude>
     <ClInclude Include="render\indexbuffer.h">
       <Filter>render\buffer</Filter>
     </ClInclude>
@@ -207,6 +210,24 @@
     </ClInclude>
     <ClInclude Include="math\intersection.h">
       <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="render\mesh.h">
+      <Filter>render\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="render\renderer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\entity.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="render\gltypes.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shape_cube.h">
+      <Filter>render\shapes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -316,7 +337,6 @@
     <ClCompile Include="render\framebuffer.cpp">
       <Filter>render\buffer</Filter>
     </ClCompile>
-    <ClCompile Include="render\gltypes.cpp" />
     <ClCompile Include="render\shaderProgram.cpp">
       <Filter>render\shader</Filter>
     </ClCompile>
@@ -331,6 +351,18 @@
     </ClCompile>
     <ClCompile Include="math\frustum.cpp">
       <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\entity.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\scene.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="render\gltypes.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shape_cube.cpp">
+      <Filter>render\shapes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

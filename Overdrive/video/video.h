@@ -7,66 +7,64 @@
 #include "oculusvr.h"
 
 namespace overdrive {
-	namespace video {
-		class Video:
-			public core::System,
-			public MessageHandler<Monitor::OnConnected>,
-			public MessageHandler<Monitor::OnDisconnected>
-		{
-		private:
-			struct MonitorDeleter;
+	class Video:
+		public core::System,
+		public MessageHandler<video::Monitor::OnConnected>,
+		public MessageHandler<video::Monitor::OnDisconnected>
+	{
+	private:
+		struct MonitorDeleter;
 
-		public:
-			typedef std::unique_ptr<Monitor, MonitorDeleter> MonitorPtr;
-			typedef std::unique_ptr<Window> WindowPtr;
-			typedef std::vector<MonitorPtr> MonitorList;
-			typedef std::vector<WindowPtr> WindowList;
+	public:
+		typedef std::unique_ptr<video::Monitor, MonitorDeleter> MonitorPtr;
+		typedef std::unique_ptr<video::Window> WindowPtr;
+		typedef std::vector<MonitorPtr> MonitorList;
+		typedef std::vector<WindowPtr> WindowList;
 
-			Video();
+		Video();
 
-			virtual void initialize() override;
-			virtual void update() override;
-			virtual void shutdown() override;
+		virtual void initialize() override;
+		virtual void update() override;
+		virtual void shutdown() override;
 
-			// Monitors
-			void detectMonitors();
-			size_t getNumMonitors() const;
-			const MonitorList& getMonitorList() const;
-			const Monitor* getPrimaryMonitor() const;
+		// Monitors
+		void detectMonitors();
+		size_t getNumMonitors() const;
+		const MonitorList& getMonitorList() const;
+		const video::Monitor* getPrimaryMonitor() const;
 
-			// Windows
-			WindowHints& getWindowHints();
-			const WindowHints& getWindowHints() const;
+		// Windows
+		video::WindowHints& getWindowHints();
+		const video::WindowHints& getWindowHints() const;
 
-			Window* createWindow(const std::string& title, int width, int height);						// windowed mode on primary monitor
-			Window* createWindow(const std::string& title, const Monitor* m);							// borderless fullscreen
-			Window* createWindow(const std::string& title, const Monitor* m, int width, int height);	// custom fullscreen
-			
-			Window* getMainWindow();
-			const Window* getMainWindow() const;
+		video::Window* createWindow(const std::string& title, int width, int height);						// windowed mode on primary monitor
+		video::Window* createWindow(const std::string& title, const video::Monitor* m);							// borderless fullscreen
+		video::Window* createWindow(const std::string& title, const video::Monitor* m, int width, int height);	// custom fullscreen
+		
+		video::Window* getMainWindow();
+		const video::Window* getMainWindow() const;
 
-			WindowList& getWindowList();
-			const WindowList& getWindowList() const;
+		WindowList& getWindowList();
+		const WindowList& getWindowList() const;
 
-			// ----- Handlers -----
-			void operator()(const Monitor::OnConnected& connected);
-			void operator()(const Monitor::OnDisconnected& disconnected);
+		// ----- Handlers -----
+		void operator()(const video::Monitor::OnConnected& connected);
+		void operator()(const video::Monitor::OnDisconnected& disconnected);
 
-		private:
-			struct MainWindowSettings {
-				unsigned int mWidth = 800;
-				unsigned int mHeight = 600;
-				bool mFullscreen = false;
-				bool mBorderless = false;
-			} mMainWindowSettings;
+	private:
+		struct MainWindowSettings {
+			unsigned int mWidth = 800;
+			unsigned int mHeight = 600;
+			bool mFullscreen = false;
+			bool mBorderless = false;
+		} mMainWindowSettings;
 
-			MonitorList mMonitorList;
-			struct MonitorDeleter { void operator()(Monitor* m); } mMonitorDeleter;
+		MonitorList mMonitorList;
+		struct MonitorDeleter { void operator()(video::Monitor* m); } mMonitorDeleter;
 
-			WindowHints mWindowHints;
-			WindowList mWindowList;
+		video::WindowHints mWindowHints;
+		WindowList mWindowList;
 
-			OculusVR mHMD;
-		};
-	}
+		video::OculusVR mHMD;
+	};
 }

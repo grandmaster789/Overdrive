@@ -45,13 +45,16 @@
     <ClInclude Include="render\common_vertex_formats.h" />
     <ClInclude Include="render\framebuffer.h" />
     <ClInclude Include="render\indexbuffer.h" />
+    <ClInclude Include="render\mesh.h" />
     <ClInclude Include="render\renderdebug.h" />
+    <ClInclude Include="render\renderer.h" />
     <ClInclude Include="render\renderstate.h" />
     <ClInclude Include="render\shader.h" />
     <ClInclude Include="render\shaderAttribute.h" />
     <ClInclude Include="render\shaderprogram.h" />
     <ClInclude Include="render\shaderUniform.h" />
     <ClInclude Include="render\gltypes.h" />
+    <ClInclude Include="render\shape_cube.h" />
     <ClInclude Include="render\texture.h" />
     <ClInclude Include="render\texture1D.h" />
     <ClInclude Include="render\texture2D.h" />
@@ -61,6 +64,8 @@
     <ClInclude Include="render\vertexarray.h" />
     <ClInclude Include="render\vertexbuffer.h" />
     <ClInclude Include="scene\camera.h" />
+    <ClInclude Include="scene\entity.h" />
+    <ClInclude Include="scene\scene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="util\active.h" />
     <ClInclude Include="util\enum_bitfield.h" />
@@ -98,6 +103,7 @@
     <ClCompile Include="render\shaderAttribute.cpp" />
     <ClCompile Include="render\shaderProgram.cpp" />
     <ClCompile Include="render\shaderUniform.cpp" />
+    <ClCompile Include="render\shape_cube.cpp" />
     <ClCompile Include="render\texture1D.cpp" />
     <ClCompile Include="render\texture2D.cpp" />
     <ClCompile Include="render\texture2DMultisample.cpp" />
@@ -106,6 +112,8 @@
     <ClCompile Include="render\textureInfo.cpp" />
     <ClCompile Include="render\vertexarray.cpp" />
     <ClCompile Include="scene\camera.cpp" />
+    <ClCompile Include="scene\entity.cpp" />
+    <ClCompile Include="scene\scene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

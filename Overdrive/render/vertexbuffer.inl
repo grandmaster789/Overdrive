@@ -16,6 +16,15 @@ namespace overdrive {
 		}
 
 		template <typename T>
+		VertexBuffer<T>::VertexBuffer(
+			std::initializer_list<T> items,
+			eBufferUsage usage
+		):
+			Buffer(eBufferTarget::ARRAY, std::forward<std::initializer_list<T>>(items), usage)
+		{
+		}
+
+		template <typename T>
 		typename VertexBuffer<T>::Data VertexBuffer<T>::map() {
 			return Base::map({
 				eBufferAccess::WRITE,

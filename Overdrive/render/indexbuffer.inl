@@ -21,6 +21,20 @@ namespace overdrive {
 		}
 
 		template <typename T>
+		IndexBuffer<T>::IndexBuffer(
+			std::initializer_list<T> items,
+			eBufferUsage usage
+		):
+			Buffer<T>(eBufferTarget::ELEMENT_ARRAY, std::forward<std::initializer_list<T>>(items), usage)
+		{
+			assert(
+				(ToValue<T>::value == GL_UNSIGNED_BYTE) ||
+				(ToValue<T>::value == GL_UNSIGNED_SHORT) ||
+				(ToValue<T>::value == GL_UNSIGNED_INT)
+			);
+		}
+
+		template <typename T>
 		typename IndexBuffer<T>::Data IndexBuffer<T>::map() {
 			return Base::map({
 				eBufferAccess::WRITE,

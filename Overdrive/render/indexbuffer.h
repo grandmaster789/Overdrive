@@ -14,6 +14,7 @@ namespace overdrive {
 			typedef Buffer<T> Base;
 
 			IndexBuffer(size_t numElements, eBufferUsage usage = eBufferUsage::STATIC_DRAW);
+			IndexBuffer(std::initializer_list<T> items, eBufferUsage usage = eBufferUsage::STATIC_DRAW);
 
 			Data map(); // ~> WRITE | INVALIDATE_BUFFER
 		};

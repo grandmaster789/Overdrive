@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../opengl.h"
+#include <initializer_list>
 #include <ostream>
 
 namespace overdrive {
@@ -82,6 +83,7 @@ namespace overdrive {
 
 		public:
 			Buffer(eBufferTarget target, size_t numItems, eBufferUsage usage);
+			Buffer(eBufferTarget target, std::initializer_list<T> items, eBufferUsage usage);
 			virtual ~Buffer();
 
 			Buffer(const Buffer&) = delete;

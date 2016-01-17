@@ -24,6 +24,7 @@ namespace overdrive {
 			typedef Buffer<Seq> Base;
 
 			VertexBuffer(size_t numElements, eBufferUsage usage = eBufferUsage::STATIC_DRAW);
+			VertexBuffer(std::initializer_list<Seq> items, eBufferUsage usage = eBufferUsage::STATIC_DRAW);
 
 			Data map(); // ~> WRITE | INVALIDATE_BUFFER
 

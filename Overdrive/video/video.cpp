@@ -49,239 +49,244 @@ namespace {
 
 // ----- Video subsystem -----
 namespace overdrive {
-	namespace video {
-		void Video::MonitorDeleter::operator()(Monitor* m) {
-			for (auto it = gMonitorMapping.begin(); it != gMonitorMapping.end(); ++it) {
-				if (it->second == m) {
-					gMonitorMapping.erase(it);
-					break;
-				}
+	void Video::MonitorDeleter::operator()(Monitor* m) {
+		for (auto it = gMonitorMapping.begin(); it != gMonitorMapping.end(); ++it) {
+			if (it->second == m) {
+				gMonitorMapping.erase(it);
+				break;
 			}
-
-			delete m; // custom deleter should still delete
 		}
 
-		Video::Video():
-			System("Video")
-		{
-			registerSetting("Width", &mMainWindowSettings.mWidth);
-			registerSetting("Height", &mMainWindowSettings.mHeight);
-			registerSetting("Fullscreen", &mMainWindowSettings.mFullscreen);
-			registerSetting("Borderless", &mMainWindowSettings.mBorderless);
-		}
+		delete m; // custom deleter should still delete
+	}
 
-		void Video::initialize() {
-			System::initialize();
+	Video::Video():
+		System("Video")
+	{
+		registerSetting("Width", &mMainWindowSettings.mWidth);
+		registerSetting("Height", &mMainWindowSettings.mHeight);
+		registerSetting("Fullscreen", &mMainWindowSettings.mFullscreen);
+		registerSetting("Borderless", &mMainWindowSettings.mBorderless);
+	}
 
-			// initialize monitor management
-			detectMonitors();
-			glfwSetMonitorCallback(&monitorCallback);
+	void Video::initialize() {
+		System::initialize();
 
-			// initialize window management
-			gLog << "Main window settings: " 
-				<< mMainWindowSettings.mWidth 
-				<< "x" 
-				<< mMainWindowSettings.mHeight 
-				<< ", " 
-				<< std::boolalpha 
-				<< mMainWindowSettings.mFullscreen;
+		// initialize monitor management
+		detectMonitors();
+		glfwSetMonitorCallback(&monitorCallback);
 
-			// [NOTE] These settings *could* be configurable, but I'm keeping it straightforward for now
-			mWindowHints.mResizable = true;
-			mWindowHints.mVisible = true;
-			mWindowHints.mDecorated = true;
-			mWindowHints.mFocused = true;
-			mWindowHints.mAutoIconify = true;
-			mWindowHints.mFloating = false;
+		// initialize window management
+		gLog << "Main window settings: " 
+			<< mMainWindowSettings.mWidth 
+			<< "x" 
+			<< mMainWindowSettings.mHeight 
+			<< ", " 
+			<< std::boolalpha 
+			<< mMainWindowSettings.mFullscreen;
 
-			mWindowHints.fromCurrentVideoMode(getPrimaryMonitor()); // set bit depths and refresh rate from current video mode
+		// [NOTE] These settings *could* be configurable, but I'm keeping it straightforward for now
+		using video::eClientAPI;
+		using video::eOpenGLProfile;
+		using video::eContextRobustness;
+		using video::eContextReleaseBehavior;
 
-			mWindowHints.mStereo = false;
-			mWindowHints.mSamples = 0;
-			mWindowHints.mSRGBCapable = true;
-			mWindowHints.mDoubleBuffer = true;
+		mWindowHints.mResizable = true;
+		mWindowHints.mVisible = true;
+		mWindowHints.mDecorated = true;
+		mWindowHints.mFocused = true;
+		mWindowHints.mAutoIconify = true;
+		mWindowHints.mFloating = false;
 
-			mWindowHints.mClientAPI = eClientAPI::OPENGL;
-			mWindowHints.mContextVersionMajor = 4;
-			mWindowHints.mContextVersionMinor = 5;
+		mWindowHints.fromCurrentVideoMode(getPrimaryMonitor()); // set bit depths and refresh rate from current video mode
 
-			mWindowHints.mOpenGLForwardCompatible = true;
-			mWindowHints.mOpenGLProfile = eOpenGLProfile::CORE;
+		mWindowHints.mStereo = false;
+		mWindowHints.mSamples = 0;
+		mWindowHints.mSRGBCapable = true;
+		mWindowHints.mDoubleBuffer = true;
+
+		mWindowHints.mClientAPI = eClientAPI::OPENGL;
+		mWindowHints.mContextVersionMajor = 4;
+		mWindowHints.mContextVersionMinor = 5;
+
+		mWindowHints.mOpenGLForwardCompatible = true;
+		mWindowHints.mOpenGLProfile = eOpenGLProfile::CORE;
 #ifdef OVERDRIVE_DEBUG
 			mWindowHints.mOpenGLDebugContext = true;
 #else
 			mWindowHints.mOpenGLDebugContext = false;
 #endif
-			mWindowHints.mContextRobustness = eContextRobustness::NO_ROBUSTNESS;
-			mWindowHints.mContextReleaseBehavior = eContextReleaseBehavior::ANY;
+		mWindowHints.mContextRobustness = eContextRobustness::NO_ROBUSTNESS;
+		mWindowHints.mContextReleaseBehavior = eContextReleaseBehavior::ANY;
 
-			gLogDebug << mWindowHints;
+		gLogDebug << mWindowHints;
 
-			mWindowHints.apply();
+		mWindowHints.apply();
 
-			// create the main window
-			if (mMainWindowSettings.mFullscreen) {
-				if (mMainWindowSettings.mBorderless)
-					createWindow("Overdrive", getPrimaryMonitor());
-				else
-					createWindow("Overdrive", getPrimaryMonitor(), mMainWindowSettings.mWidth, mMainWindowSettings.mHeight);
-			}
+		// create the main window
+		if (mMainWindowSettings.mFullscreen) {
+			if (mMainWindowSettings.mBorderless)
+				createWindow("Overdrive", getPrimaryMonitor());
 			else
-				createWindow("Overdrive", mMainWindowSettings.mWidth, mMainWindowSettings.mHeight);
-
-			// initialize GLEW
-			glewExperimental = true; // [NOTE] can't believe this is still a thing -_-
-			auto err = glewInit();
-
-			if (err != GLEW_OK)
-				gLogError << "GLEW failed to initialize: " << glewGetErrorString(err);
-
-			// when debugging is turned on, enable logging openGL errors
-			if (mWindowHints.mOpenGLDebugContext) {
-				render::RenderDebug::init();
-				render::RenderDebug::enableLowSeverityMessages(false); // makes the log less spammy
-			}
+				createWindow("Overdrive", getPrimaryMonitor(), mMainWindowSettings.mWidth, mMainWindowSettings.mHeight);
 		}
+		else
+			createWindow("Overdrive", mMainWindowSettings.mWidth, mMainWindowSettings.mHeight);
 
-		void Video::update() {
-			using core::Channel;
+		// initialize GLEW
+		glewExperimental = true; // [NOTE] can't believe this is still a thing -_-
+		auto err = glewInit();
 
-			if (mWindowList.empty())
-				Channel::broadcast(core::Engine::OnStop());
+		if (err != GLEW_OK)
+			gLogError << "GLEW failed to initialize: " << glewGetErrorString(err);
 
-			auto it = mWindowList.begin();
+		// when debugging is turned on, enable logging openGL errors
+		if (mWindowHints.mOpenGLDebugContext) {
+			render::RenderDebug::init();
+			render::RenderDebug::enableLowSeverityMessages(false); // makes the log less spammy
+		}
+	}
 
-			// close everything when the main window closes
+	void Video::update() {
+		using core::Channel;
+
+		if (mWindowList.empty())
+			Channel::broadcast(core::Engine::OnStop());
+
+		auto it = mWindowList.begin();
+
+		// close everything when the main window closes
+		if ((*it)->shouldClose())
+			Channel::broadcast(core::Engine::OnStop());
+		
+		for (; it != mWindowList.end();) {
 			if ((*it)->shouldClose())
-				Channel::broadcast(core::Engine::OnStop());
-			
-			for (; it != mWindowList.end();) {
-				if ((*it)->shouldClose())
-					it = mWindowList.erase(it);
-				else {
-					// The graphics rendering stuff should go in here. For now I'm keeping it the simplest that could possibly work.
-					(*it)->makeCurrent();
-					
-					// [NOTE] update rendering here
-					
-					(*it)->swapBuffers();
-					++it;
-				}
-			}
-
-			glfwPollEvents();
-		}
-
-		void Video::shutdown() {
-			System::shutdown();
-		}
-
-		void Video::detectMonitors() {
-			auto primaryHandle = glfwGetPrimaryMonitor();
-
-			int numMonitors = 0;
-			auto monitors = glfwGetMonitors(&numMonitors);
-
-			gLog << "Detected " << numMonitors << " monitors";
-			mMonitorList.reserve(static_cast<size_t>(numMonitors));
-
-			MonitorPtr primaryMonitor(new Monitor(primaryHandle), mMonitorDeleter);
-			registerMonitor(primaryMonitor.get());
-			mMonitorList.push_back(std::move(primaryMonitor));
-
-			for (int i = 0; i < numMonitors; ++i) {
-				if (monitors[i] != primaryHandle) {
-					MonitorPtr monitor(new Monitor(monitors[i]), mMonitorDeleter);
-					registerMonitor(monitor.get());
-					mMonitorList.push_back(std::move(monitor));
-				}
+				it = mWindowList.erase(it);
+			else {
+				// The graphics rendering stuff should go in here. For now I'm keeping it the simplest that could possibly work.
+				(*it)->makeCurrent();
+				
+				// [NOTE] update rendering here
+				
+				(*it)->swapBuffers();
+				++it;
 			}
 		}
 
-		size_t Video::getNumMonitors() const {
-			return mMonitorList.size();
-		}
+		glfwPollEvents();
+	}
 
-		const Video::MonitorList& Video::getMonitorList() const {
-			return mMonitorList;
-		}
+	void Video::shutdown() {
+		System::shutdown();
+	}
 
-		const Monitor* Video::getPrimaryMonitor() const {
-			return mMonitorList.front().get();
-		}
+	void Video::detectMonitors() {
+		auto primaryHandle = glfwGetPrimaryMonitor();
 
-		WindowHints& Video::getWindowHints() {
-			return mWindowHints;
-		}
+		int numMonitors = 0;
+		auto monitors = glfwGetMonitors(&numMonitors);
 
-		const WindowHints& Video::getWindowHints() const {
-			return mWindowHints;
-		}
+		gLog << "Detected " << numMonitors << " monitors";
+		mMonitorList.reserve(static_cast<size_t>(numMonitors));
 
-		Window* Video::createWindow(const std::string& title, int width, int height) {
-			auto window = std::make_unique<Window>(title, width, height);
-			Window* result = window.get();
+		MonitorPtr primaryMonitor(new Monitor(primaryHandle), mMonitorDeleter);
+		registerMonitor(primaryMonitor.get());
+		mMonitorList.push_back(std::move(primaryMonitor));
 
-			mWindowList.push_back(std::move(window));
-
-			return result;
-		}
-
-		Window* Video::createWindow(const std::string& title, const Monitor* m) {
-			auto window = std::make_unique<Window>(title, m);
-			Window* result = window.get();
-
-			mWindowList.push_back(std::move(window));
-
-			return result;
-		}
-
-		Window* Video::createWindow(const std::string& title, const Monitor* m, int width, int height) {
-			auto window = std::make_unique<Window>(title, m, width, height);
-			Window* result = window.get();
-
-			mWindowList.push_back(std::move(window));
-
-			return result;
-		}
-
-		Window* Video::getMainWindow() {
-			assert(!mWindowList.empty());
-			return mWindowList.front().get();
-		}
-
-		const Window* Video::getMainWindow() const {
-			assert(!mWindowList.empty());
-			return mWindowList.front().get();
-		}
-
-		Video::WindowList& Video::getWindowList() {
-			return mWindowList;
-		}
-
-		const Video::WindowList& Video::getWindowList() const {
-			return mWindowList;
-		}
-
-		void Video::operator()(const Monitor::OnConnected& connected) {
-			MonitorPtr ptr(new Monitor(connected.mMonitor), mMonitorDeleter);
-
-			gLogDebug << "Monitor connected: " << ptr->getName();
-			registerMonitor(ptr.get());
-			mMonitorList.push_back(std::move(ptr));
-		}
-
-		void Video::operator()(const Monitor::OnDisconnected& disconnected) {
-			gLogDebug << "Monitor disconnected: " << disconnected.mMonitor->getName();
-
-			for (auto it = mMonitorList.begin(); it != mMonitorList.end(); ++it) {
-				if (it->get() == disconnected.mMonitor) {
-					mMonitorList.erase(it);
-					return;
-				}
+		for (int i = 0; i < numMonitors; ++i) {
+			if (monitors[i] != primaryHandle) {
+				MonitorPtr monitor(new Monitor(monitors[i]), mMonitorDeleter);
+				registerMonitor(monitor.get());
+				mMonitorList.push_back(std::move(monitor));
 			}
 		}
+	}
 
+	size_t Video::getNumMonitors() const {
+		return mMonitorList.size();
+	}
+
+	const Video::MonitorList& Video::getMonitorList() const {
+		return mMonitorList;
+	}
+
+	const Monitor* Video::getPrimaryMonitor() const {
+		return mMonitorList.front().get();
+	}
+
+	video::WindowHints& Video::getWindowHints() {
+		return mWindowHints;
+	}
+
+	const video::WindowHints& Video::getWindowHints() const {
+		return mWindowHints;
+	}
+
+	video::Window* Video::createWindow(const std::string& title, int width, int height) {
+		auto window = std::make_unique<video::Window>(title, width, height);
+		video::Window* result = window.get();
+
+		mWindowList.push_back(std::move(window));
+
+		return result;
+	}
+
+	video::Window* Video::createWindow(const std::string& title, const Monitor* m) {
+		auto window = std::make_unique<video::Window>(title, m);
+		video::Window* result = window.get();
+
+		mWindowList.push_back(std::move(window));
+
+		return result;
+	}
+
+	video::Window* Video::createWindow(const std::string& title, const Monitor* m, int width, int height) {
+		auto window = std::make_unique<video::Window>(title, m, width, height);
+		video::Window* result = window.get();
+
+		mWindowList.push_back(std::move(window));
+
+		return result;
+	}
+
+	video::Window* Video::getMainWindow() {
+		assert(!mWindowList.empty());
+		return mWindowList.front().get();
+	}
+
+	const video::Window* Video::getMainWindow() const {
+		assert(!mWindowList.empty());
+		return mWindowList.front().get();
+	}
+
+	Video::WindowList& Video::getWindowList() {
+		return mWindowList;
+	}
+
+	const Video::WindowList& Video::getWindowList() const {
+		return mWindowList;
+	}
+
+	void Video::operator()(const Monitor::OnConnected& connected) {
+		MonitorPtr ptr(new Monitor(connected.mMonitor), mMonitorDeleter);
+
+		gLogDebug << "Monitor connected: " << ptr->getName();
+		registerMonitor(ptr.get());
+		mMonitorList.push_back(std::move(ptr));
+	}
+
+	void Video::operator()(const Monitor::OnDisconnected& disconnected) {
+		gLogDebug << "Monitor disconnected: " << disconnected.mMonitor->getName();
+
+		for (auto it = mMonitorList.begin(); it != mMonitorList.end(); ++it) {
+			if (it->get() == disconnected.mMonitor) {
+				mMonitorList.erase(it);
+				return;
+			}
+		}
+	}
+
+	namespace video {
 		Monitor* fetch(GLFWmonitor* handle) {
 			assert(gMonitorMapping.find(handle) != gMonitorMapping.end());
 			return gMonitorMapping[handle];

@@ -4,6 +4,8 @@
 #include <ostream>
 
 namespace overdrive {
+	class Video;
+
 	namespace video {
 		enum class eClientAPI: int {
 			OPENGL,
@@ -32,7 +34,7 @@ namespace overdrive {
 
 		class WindowHints {
 		private:
-			friend class Video;
+			friend class overdrive::Video;
 
 			WindowHints();
 

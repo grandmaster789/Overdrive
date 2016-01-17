@@ -114,6 +114,26 @@ namespace overdrive {
 		}
 
 		template <typename T>
+		Buffer<T>::Buffer(
+			eBufferTarget target_,
+			std::initializer_list<T> items,
+			eBufferUsage usage
+		):
+			mTarget(target_),
+			mUsage(usage),
+			mNumItems(items.size()),
+			mIsMapped(false)
+		{
+			GLenum target = static_cast<GLenum>(target_);
+			size_t numBytes = items.size() * sizeof(T);
+
+			glGenBuffers(1, &mHandle);
+			glBindBuffer(target, mHandle);
+			glBufferData(target, numBytes, items.begin(), static_cast<GLenum>(usage));
+			glBindBuffer(target, 0);
+		}
+
+		template <typename T>
 		Buffer<T>::~Buffer() {
 			if (mHandle)
 				glDeleteBuffers(1, &mHandle);
