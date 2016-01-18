@@ -6,13 +6,13 @@
 #include "../core/channel.h"
 #include "../video/window.h"
 #include <ostream>
-#include <tuple>
 
 namespace overdrive {
 	namespace scene {
 		// [NOTE] perhaps decouple the viewport stuff?
 		// [NOTE] perhaps use a dirty flag and always call update?
 		// [NOTE] add convenience stuff for offscreen rendering
+		// [NOTE] using transposed operations makes the expressions neater, but increases the amount of actual work done... minor performance consideration, that
 		class Camera:
 			MessageHandler<video::Window::OnFramebufferResized>
 		{
@@ -47,7 +47,13 @@ namespace overdrive {
 			glm::vec3 getForward() const;
 			glm::vec3 getUp() const;
 			glm::vec3 getRight() const;
-			std::tuple<glm::vec3, glm::vec3, glm::vec3> getDirections() const; // yields forward + up + right, in that order
+
+			struct CameraAxes {
+				glm::vec3 mForward;
+				glm::vec3 mUp;
+				glm::vec3 mRight;
+			};
+			CameraAxes getDirections() const; // yields forward + up + right, in that order
 
 			void setFOV(float radians);
 			void setAspect(float ratio);

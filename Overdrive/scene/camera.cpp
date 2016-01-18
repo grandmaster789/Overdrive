@@ -80,54 +80,67 @@ namespace overdrive {
 
 		void Camera::setForward(const glm::vec3& fwd) {
 			auto rotationMatrix = glm::mat3_cast(mOrientation);
+			auto transposed = glm::transpose(rotationMatrix);
 
-			rotationMatrix[2] = fwd;
+			transposed[2] = fwd;
 
-			mOrientation = glm::quat_cast(rotationMatrix);
+			mOrientation = glm::quat_cast(
+				glm::transpose(transposed)
+			);
 		}
 
 		void Camera::setUp(const glm::vec3& up) {
 			auto rotationMatrix = glm::mat3_cast(mOrientation);
+			auto transposed = glm::transpose(rotationMatrix); // using a transposed matrix makes the expression somewhat neater
 
-			rotationMatrix[1] = up;
+			transposed[1] = up;
 
-			mOrientation = glm::quat_cast(rotationMatrix);
+			mOrientation = glm::quat_cast(
+				glm::transpose(transposed)
+			);
 		}
 
 		void Camera::setRight(const glm::vec3& right) {
 			auto rotationMatrix = glm::mat3_cast(mOrientation);
+			auto transposed = glm::transpose(rotationMatrix);
 
-			rotationMatrix[0] = right;
+			transposed[0] = right;
 
-			mOrientation = glm::quat_cast(rotationMatrix);
+			mOrientation = glm::quat_cast(
+				glm::transpose(transposed)
+			);
 		}
 
 		glm::vec3 Camera::getForward() const {
 			auto rotationMatrix = glm::mat3_cast(mOrientation);
+			auto transposed = glm::transpose(rotationMatrix);
 
-			return rotationMatrix[2];
+			return transposed[2];
 		}
 
 		glm::vec3 Camera::getUp() const {
 			auto rotationMatrix = glm::mat3_cast(mOrientation);
-			
-			return rotationMatrix[1];
+			auto transposed = glm::transpose(rotationMatrix);
+
+			return transposed[1];
 		}
 
 		glm::vec3 Camera::getRight() const {
 			auto rotationMatrix = glm::mat3_cast(mOrientation);
+			auto transposed = glm::transpose(rotationMatrix);
 
-			return rotationMatrix[0];
+			return transposed[0];
 		}
 
-		std::tuple<glm::vec3, glm::vec3, glm::vec3> Camera::getDirections() const {
+		Camera::CameraAxes Camera::getDirections() const {
 			auto rotationMatrix = glm::mat3_cast(mOrientation);
+			auto transposedRotationMatrix = glm::transpose(rotationMatrix); // using a transposed matrix makes the expression somewhat neater
 
-			return std::make_tuple(
-				rotationMatrix[2],	// forward
-				rotationMatrix[1],	// up
-				rotationMatrix[0]	// right
-			);
+			return CameraAxes{
+				transposedRotationMatrix[2],	// forward
+				transposedRotationMatrix[1],	// up
+				transposedRotationMatrix[0]	// right
+			};
 		}
 
 		void Camera::setFOV(float radians) {
