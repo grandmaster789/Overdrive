@@ -12,6 +12,8 @@
 #include <iostream>
 #include <boost/math/constants/constants.hpp>
 
+#include "util/csv.h"
+
 using namespace overdrive;
 
 class Test :
@@ -53,7 +55,8 @@ public:
 
 			void main() {
 				gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);
-				color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+				vec3 rescaled_normal = (vertexNormal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f;
+				color = vec4(rescaled_normal, 1.0f);
 			}
 		)";
 
@@ -117,7 +120,7 @@ public:
 			mCamera.setPosition(mCamera.getPosition() + deltaPosition);
 		}
 
-		// [Mouselook]
+		// [Mouselook] ~ yaw/pitch based
 		{
 			static std::pair<double, double> previousMousePosition = std::make_pair(0.0, 0.0);
 			auto currentPos = mouse->getPosition();
@@ -174,7 +177,7 @@ public:
 
 int main() {
 	gLog << "Starting Overdrive Assault";
-
+		
 	core::Engine engine;
 	engine.add(new overdrive::Video);
 	engine.add(new overdrive::Input);

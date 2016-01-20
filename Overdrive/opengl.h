@@ -29,3 +29,7 @@
 #if OVERDRIVE_PLATFORM == OVERDRIVE_PLATFORM_WINDOWS
 	#pragma warning(pop)
 #endif
+
+// GLi supports KTX and DDS formats
+
+// STB supports JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC

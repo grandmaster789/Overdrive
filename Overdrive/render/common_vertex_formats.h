@@ -6,6 +6,7 @@
 namespace overdrive {
 	namespace render {
 		// some common vertex attribute formats
+		// [NOTE] colors are typically defined in 32-bits unsigned integer format, float is pretty much only used for HDR... sooo maybe change to glm::u8vec4?
 		namespace attributes {
 			struct Position {
 				glm::vec3 mPosition;

@@ -57,6 +57,7 @@ namespace overdrive {
 			unsigned int mHeight = 600;
 			bool mFullscreen = false;
 			bool mBorderless = false;
+			bool mOculusRift = false;
 		} mMainWindowSettings;
 
 		MonitorList mMonitorList;
@@ -65,6 +66,6 @@ namespace overdrive {
 		video::WindowHints mWindowHints;
 		WindowList mWindowList;
 
-		video::OculusVR mHMD;
+		std::unique_ptr<video::OculusVR> mRift;
 	};
 }
