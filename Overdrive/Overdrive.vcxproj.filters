@@ -58,6 +58,9 @@
     <Filter Include="render\shapes">
       <UniqueIdentifier>{a7b7a7e4-d5b1-443c-a075-8a256a5afc2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{02bbd46a-b6b0-4fb7-9a89-b9f37853347b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opengl.h" />
@@ -238,6 +241,12 @@
     <ClInclude Include="util\tuple.h">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="render\texture2Darray.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="render\drawable.h">
+      <Filter>render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -376,6 +385,12 @@
     <ClCompile Include="render\shape_fullquad.cpp">
       <Filter>render\shapes</Filter>
     </ClCompile>
+    <ClCompile Include="render\renderer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture2Darray.cpp">
+      <Filter>render\texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="core\engine.inl">
@@ -428,6 +443,12 @@
     </None>
     <None Include="util\csv.inl">
       <Filter>util</Filter>
+    </None>
+    <None Include="shaders\gbuffer.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\gbuffer.frag">
+      <Filter>shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

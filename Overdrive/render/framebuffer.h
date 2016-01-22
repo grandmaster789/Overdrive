@@ -3,6 +3,7 @@
 #include "../opengl.h"
 #include "texture2D.h"
 #include "texture2DMultisample.h"
+#include "texture2Darray.h"
 
 namespace overdrive {
 	namespace render {
@@ -23,8 +24,10 @@ namespace overdrive {
 
 			void attachColor(GLuint unit, const Texture2D& texture);
 			void attachColor(GLuint unit, const Texture2DMultisample& texture);
+			void attachColor(GLuint unit, const Texture2DArray& textureArray);
 			void attachDepth(const Texture2D& texture);
 			void attachDepth(const Texture2DMultisample& texture);
+			void attachDepth(const Texture2DArray& textureArray);
 			// atttach stencil w/o depth?
 			// attach renderbuffer?
 			

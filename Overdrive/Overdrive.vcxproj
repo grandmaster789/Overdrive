@@ -43,6 +43,7 @@
     <ClInclude Include="preprocessor.h" />
     <ClInclude Include="render\buffer.h" />
     <ClInclude Include="render\common_vertex_formats.h" />
+    <ClInclude Include="render\drawable.h" />
     <ClInclude Include="render\framebuffer.h" />
     <ClInclude Include="render\indexbuffer.h" />
     <ClInclude Include="render\mesh.h" />
@@ -59,6 +60,7 @@
     <ClInclude Include="render\texture.h" />
     <ClInclude Include="render\texture1D.h" />
     <ClInclude Include="render\texture2D.h" />
+    <ClInclude Include="render\texture2Darray.h" />
     <ClInclude Include="render\texture2DMultisample.h" />
     <ClInclude Include="render\texture3D.h" />
     <ClInclude Include="render\textureBuffer.h" />
@@ -101,6 +103,7 @@
     <ClCompile Include="math\plane.cpp" />
     <ClCompile Include="render\framebuffer.cpp" />
     <ClCompile Include="render\renderdebug.cpp" />
+    <ClCompile Include="render\renderer.cpp" />
     <ClCompile Include="render\renderstate.cpp" />
     <ClCompile Include="render\shader.cpp" />
     <ClCompile Include="render\shaderAttribute.cpp" />
@@ -110,6 +113,7 @@
     <ClCompile Include="render\shape_fullquad.cpp" />
     <ClCompile Include="render\texture1D.cpp" />
     <ClCompile Include="render\texture2D.cpp" />
+    <ClCompile Include="render\texture2Darray.cpp" />
     <ClCompile Include="render\texture2DMultisample.cpp" />
     <ClCompile Include="render\texture3D.cpp" />
     <ClCompile Include="render\textureBuffer.cpp" />
@@ -147,6 +151,8 @@
     <ClCompile Include="render\gltypes.cpp" />
     <None Include="render\vertexarray.inl" />
     <None Include="render\vertexbuffer.inl" />
+    <None Include="shaders\gbuffer.frag" />
+    <None Include="shaders\gbuffer.vert" />
     <None Include="util\csv.inl" />
     <None Include="util\enum_bitfield.inl" />
     <None Include="util\supports.inl" />

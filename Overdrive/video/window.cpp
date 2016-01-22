@@ -305,6 +305,14 @@ namespace overdrive {
 			return std::make_pair(width, height);
 		}
 
+		int Window::getFramebufferWidth() const {
+			return getFramebufferSize().first;
+		}
+
+		int Window::getFramebufferHeight() const {
+			return getFramebufferSize().second;
+		}
+
 		Window::Frame Window::getFrame() const {
 			Frame result;
 

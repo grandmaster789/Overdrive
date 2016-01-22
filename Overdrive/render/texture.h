@@ -234,6 +234,11 @@ namespace overdrive {
 			NEVER			= GL_NEVER
 		};
 
+		enum class eTextureCompareMode : GLenum {
+			REF_TO_TEXTURE	= GL_COMPARE_REF_TO_TEXTURE,
+			NONE			= GL_NONE
+		};
+
 		GLenum getBaseFormat(eTextureFormat fmt);
 		ePixelFormat getDefaultPixelFormat(eTextureFormat fmt);
 		GLsizei getNumComponents(eTextureFormat fmt);
@@ -246,5 +251,6 @@ namespace overdrive {
 		std::ostream& operator << (std::ostream& os, const eTextureMinFilter& value);
 		std::ostream& operator << (std::ostream& os, const eTextureMagFilter& value);
 		std::ostream& operator << (std::ostream& os, const eTextureCompareFunction& value);
+		std::ostream& operator << (std::ostream& os, const eTextureCompareMode& value);
 	}
 }

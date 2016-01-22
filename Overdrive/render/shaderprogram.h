@@ -17,6 +17,7 @@ namespace overdrive {
 		//		  The program will be compiled, linked, verified etc upon the first time a shader is attached
 		// [NOTE] The amount of uniforms and/or attributes is too low to justify using a mapping structure
 		// [NOTE] glm also supports a simd optimized vec4 (just the float version), still need to figure out how to properly use it
+
 		// [TODO] the shader program exposes many types of interfaces, perhaps support the remaining types as well?
 		// [TODO] to/from binary formats should be possible
 		// [TODO] perhaps move the gather active attribute/uniform from this class

@@ -82,6 +82,8 @@ namespace overdrive {
 			std::pair<int, int> getPosition() const; // in screen coords
 			std::pair<int, int> getSize() const; // client area size in screen coords
 			std::pair<int, int> getFramebufferSize() const; // in actual pixels; use this for viewport sizes
+			int getFramebufferWidth() const;
+			int getFramebufferHeight() const;
 			Frame getFrame() const; // includes decorations, if any
 
 			Monitor* getMonitor() const;

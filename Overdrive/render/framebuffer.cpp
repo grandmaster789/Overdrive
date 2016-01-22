@@ -51,6 +51,21 @@ namespace overdrive {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
+		void FrameBuffer::attachColor(GLuint unit, const Texture2DArray& textureArray) {
+			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
+
+			GLenum attachment = asColorAttachment(unit);
+
+			glFramebufferTexture(
+				GL_FRAMEBUFFER,
+				attachment,
+				textureArray.getHandle(),
+				0
+			);
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
 		void FrameBuffer::attachDepth(const Texture2D& texture) {
 			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
 
@@ -109,6 +124,33 @@ namespace overdrive {
 			default:
 				throw std::runtime_error("Unsupported depth format");
 			}
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
+		void FrameBuffer::attachDepth(const Texture2DArray& textureArray) {
+			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
+
+			switch (getBaseFormat(textureArray.getFormat())) {
+			case GL_DEPTH_COMPONENT:
+				glFramebufferTexture(
+					GL_FRAMEBUFFER,
+					GL_DEPTH_ATTACHMENT,
+					textureArray.getHandle(),
+					0 // mip level
+				);
+				break;
+
+			case GL_DEPTH_STENCIL:
+				glFramebufferTexture(
+					GL_FRAMEBUFFER,
+					GL_DEPTH_STENCIL_ATTACHMENT,
+					textureArray.getHandle(),
+					0 // mip level
+				);
+				break;
+			};
+			
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}

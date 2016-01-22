@@ -170,6 +170,14 @@ namespace overdrive {
 			case eTextureFormat::RGB32UI:			return ePixelFormat::RGB;
 			case eTextureFormat::RGBA32UI:			return ePixelFormat::RGBA;
 
+			case eTextureFormat::DEPTH_COMPONENT16:		return ePixelFormat::DEPTH_COMPONENT;
+			case eTextureFormat::DEPTH_COMPONENT24:		return ePixelFormat::DEPTH_COMPONENT;
+			case eTextureFormat::DEPTH_COMPONENT32:		return ePixelFormat::DEPTH_COMPONENT;
+			case eTextureFormat::DEPTH_COMPONENT32F:	return ePixelFormat::DEPTH_COMPONENT;
+
+			case eTextureFormat::DEPTH24_STENCIL8:		return ePixelFormat::DEPTH_STENCIL;
+			case eTextureFormat::DEPTH32F_STENCIL8:		return ePixelFormat::DEPTH_STENCIL;
+
 			case eTextureFormat::COMPRESSED_RED:						return ePixelFormat::RED;
 			case eTextureFormat::COMPRESSED_RG:							return ePixelFormat::RG;
 			case eTextureFormat::COMPRESSED_RGB:						return ePixelFormat::RGB;
@@ -452,6 +460,18 @@ namespace overdrive {
 
 			default:
 				throw std::runtime_error("Unsupported texture compare function");
+			}
+
+			return os;
+		}
+
+		std::ostream& operator << (std::ostream& os, const eTextureCompareMode& value) {
+			switch (value) {
+			case eTextureCompareMode::REF_TO_TEXTURE:	os << "REF_TO_TEXTURE"; break;
+			case eTextureCompareMode::NONE:				os << "NONE"; break;
+
+			default:
+				throw std::runtime_error("Unsupported texture compare mode");
 			}
 
 			return os;
