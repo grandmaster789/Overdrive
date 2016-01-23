@@ -7,6 +7,13 @@
 
 namespace overdrive {
 	namespace render {
+		enum class eFramebufferBind : GLenum  {
+			READ		= GL_READ_FRAMEBUFFER,
+			WRITE		= GL_DRAW_FRAMEBUFFER,
+			DRAW		= GL_DRAW_FRAMEBUFFER,
+			READ_WRITE	= GL_FRAMEBUFFER
+		};
+
 		// [NOTE] it appears that attaching 1d or 3d textures should also be possible, need to look into that
 		// http://docs.gl/gl4/glBindFramebuffer
 		// http://docs.gl/gl4/glDrawBuffers
@@ -31,8 +38,8 @@ namespace overdrive {
 			// atttach stencil w/o depth?
 			// attach renderbuffer?
 			
-			void bind();
-			void unbind();
+			void bind(eFramebufferBind options = eFramebufferBind::READ_WRITE);
+			void unbind(eFramebufferBind options = eFramebufferBind::READ_WRITE);
 
 			void drawAttachment(GLuint index_0);
 			void drawAttachment(GLuint index_0, GLuint index_1);
@@ -42,5 +49,7 @@ namespace overdrive {
 		private:
 			GLuint mHandle;
 		};
+
+		std::ostream& operator << (std::ostream& os, const eFramebufferBind& value);
 	}
 }

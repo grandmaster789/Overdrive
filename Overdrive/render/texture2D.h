@@ -13,6 +13,10 @@ namespace overdrive {
 		class Texture2D {
 		public:
 			Texture2D(eTextureFormat fmt, GLsizei width, GLsizei height);
+
+			template <typename T>
+			Texture2D(eTextureFormat fmt, GLsizei width, GLsizei height, T* rawData);
+
 			~Texture2D();
 
 			Texture2D(const Texture2D&) = delete;
@@ -25,6 +29,9 @@ namespace overdrive {
 			eTextureFormat getFormat() const;
 			GLsizei getWidth() const;
 			GLsizei getHeight() const;
+
+			template <typename T>
+			void loadRawData(T* data);
 
 			void bind();
 			void unbind();
@@ -57,3 +64,5 @@ namespace overdrive {
 		};
 	}
 }
+
+#include "texture2d.inl"

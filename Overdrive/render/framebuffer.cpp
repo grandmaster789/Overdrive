@@ -155,12 +155,12 @@ namespace overdrive {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
-		void FrameBuffer::bind() {
-			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
+		void FrameBuffer::bind(eFramebufferBind options) {
+			glBindFramebuffer(static_cast<GLenum>(options), mHandle);
 		}
 
-		void FrameBuffer::unbind() {
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		void FrameBuffer::unbind(eFramebufferBind options) {
+			glBindFramebuffer(static_cast<GLenum>(options), 0);
 		}
 
 		void FrameBuffer::drawAttachment(
@@ -217,6 +217,18 @@ namespace overdrive {
 
 			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
 			glDrawBuffers(sizeof(attachments) / sizeof(attachments[0]), attachments);
+		}
+
+		std::ostream& operator << (std::ostream& os, const eFramebufferBind& value) {
+			switch (value) {
+			case eFramebufferBind::READ:	os << "READ";	break;
+			case eFramebufferBind::WRITE:	os << "WRITE";	break;
+			case eFramebufferBind::READ_WRITE:	os << "READ_WRITE"; break;
+			default:
+				os << "Unknown framebuffer binding option: " << static_cast<std::underlying_type_t<eFramebufferBind>>(value);
+			}
+
+			return os; 
 		}
 	}
 }

@@ -10,6 +10,10 @@ namespace overdrive {
 		class Texture1D {
 		public:
 			Texture1D(eTextureFormat fmt, GLsizei width);
+
+			template <typename T>
+			Texture1D(eTextureFormat fmt, GLsizei width, T* rawData);
+
 			~Texture1D();
 
 			Texture1D(const Texture1D&) = delete;
@@ -21,6 +25,9 @@ namespace overdrive {
 
 			eTextureFormat getFormat() const;
 			GLsizei getWidth() const;
+
+			template <typename T>
+			void loadRawData(T* data);
 
 			void bind();
 			void unbind();
@@ -50,3 +57,5 @@ namespace overdrive {
 		};
 	}
 }
+
+#include "texture1d.inl"

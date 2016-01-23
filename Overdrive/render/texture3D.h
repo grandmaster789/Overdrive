@@ -16,6 +16,10 @@ namespace overdrive {
 		class Texture3D {
 		public:
 			Texture3D(eTextureFormat fmt, GLsizei width, GLsizei height, GLsizei depth);
+
+			template <typename T>
+			Texture3D(eTextureFormat fmt, GLsizei width, GLsizei height, GLsizei depth, T* rawData);
+
 			~Texture3D();
 
 			Texture3D(const Texture3D&) = delete;
@@ -28,6 +32,10 @@ namespace overdrive {
 			eTextureFormat getFormat() const;
 			GLsizei getWidth() const;
 			GLsizei getHeight() const;
+			GLsizei getDepth() const;
+
+			template <typename T>
+			void loadRawData(T* data);
 
 			void bind();
 			void unbind();
@@ -63,3 +71,5 @@ namespace overdrive {
 		};
 	}
 }
+
+#include "texture3d.inl"

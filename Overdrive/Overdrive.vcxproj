@@ -149,6 +149,9 @@
     <None Include="render\indexbuffer.inl" />
     <None Include="render\shaderprogram.inl" />
     <ClCompile Include="render\gltypes.cpp" />
+    <None Include="render\texture1D.inl" />
+    <None Include="render\texture2D.inl" />
+    <None Include="render\texture3D.inl" />
     <None Include="render\vertexarray.inl" />
     <None Include="render\vertexbuffer.inl" />
     <None Include="shaders\gbuffer.frag" />

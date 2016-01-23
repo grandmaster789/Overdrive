@@ -29,11 +29,6 @@ namespace overdrive {
 			// default parameters passed to everything rendered:
 			glm::mat4 mView;
 			glm::mat4 mProjection;
-
-			// temporary geometry
-			shape::Cube mCube;
-
-			// temporary shadowing/lighting structures
 		};
 	}
 }

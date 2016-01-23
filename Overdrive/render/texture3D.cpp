@@ -71,6 +71,10 @@ namespace overdrive {
 			return mHeight;
 		}
 
+		GLsizei Texture3D::getDepth() const {
+			return mDepth;
+		}
+
 		void Texture3D::bind() {
 			glBindTexture(GL_TEXTURE_3D, mHandle);
 		}

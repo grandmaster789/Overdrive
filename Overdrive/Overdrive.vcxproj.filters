@@ -450,5 +450,14 @@
     <None Include="shaders\gbuffer.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="render\texture2D.inl">
+      <Filter>render\texture</Filter>
+    </None>
+    <None Include="render\texture1D.inl">
+      <Filter>render\texture</Filter>
+    </None>
+    <None Include="render\texture3D.inl">
+      <Filter>render\texture</Filter>
+    </None>
   </ItemGroup>
 </Project>
