@@ -101,6 +101,7 @@
     <ClCompile Include="input\mouse.cpp" />
     <ClCompile Include="math\frustum.cpp" />
     <ClCompile Include="math\plane.cpp" />
+    <ClCompile Include="opengl.cpp" />
     <ClCompile Include="render\framebuffer.cpp" />
     <ClCompile Include="render\renderdebug.cpp" />
     <ClCompile Include="render\renderer.cpp" />

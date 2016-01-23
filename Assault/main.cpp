@@ -8,6 +8,7 @@
 #include "video/video.h"
 #include "scene/camera.h"
 #include "render/shape_cube.h"
+#include "render/texture2D.h"
 
 #include <iostream>
 #include <boost/math/constants/constants.hpp>
@@ -23,6 +24,7 @@ class Test :
 public:
 	int counter = 0;
 	render::RenderState mRenderState;
+	std::unique_ptr<render::Texture2D> mTexture;
 	render::ShaderProgram mProgram;
 	scene::Camera mCamera;
 
@@ -45,28 +47,44 @@ public:
 
 		const char* vertex_shader = R"(
 			#version 400
-			in vec3 vertexPosition;
-			in vec3 vertexNormal;
-			in vec2 texCoord;
-			uniform mat4 modelMatrix;
-			uniform mat4 viewMatrix;
-			uniform mat4 projectionMatrix;
-			out vec4 color;
+			uniform mat4 inModelMatrix;
+			uniform mat4 inViewMatrix;
+			uniform mat4 inProjectionMatrix;
 
-			void main() {
-				gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);
-				vec3 rescaled_normal = (vertexNormal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f;
-				color = vec4(rescaled_normal, 1.0f);
+			in vec3 inVertexPosition;
+			in vec3 inVertexNormal;
+			in vec2 inTexCoord;
+			
+			out vec4		vtxColor;
+			smooth out vec2 vtxTexCoord;
+
+						void main() {
+				gl_Position = 
+					inProjectionMatrix * 
+					inViewMatrix * 
+					inModelMatrix * 
+					vec4(inVertexPosition, 1.0);
+
+				vec3 rescaled_normal = (inVertexNormal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f;
+
+				vtxColor = vec4(rescaled_normal, 1.0f);
+				vtxTexCoord = inTexCoord;
 			}
 		)";
 
 		const char* fragment_shader = R"(
 			#version 400
-			in vec4 color;
-			out vec4 frag_color;
+			uniform sampler2D textureMap;
+
+			in vec4 vtxColor;
+			in vec2 vtxTexCoord;
+
+			out vec4 outColor;
 			
 			void main() {
-				frag_color = color;
+				//outColor = vtxColor;
+				//outColor = vec4(vtxTexCoord.x, vtxTexCoord.y, 0.0f, 1.0f);
+				outColor = texture(textureMap, vtxTexCoord) * vtxColor;
 			}
 		)";
 
@@ -85,6 +103,29 @@ public:
 		mainWindow->getMouse()->setCursorState(input::Mouse::eCursorState::DISABLED); // hide that cursor
 
 		mCube = std::make_unique<render::shape::Cube>(1.0f);
+		
+		{
+			int imageWidth = 0;
+			int imageHeight = 0;
+			int numChannels = 0;
+			
+			unsigned char* rawImage = stbi_load(
+				"assets/image/test_pattern_001.png", 
+				&imageWidth, 
+				&imageHeight,
+				&numChannels,
+				0
+			);
+
+			mTexture = std::make_unique<render::Texture2D>(
+				render::eTextureFormat::RGBA, 
+				imageWidth, 
+				imageHeight,
+				rawImage
+			);
+
+			free(rawImage);
+		}
 	}
 
 	virtual void update() override {
@@ -146,13 +187,16 @@ public:
 		mCamera.update();
 
 		mRenderState.clear();
-		mProgram.setUniform("viewMatrix", mCamera.getView());
-		mProgram.setUniform("projectionMatrix", mCamera.getProjection());
+		mProgram.setUniform("inViewMatrix", mCamera.getView());
+		mProgram.setUniform("inProjectionMatrix", mCamera.getProjection());
+		
+		mTexture->bind(0);
+		mProgram.setUniform("textureMap", 0);
 		
 		// draw the cube at 100 different locations
 		for (int i = 0; i < 10; ++i)
 			for (int j = 0; j < 10; ++j) {
-				mProgram.setUniform("modelMatrix", glm::translate(glm::vec3(2 * (i - 5), 0, 2 * (j - 5))));
+				mProgram.setUniform("inModelMatrix", glm::translate(glm::vec3(2 * (i - 5), 0, 2 * (j - 5))));
 
 				mCube->draw();
 			}

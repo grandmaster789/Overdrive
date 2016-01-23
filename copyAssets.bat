@@ -3,4 +3,4 @@
 @rem %3 ~> project root
 @rem %4 ~> target dir
 
-@xcopy /Y /D /I %3dependencies\bin\%1 %4
+@xcopy /Y /D /S /I %3assets %4\assets

@@ -52,7 +52,7 @@ namespace overdrive {
 
 		private:
 			GLuint mHandle;
-
+			
 			eTextureFormat mFormat;
 			GLsizei mWidth;
 			GLsizei mHeight;

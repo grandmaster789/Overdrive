@@ -391,6 +391,7 @@
     <ClCompile Include="render\texture2Darray.cpp">
       <Filter>render\texture</Filter>
     </ClCompile>
+    <ClCompile Include="opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="core\engine.inl">

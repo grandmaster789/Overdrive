@@ -12,6 +12,9 @@ namespace overdrive {
 	namespace render {
 		class ShaderAttribute;
 		class ShaderUniform;
+		class Texture1D;
+		class Texture2D;
+		class Texture3D;
 
 		// [NOTE] This uses lazy initialization so that the ShaderProgram can be created on the stack (without an active openGL context)
 		//		  The program will be compiled, linked, verified etc upon the first time a shader is attached
@@ -133,7 +136,7 @@ namespace overdrive {
 			void setUniform(GLint location, const glm::dmat4x2& m);
 			void setUniform(GLint location, const glm::dmat4x3& m);
 
-			// samplers
+			// samplers		
 			// int_samplers
 			// uint_samplers
 			// image

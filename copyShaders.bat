@@ -3,5 +3,4 @@
 @rem %3 ~> project root
 @rem %4 ~> target dir
 
-@mkdir %4\shaders
-@xcopy /Y /D %3Overdrive\Shaders\*.* %4\shaders
+@xcopy /Y /D /I %3Overdrive\Shaders %4\Shaders
