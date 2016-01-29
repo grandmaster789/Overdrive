@@ -1,33 +1,33 @@
-///////////////////////////////////////////////////////////////////////////////////
-/// OpenGL Image (gli.g-truc.net)
-///
-/// Copyright (c) 2008 - 2015 G-Truc Creation (www.g-truc.net)
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-///
-/// @ref core
-/// @file gli/core/copy.inl
-/// @date 2013-01-23 / 2013-02-03
-/// @author Christophe Riccio
-///////////////////////////////////////////////////////////////////////////////////
-
-namespace gli
+namespace gli{
+namespace detail
 {
+	inline void copy_images
+	(
+		texture const & Src, texture & Dst,
+		texture::size_type BaseLayer, texture::size_type MaxLayer,
+		texture::size_type BaseFace, texture::size_type MaxFace,
+		texture::size_type BaseLevel, texture::size_type MaxLevel
+	)
+	{
+		GLI_ASSERT(BaseLayer >= 0 && BaseLayer <= MaxLayer && MaxLayer < Src.layers());
+		GLI_ASSERT(BaseFace >= 0 && BaseFace <= MaxFace && MaxFace < Src.faces());
+		GLI_ASSERT(BaseLevel >= 0 && BaseLevel <= MaxLevel && MaxLevel < Src.levels());
+
+		texture::size_type LevelsSize = 0;
+		for(texture::size_type LevelIndex = 0; LevelIndex < MaxLevel - BaseLevel + 1; ++LevelIndex)
+		{
+			GLI_ASSERT(Dst.size(LevelIndex) == Src.size(LevelIndex));
+			LevelsSize += Dst.size(LevelIndex);
+		}
+
+		for(texture::size_type LayerIndex = 0, LayerCount = MaxLayer - BaseLayer + 1; LayerIndex < LayerCount; ++LayerIndex)
+		for(texture::size_type FaceIndex = 0, FaceCount = MaxFace - BaseFace + 1; FaceIndex < FaceCount; ++FaceIndex)
+		{
+			memcpy(Dst.data(LayerIndex, FaceIndex, BaseLevel), Src.data(BaseLayer + LayerIndex, BaseFace + FaceIndex, BaseLevel), LevelsSize);
+		}
+	}
+}//namespace detail
+
 	inline image copy(image const & Image)
 	{
 		image Result(Image.format(), Image.dimensions());
@@ -37,6 +37,7 @@ namespace gli
 		return Result;
 	}
 
+	template <>
 	inline texture copy(texture const & Texture)
 	{
 		texture Copy(
@@ -47,7 +48,13 @@ namespace gli
 			Texture.faces(),
 			Texture.levels());
 
-		memcpy(Copy.data(), Texture.data(), Copy.size());
+		detail::copy_images(
+			Texture, Copy,
+			0, Texture.layers() - 1,
+			0, Texture.faces() - 1,
+			0, Texture.levels() - 1);
+
+		//memcpy(Copy.data(), Texture.data(), Copy.size());
 
 		return Copy;
 	}
@@ -63,7 +70,13 @@ namespace gli
 			Texture.faces(),
 			Texture.levels());
 
-		memcpy(Copy.data(), Texture.data(), Copy.size());
+		detail::copy_images(
+			Texture, Copy,
+			0, Texture.layers() - 1,
+			0, Texture.faces() - 1,
+			0, Texture.levels() - 1);
+
+		//memcpy(Copy.data(), Texture.data(), Copy.size());
 
 		return Copy;
 	}
@@ -71,7 +84,7 @@ namespace gli
 	template <typename texType>
 	inline texture copy(texType const & Texture, typename texType::format_type Format)
 	{
-		assert(block_size(Texture.format()) == block_size(Format));
+		GLI_ASSERT(block_size(Texture.format()) == block_size(Format));
 
 		texture Copy(
 			Texture.target(),
@@ -81,7 +94,11 @@ namespace gli
 			Texture.faces(),
 			Texture.levels());
 
-		memcpy(Copy.data(), Texture.data(), Copy.size());
+		detail::copy_images(
+			Texture, Copy,
+			0, Texture.layers() - 1,
+			0, Texture.faces() - 1,
+			0, Texture.levels() - 1);
 
 		return Copy;
 	}
@@ -92,16 +109,16 @@ namespace gli
 		texture1D::size_type BaseLevel, texture1D::size_type MaxLevel
 	)
 	{
-		assert(BaseLevel <= MaxLevel);
-		assert(BaseLevel < Texture.levels());
-		assert(MaxLevel < Texture.levels());
+		GLI_ASSERT(BaseLevel <= MaxLevel);
+		GLI_ASSERT(BaseLevel < Texture.levels());
+		GLI_ASSERT(MaxLevel < Texture.levels());
 	
 		texture1D Copy(
 			Texture.format(),
-			texture1D::dim_type(Texture[BaseLevel].dimensions().x), 
+			Texture.dimensions(BaseLevel),
 			MaxLevel - BaseLevel + 1);
 
-		memcpy(Copy.data(), Texture[BaseLevel].data(), Copy.size());
+		memcpy(Copy.data(), Texture.data(0, 0, BaseLevel), Copy.size());
 
 		return Copy;
 	}
@@ -113,21 +130,21 @@ namespace gli
 		texture1DArray::size_type BaseLevel, texture1DArray::size_type MaxLevel
 	)
 	{
-		assert(BaseLevel <= MaxLevel);
-		assert(BaseLevel < Texture.levels());
-		assert(MaxLevel < Texture.levels());
-		assert(BaseLayer <= MaxMayer);
-		assert(BaseLayer < Texture.layers());
-		assert(MaxMayer < Texture.layers());
+		GLI_ASSERT(BaseLevel <= MaxLevel);
+		GLI_ASSERT(BaseLevel < Texture.levels());
+		GLI_ASSERT(MaxLevel < Texture.levels());
+		GLI_ASSERT(BaseLayer <= MaxMayer);
+		GLI_ASSERT(BaseLayer < Texture.layers());
+		GLI_ASSERT(MaxMayer < Texture.layers());
 
 		texture1DArray Copy(
 			Texture.format(),
-			texture1DArray::dim_type(Texture[BaseLayer][BaseLevel].dimensions().x), 
+			Texture[BaseLayer].dimensions(BaseLevel),
 			MaxMayer - BaseLayer + 1,
 			MaxLevel - BaseLevel + 1);
 
 		for(texture1DArray::size_type Layer = 0; Layer < Copy.layers(); ++Layer)
-			memcpy(Copy[Layer].data(), Texture[Layer + BaseLayer][BaseLevel].data(), Copy[Layer].size());
+			memcpy(Copy.data(Layer, 0, 0), Texture.data(Layer + BaseLayer, 0, BaseLevel), Copy[Layer].size());
 
 		return Copy;
 	}
@@ -138,16 +155,16 @@ namespace gli
 		texture2D::size_type BaseLevel, texture2D::size_type MaxLevel
 	)
 	{
-		assert(BaseLevel <= MaxLevel);
-		assert(BaseLevel < Texture.levels());
-		assert(MaxLevel < Texture.levels());
+		GLI_ASSERT(BaseLevel <= MaxLevel);
+		GLI_ASSERT(BaseLevel < Texture.levels());
+		GLI_ASSERT(MaxLevel < Texture.levels());
 	
 		texture2D Copy(
 			Texture.format(),
-			texture2D::dim_type(Texture[BaseLevel].dimensions().x),
+			Texture.dimensions(BaseLevel),
 			MaxLevel - BaseLevel + 1);
 
-		memcpy(Copy.data(), Texture[BaseLevel].data(), Copy.size());
+		memcpy(Copy.data(), Texture.data(0, 0, BaseLevel), Copy.size());
 
 		return Copy;
 	}
@@ -159,21 +176,21 @@ namespace gli
 		texture2DArray::size_type BaseLevel, texture2DArray::size_type MaxLevel
 	)
 	{
-		assert(BaseLevel <= MaxLevel);
-		assert(BaseLevel < Texture.levels());
-		assert(MaxLevel < Texture.levels());
-		assert(BaseLayer <= MaxMayer);
-		assert(BaseLayer < Texture.layers());
-		assert(MaxMayer < Texture.layers());
+		GLI_ASSERT(BaseLevel <= MaxLevel);
+		GLI_ASSERT(BaseLevel < Texture.levels());
+		GLI_ASSERT(MaxLevel < Texture.levels());
+		GLI_ASSERT(BaseLayer <= MaxMayer);
+		GLI_ASSERT(BaseLayer < Texture.layers());
+		GLI_ASSERT(MaxMayer < Texture.layers());
 
 		texture2DArray Copy(
 			Texture.format(),
-			texture2DArray::dim_type(Texture[BaseLayer][BaseLevel].dimensions()),
+			Texture.dimensions(BaseLevel),
 			MaxMayer - BaseLayer + 1,
 			MaxLevel - BaseLevel + 1);
 
 		for(texture2DArray::size_type Layer = 0; Layer < Copy.layers(); ++Layer)
-			memcpy(Copy[Layer].data(), Texture[Layer + BaseLayer][BaseLevel].data(), Copy[Layer].size());
+			memcpy(Copy.data(Layer, 0, 0), Texture.data(Layer + BaseLayer, 0, BaseLevel), Copy[Layer].size());
 
 		return Copy;
 	}
@@ -184,16 +201,16 @@ namespace gli
 		texture3D::size_type BaseLevel, texture3D::size_type MaxLevel
 	)
 	{
-		assert(BaseLevel <= MaxLevel);
-		assert(BaseLevel < Texture.levels());
-		assert(MaxLevel < Texture.levels());
+		GLI_ASSERT(BaseLevel <= MaxLevel);
+		GLI_ASSERT(BaseLevel < Texture.levels());
+		GLI_ASSERT(MaxLevel < Texture.levels());
 
 		texture3D Copy(
 			Texture.format(),
-			texture3D::dim_type(Texture[BaseLevel].dimensions()),
+			Texture.dimensions(BaseLevel),
 			MaxLevel - BaseLevel + 1);
 
-		memcpy(Copy.data(), Texture[BaseLevel].data(), Copy.size());
+		memcpy(Copy.data(), Texture.data(0, 0, BaseLevel), Copy.size());
 
 		return Copy;
 	}
@@ -205,16 +222,14 @@ namespace gli
 		textureCube::size_type BaseLevel, textureCube::size_type MaxLevel
 	)
 	{
-		assert(BaseLevel <= MaxLevel);
-		assert(BaseLevel < Texture.levels());
-		assert(MaxLevel < Texture.levels());
-		assert(BaseFace <= MaxFace);
-		assert(BaseFace < Texture.faces());
-		assert(MaxFace < Texture.faces());
+		GLI_ASSERT(BaseLevel >= 0 && BaseLevel < Texture.levels() && BaseLevel <= MaxLevel && MaxLevel < Texture.levels());
+		GLI_ASSERT(BaseFace <= MaxFace);
+		GLI_ASSERT(BaseFace < Texture.faces());
+		GLI_ASSERT(MaxFace < Texture.faces());
 
 		textureCube Copy(
 			Texture.format(),
-			textureCube::dim_type(Texture[BaseFace][BaseLevel].dimensions()),
+			Texture[BaseFace].dimensions(BaseLevel),
 			MaxLevel - BaseLevel + 1);
 
 		for(textureCube::size_type Face = 0; Face < Copy.faces(); ++Face)
@@ -231,19 +246,19 @@ namespace gli
 		textureCubeArray::size_type BaseLevel, textureCubeArray::size_type MaxLevel
 	)
 	{
-		assert(BaseLevel <= MaxLevel);
-		assert(BaseLevel < Texture.levels());
-		assert(MaxLevel < Texture.levels());
-		assert(BaseFace <= MaxFace);
-		assert(BaseFace < Texture.faces());
-		assert(MaxFace < Texture.faces());
-		assert(BaseLayer <= MaxLayer);
-		assert(BaseLayer < Texture.layers());
-		assert(MaxLayer < Texture.layers());
+		GLI_ASSERT(BaseLevel <= MaxLevel);
+		GLI_ASSERT(BaseLevel < Texture.levels());
+		GLI_ASSERT(MaxLevel < Texture.levels());
+		GLI_ASSERT(BaseFace <= MaxFace);
+		GLI_ASSERT(BaseFace < Texture.faces());
+		GLI_ASSERT(MaxFace < Texture.faces());
+		GLI_ASSERT(BaseLayer <= MaxLayer);
+		GLI_ASSERT(BaseLayer < Texture.layers());
+		GLI_ASSERT(MaxLayer < Texture.layers());
 
 		textureCubeArray Copy(
 			Texture.format(),
-			textureCubeArray::dim_type(Texture[BaseLayer][BaseFace][BaseLevel].dimensions()),
+			Texture[BaseLayer][BaseFace].dimensions(BaseLevel),
 			MaxLayer - BaseLayer + 1,
 			MaxLevel - BaseLevel + 1);
 

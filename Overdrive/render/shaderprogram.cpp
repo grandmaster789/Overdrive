@@ -3,9 +3,6 @@
 #include "shaderAttribute.h"
 #include "shaderUniform.h"
 #include "../core/logger.h"
-#include "texture1D.h"
-#include "texture2D.h"
-#include "texture3D.h"
 #include <fstream>
 
 namespace overdrive {

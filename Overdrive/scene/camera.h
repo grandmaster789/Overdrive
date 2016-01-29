@@ -14,7 +14,8 @@ namespace overdrive {
 		// [NOTE] add convenience stuff for offscreen rendering
 		// [NOTE] using transposed operations makes the expressions neater, but increases the amount of actual work done... minor performance consideration, that
 		class Camera:
-			MessageHandler<video::Window::OnFramebufferResized>
+			public Entity,
+			public MessageHandler<video::Window::OnFramebufferResized>
 		{
 		public:
 			enum class eMode {

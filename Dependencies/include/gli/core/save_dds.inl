@@ -1,32 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////////
-/// OpenGL Image (gli.g-truc.net)
-///
-/// Copyright (c) 2008 - 2015 G-Truc Creation (www.g-truc.net)
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-///
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-///
-/// @ref core
-/// @file gli/core/save_dds.inl
-/// @date 2013-01-28 / 2013-01-28
-/// @author Christophe Riccio
-///////////////////////////////////////////////////////////////////////////////////
-
 #include <cstdio>
+#include "../load_dds.hpp"
 
 namespace gli{
 namespace detail
@@ -39,6 +12,8 @@ namespace detail
 			D3D10_RESOURCE_DIMENSION_TEXTURE1D,		//TARGET_1D_ARRAY,
 			D3D10_RESOURCE_DIMENSION_TEXTURE2D,		//TARGET_2D,
 			D3D10_RESOURCE_DIMENSION_TEXTURE2D,		//TARGET_2D_ARRAY,
+			D3D10_RESOURCE_DIMENSION_TEXTURE2D,		//TARGET_RECT,
+			D3D10_RESOURCE_DIMENSION_TEXTURE2D,		//TARGET_RECT_ARRAY,
 			D3D10_RESOURCE_DIMENSION_TEXTURE3D,		//TARGET_3D,
 			D3D10_RESOURCE_DIMENSION_TEXTURE2D,		//TARGET_CUBE,
 			D3D10_RESOURCE_DIMENSION_TEXTURE2D		//TARGET_CUBE_ARRAY
@@ -47,7 +22,25 @@ namespace detail
 
 		return Table[Target];
 	}
-}
+	
+	inline dx::d3dFormat get_fourcc(bool RequireDX10Header, gli::format Format, dx::format const & DXFormat)
+	{
+		if(RequireDX10Header)
+		{
+			detail::formatInfo const & FormatInfo = detail::get_format_info(Format);
+			
+			if(FormatInfo.Flags & detail::CAP_DDS_GLI_EXT_BIT)
+				return dx::D3DFMT_GLI1;
+			else
+				return dx::D3DFMT_DX10;
+		}
+		else
+		{
+			return (DXFormat.DDPixelFormat & dx::DDPF_FOURCC) ? DXFormat.D3DFormat : dx::D3DFMT_UNKNOWN;
+		}
+	}
+	
+}//namespace detail
 
 	inline bool save_dds(texture const & Texture, std::vector<char> & Memory)
 	{
@@ -57,11 +50,15 @@ namespace detail
 		dx DX;
 		dx::format const & DXFormat = DX.translate(Texture.format());
 
-		dx::D3DFORMAT const FourCC = Texture.layers() > 1 ? dx::D3DFMT_DX10 : DXFormat.D3DFormat;
+		bool const RequireDX10Header = DXFormat.D3DFormat == dx::D3DFMT_GLI1 || DXFormat.D3DFormat == dx::D3DFMT_DX10 || is_target_array(Texture.target()) || is_target_1d(Texture.target());
 
-		Memory.resize(Texture.size() + sizeof(detail::ddsHeader) + (FourCC == dx::D3DFMT_DX10 ? sizeof(detail::ddsHeader10) : 0));
+		Memory.resize(Texture.size() + sizeof(detail::FOURCC_DDS) + sizeof(detail::ddsHeader) + (RequireDX10Header ? sizeof(detail::ddsHeader10) : 0));
 
-		detail::ddsHeader & Header = *reinterpret_cast<detail::ddsHeader*>(&Memory[0]);
+		memcpy(&Memory[0], detail::FOURCC_DDS, sizeof(detail::FOURCC_DDS));
+		std::size_t Offset = sizeof(detail::FOURCC_DDS);
+
+		detail::ddsHeader & Header = *reinterpret_cast<detail::ddsHeader*>(&Memory[0] + Offset);
+		Offset += sizeof(detail::ddsHeader);
 
 		detail::formatInfo const & Desc = detail::get_format_info(Texture.format());
 
@@ -71,24 +68,18 @@ namespace detail
 		//Caps |= Storage.levels() > 1 ? detail::DDSD_MIPMAPCOUNT : 0;
 		Caps |= (Desc.Flags & detail::CAP_COMPRESSED_BIT) ? detail::DDSD_LINEARSIZE : detail::DDSD_PITCH;
 
-		bool const RequireFOURCCDX10 = is_target_array(Texture.target()) || is_target_1d(Texture.target());
-
-		memcpy(Header.Magic, "DDS ", sizeof(Header.Magic));
 		memset(Header.Reserved1, 0, sizeof(Header.Reserved1));
 		memset(Header.Reserved2, 0, sizeof(Header.Reserved2));
-		Header.Size = sizeof(detail::ddsHeader) - sizeof(Header.Magic);
+		Header.Size = sizeof(detail::ddsHeader);
 		Header.Flags = Caps;
-		assert(Texture.dimensions().x < std::numeric_limits<glm::uint32>::max());
 		Header.Width = static_cast<std::uint32_t>(Texture.dimensions().x);
-		assert(Texture.dimensions().y < std::numeric_limits<glm::uint32>::max());
 		Header.Height = static_cast<std::uint32_t>(Texture.dimensions().y);
 		Header.Pitch = static_cast<std::uint32_t>((Desc.Flags & detail::CAP_COMPRESSED_BIT) ? Texture.size() / Texture.faces() : 32);
-		assert(Texture.dimensions().z < std::numeric_limits<glm::uint32>::max());
 		Header.Depth = static_cast<std::uint32_t>(Texture.dimensions().z > 1 ? Texture.dimensions().z : 0);
 		Header.MipMapLevels = static_cast<std::uint32_t>(Texture.levels());
 		Header.Format.size = sizeof(detail::ddsPixelFormat);
-		Header.Format.flags = RequireFOURCCDX10 ? dx::DDPF_FOURCC : DXFormat.DDPixelFormat;
-		Header.Format.fourCC = RequireFOURCCDX10 ? dx::D3DFMT_DX10 : DXFormat.D3DFormat;
+		Header.Format.flags = RequireDX10Header ? dx::DDPF_FOURCC : DXFormat.DDPixelFormat;
+		Header.Format.fourCC = detail::get_fourcc(RequireDX10Header, Texture.format(), DXFormat);
 		Header.Format.bpp = static_cast<std::uint32_t>(detail::bits_per_pixel(Texture.format()));
 		Header.Format.Mask = DXFormat.Mask;
 		//Header.surfaceFlags = detail::DDSCAPS_TEXTURE | (Storage.levels() > 1 ? detail::DDSCAPS_MIPMAP : 0);
@@ -106,17 +97,16 @@ namespace detail
 		if(Texture.dimensions().z > 1)
 			Header.CubemapFlags |= detail::DDSCAPS2_VOLUME;
 
-		size_t Offset = sizeof(detail::ddsHeader);
-		if(Header.Format.fourCC == dx::D3DFMT_DX10)
+		if(RequireDX10Header)
 		{
-			detail::ddsHeader10 & Header10 = *reinterpret_cast<detail::ddsHeader10*>(&Memory[0] + sizeof(detail::ddsHeader));
+			detail::ddsHeader10 & Header10 = *reinterpret_cast<detail::ddsHeader10*>(&Memory[0] + Offset);
 			Offset += sizeof(detail::ddsHeader10);
 
 			Header10.ArraySize = static_cast<std::uint32_t>(Texture.layers());
 			Header10.ResourceDimension = detail::getDimension(Texture.target());
 			Header10.MiscFlag = 0;//Storage.levels() > 0 ? detail::D3D10_RESOURCE_MISC_GENERATE_MIPS : 0;
-			Header10.Format = static_cast<dx::dxgiFormat>(DXFormat.DXGIFormat);
-			Header10.Reserved = 0;
+			Header10.Format = DXFormat.DXGIFormat;
+			Header10.AlphaFlags = detail::DDS_ALPHA_MODE_UNKNOWN;
 		}
 
 		std::memcpy(&Memory[0] + Offset, Texture.data(), Texture.size());

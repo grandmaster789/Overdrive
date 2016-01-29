@@ -175,24 +175,6 @@
     <ClInclude Include="render\framebuffer.h">
       <Filter>render\buffer</Filter>
     </ClInclude>
-    <ClInclude Include="render\texture2D.h">
-      <Filter>render\texture</Filter>
-    </ClInclude>
-    <ClInclude Include="render\texture.h">
-      <Filter>render\texture</Filter>
-    </ClInclude>
-    <ClInclude Include="render\texture3D.h">
-      <Filter>render\texture</Filter>
-    </ClInclude>
-    <ClInclude Include="render\texture2DMultisample.h">
-      <Filter>render\texture</Filter>
-    </ClInclude>
-    <ClInclude Include="render\textureBuffer.h">
-      <Filter>render\texture</Filter>
-    </ClInclude>
-    <ClInclude Include="render\texture1D.h">
-      <Filter>render\texture</Filter>
-    </ClInclude>
     <ClInclude Include="render\shaderAttribute.h">
       <Filter>render\shader</Filter>
     </ClInclude>
@@ -241,11 +223,20 @@
     <ClInclude Include="util\tuple.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="render\texture2Darray.h">
-      <Filter>render\texture</Filter>
-    </ClInclude>
     <ClInclude Include="render\drawable.h">
       <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\component.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\transform_component.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="render\texture2D.h">
+      <Filter>render\texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -334,24 +325,6 @@
     <ClCompile Include="render\vertexarray.cpp">
       <Filter>render\buffer</Filter>
     </ClCompile>
-    <ClCompile Include="render\textureInfo.cpp">
-      <Filter>render\texture</Filter>
-    </ClCompile>
-    <ClCompile Include="render\texture2D.cpp">
-      <Filter>render\texture</Filter>
-    </ClCompile>
-    <ClCompile Include="render\texture2DMultisample.cpp">
-      <Filter>render\texture</Filter>
-    </ClCompile>
-    <ClCompile Include="render\texture3D.cpp">
-      <Filter>render\texture</Filter>
-    </ClCompile>
-    <ClCompile Include="render\textureBuffer.cpp">
-      <Filter>render\texture</Filter>
-    </ClCompile>
-    <ClCompile Include="render\texture1D.cpp">
-      <Filter>render\texture</Filter>
-    </ClCompile>
     <ClCompile Include="render\framebuffer.cpp">
       <Filter>render\buffer</Filter>
     </ClCompile>
@@ -388,10 +361,13 @@
     <ClCompile Include="render\renderer.cpp">
       <Filter>render</Filter>
     </ClCompile>
-    <ClCompile Include="render\texture2Darray.cpp">
+    <ClCompile Include="opengl.cpp" />
+    <ClCompile Include="scene\transform_component.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture2D.cpp">
       <Filter>render\texture</Filter>
     </ClCompile>
-    <ClCompile Include="opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="core\engine.inl">
@@ -451,13 +427,7 @@
     <None Include="shaders\gbuffer.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="render\texture2D.inl">
-      <Filter>render\texture</Filter>
-    </None>
-    <None Include="render\texture1D.inl">
-      <Filter>render\texture</Filter>
-    </None>
-    <None Include="render\texture3D.inl">
+    <None Include="render\texture.inl">
       <Filter>render\texture</Filter>
     </None>
   </ItemGroup>

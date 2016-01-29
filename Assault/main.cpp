@@ -8,7 +8,7 @@
 #include "video/video.h"
 #include "scene/camera.h"
 #include "render/shape_cube.h"
-#include "render/texture2D.h"
+#include "render/texture2d.h"
 
 #include <iostream>
 #include <boost/math/constants/constants.hpp>
@@ -103,29 +103,8 @@ public:
 		mainWindow->getMouse()->setCursorState(input::Mouse::eCursorState::DISABLED); // hide that cursor
 
 		mCube = std::make_unique<render::shape::Cube>(1.0f);
-		
-		{
-			int imageWidth = 0;
-			int imageHeight = 0;
-			int numChannels = 0;
-			
-			unsigned char* rawImage = stbi_load(
-				"assets/image/test_pattern_001.png", 
-				&imageWidth, 
-				&imageHeight,
-				&numChannels,
-				0
-			);
 
-			mTexture = std::make_unique<render::Texture2D>(
-				render::eTextureFormat::RGBA, 
-				imageWidth, 
-				imageHeight,
-				rawImage
-			);
-
-			free(rawImage);
-		}
+		mTexture = std::make_unique<render::Texture2D>("assets/image/test_pattern_001.png");
 	}
 
 	virtual void update() override {

@@ -35,42 +35,11 @@ namespace overdrive {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
-		void FrameBuffer::attachColor(GLuint unit, const Texture2DMultisample& texture) {
-			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
-
-			GLenum attachment = asColorAttachment(unit);
-
-			glFramebufferTexture2D(
-				GL_FRAMEBUFFER, 
-				attachment, 
-				GL_TEXTURE_2D_MULTISAMPLE, 
-				texture.getHandle(), 
-				0 // mip level
-			);
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-
-		void FrameBuffer::attachColor(GLuint unit, const Texture2DArray& textureArray) {
-			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
-
-			GLenum attachment = asColorAttachment(unit);
-
-			glFramebufferTexture(
-				GL_FRAMEBUFFER,
-				attachment,
-				textureArray.getHandle(),
-				0
-			);
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-
 		void FrameBuffer::attachDepth(const Texture2D& texture) {
 			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
 
-			switch (getBaseFormat(texture.getFormat())) {
-			case GL_DEPTH_COMPONENT:
+			switch (texture.getFormatType()) {
+			case eTextureFormatType::DEPTH:
 				glFramebufferTexture2D(
 					GL_FRAMEBUFFER,
 					GL_DEPTH_ATTACHMENT,
@@ -80,7 +49,7 @@ namespace overdrive {
 				);
 				break;
 
-			case GL_DEPTH_STENCIL:
+			case eTextureFormatType::DEPTH_STENCIL:
 				glFramebufferTexture2D(
 					GL_FRAMEBUFFER,
 					GL_DEPTH_STENCIL_ATTACHMENT,
@@ -93,64 +62,6 @@ namespace overdrive {
 			default:
 				throw std::runtime_error("Unsupported depth format");
 			}
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-
-		void FrameBuffer::attachDepth(const Texture2DMultisample& texture) {
-			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
-
-			switch (getBaseFormat(texture.getFormat())) {
-			case GL_DEPTH_COMPONENT:
-				glFramebufferTexture2D(
-					GL_FRAMEBUFFER,
-					GL_DEPTH_ATTACHMENT,
-					GL_TEXTURE_2D_MULTISAMPLE,
-					texture.getHandle(),
-					0 // mip level
-				);
-				break;
-
-			case GL_DEPTH_STENCIL:
-				glFramebufferTexture2D(
-					GL_FRAMEBUFFER,
-					GL_DEPTH_STENCIL_ATTACHMENT,
-					GL_TEXTURE_2D_MULTISAMPLE,
-					texture.getHandle(),
-					0	// mip level
-				);
-				break;
-
-			default:
-				throw std::runtime_error("Unsupported depth format");
-			}
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-
-		void FrameBuffer::attachDepth(const Texture2DArray& textureArray) {
-			glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
-
-			switch (getBaseFormat(textureArray.getFormat())) {
-			case GL_DEPTH_COMPONENT:
-				glFramebufferTexture(
-					GL_FRAMEBUFFER,
-					GL_DEPTH_ATTACHMENT,
-					textureArray.getHandle(),
-					0 // mip level
-				);
-				break;
-
-			case GL_DEPTH_STENCIL:
-				glFramebufferTexture(
-					GL_FRAMEBUFFER,
-					GL_DEPTH_STENCIL_ATTACHMENT,
-					textureArray.getHandle(),
-					0 // mip level
-				);
-				break;
-			};
-			
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}

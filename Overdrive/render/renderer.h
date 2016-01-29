@@ -1,7 +1,6 @@
 #pragma once
 
-#include "texture2D.h"
-#include "texture2Darray.h"
+#include "../opengl.h"
 #include "shaderprogram.h"
 #include "framebuffer.h"
 #include "renderstate.h"

@@ -1,68 +1,70 @@
 #pragma once
 
-#include "../opengl.h"
 #include "texture.h"
 
 namespace overdrive {
 	namespace render {
-		// http://docs.gl/gl4/glGenTextures
-		// http://docs.gl/gl4/glBindTexture
-		// http://docs.gl/gl4/glBindTextureUnit
-		// http://docs.gl/gl4/glTexImage2D
-		// http://docs.gl/gl4/glTexParameter (not all parameters have an interface yet)
 		class Texture2D {
 		public:
-			Texture2D(eTextureFormat fmt, GLsizei width, GLsizei height);
-
-			template <typename T>
-			Texture2D(eTextureFormat fmt, GLsizei width, GLsizei height, T* rawData);
-
+			Texture2D(eTextureFormat format, int width, int height);
+			Texture2D(eTextureFormat format, int width, int height, unsigned char* rawData, size_t numBytes); // assumes 1 mip level, the simplest texture possible
+			Texture2D(const std::string& filepath); // probably should be a full path
 			~Texture2D();
-
+			
 			Texture2D(const Texture2D&) = delete;
 			Texture2D(Texture2D&&) = delete;
 			Texture2D& operator = (const Texture2D&) = delete;
 			Texture2D& operator = (Texture2D&&) = delete;
 
 			GLuint getHandle() const;
-
 			eTextureFormat getFormat() const;
-			GLsizei getWidth() const;
-			GLsizei getHeight() const;
+			eTextureFormatType getFormatType() const;
 
-			template <typename T>
-			void loadRawData(T* data);
+			void setWrapS(eWrapping mode);
+			void setWrapT(eWrapping mode);
+			eWrapping getWrapS() const;
+			eWrapping getWrapT() const;
+
+			void setFilter(eMinFilter minification);
+			void setFilter(eMagFilter magnification);
+			eMinFilter getMinFilter() const;
+			eMagFilter getMagFilter() const;
+
+			void setSwizzleR(eSwizzle mode);
+			void setSwizzleG(eSwizzle mode);
+			void setSwizzleB(eSwizzle mode);
+			void setSwizzleA(eSwizzle mode);
+			void setSwizzleRGBA(eSwizzle mode);
+			eSwizzle getSwizzleR() const;
+			eSwizzle getSwizzleG() const;
+			eSwizzle getSwizzleB() const;
+			eSwizzle getSwizzleA() const;
 
 			void bind();
 			void unbind();
 
-			void bind(GLuint unit);
-			void unbind(GLuint unit);
-
-			void generateMipmap();
-
-			void setFilter(eTextureMinFilter minification);
-			void setFilter(eTextureMagFilter magnification);
-			eTextureMinFilter getMinFilter() const;
-			eTextureMagFilter getMagFilter() const;
-
-			void setWrap(eTextureWrapping s, eTextureWrapping t);
-			eTextureWrapping getWrapS() const;
-			eTextureWrapping getWrapT() const;
+			void bind(int textureUnit);
+			void unbind(int textureUnit);
 
 		private:
 			GLuint mHandle;
-			
-			eTextureFormat mFormat;
-			GLsizei mWidth;
-			GLsizei mHeight;
 
-			eTextureMinFilter mMinFilter;
-			eTextureMagFilter mMagFilter;
-			eTextureWrapping mWrappingS;
-			eTextureWrapping mWrappingT;
+			std::unique_ptr<gli::texture2D> mData; // [NOTE] egh... the extra indirection is here so we can dynamically determine sizes and formats used
+			static gli::gl mConverter; // contains translations from gli constants to openGL constants
+
+			int mTextureBaseLevel;
+			int mTextureMaxLevel;
+
+			eWrapping mWrapS;
+			eWrapping mWrapT;
+
+			eMinFilter mMinFilter;
+			eMagFilter mMagFilter;
+
+			eSwizzle mSwizzleR;
+			eSwizzle mSwizzleG;
+			eSwizzle mSwizzleB;
+			eSwizzle mSwizzleA;
 		};
 	}
 }
-
-#include "texture2d.inl"

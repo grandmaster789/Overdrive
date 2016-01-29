@@ -36,6 +36,7 @@
 	#pragma warning(push)
 	#pragma warning(disable: 4458) // declaration hides class member
 	#pragma warning(disable: 4310) // cast truncates constant value
+	#pragma warning(disable: 4100) // unreferenced parameter
 #endif
 
 #include "gli/gli.hpp"

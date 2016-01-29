@@ -1,33 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////////
-/// OpenGL Image (gli.g-truc.net)
-///
-/// Copyright (c) 2008 - 2015 G-Truc Creation (www.g-truc.net)
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-///
-/// @ref core
+/// @brief Include to use images, a representation of a single texture level.
 /// @file gli/image.hpp
-/// @date 2011-10-06 / 2013-01-12
-/// @author Christophe Riccio
-///
-/// @defgroup core_image Image 
-/// @ingroup core
-///////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
@@ -35,7 +7,7 @@
 
 namespace gli
 {
-	/// Image
+	/// Image, representation for a single texture level
 	class image
 	{
 	private:
@@ -46,7 +18,7 @@ namespace gli
 	public:
 		typedef size_t size_type;
 		typedef gli::format format_type;
-		typedef storage::dim_type dim_type;
+		typedef storage::texelcoord_type texelcoord_type;
 		typedef storage::data_type data_type;
 
 		/// Create an empty image instance
@@ -55,7 +27,7 @@ namespace gli
 		/// Create an image object and allocate an image storoge for it.
 		explicit image(
 			format_type Format,
-			dim_type const & Dimensions);
+			texelcoord_type const & Dimensions);
 
 		/// Create an image object by sharing an existing image storage from another image instance.
 		/// This image object is effectively an image view where format can be reinterpreted
@@ -72,7 +44,7 @@ namespace gli
 		format_type format() const;
 
 		/// Return the dimensions of an image instance: width, height and depth.
-		dim_type dimensions() const;
+		texelcoord_type dimensions() const;
 
 		/// Return the memory size of an image instance storage in bytes.
 		size_type size() const;
@@ -108,13 +80,13 @@ namespace gli
 		/// It's an error to call this function if the format is compressed.
 		/// It's an error if TexelCoord values aren't between [0, dimensions].
 		template <typename genType>
-		genType load(dim_type const & TexelCoord);
+		genType load(texelcoord_type const & TexelCoord);
 
 		/// Store the texel located at TexelCoord coordinates.
 		/// It's an error to call this function if the format is compressed.
 		/// It's an error if TexelCoord values aren't between [0, dimensions].
 		template <typename genType>
-		void store(dim_type const & TexelCoord, genType const & Data);
+		void store(texelcoord_type const & TexelCoord, genType const & Data);
 
 	private:
 		/// Create an image object by sharing an existing image storage from another image instance.

@@ -1,30 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////////
-/// OpenGL Image (gli.g-truc.net)
-///
-/// Copyright (c) 2008 - 2015 G-Truc Creation (www.g-truc.net)
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-///
-/// @ref core
+/// @brief Include to use generic textures which can represent any texture target but they don't have target specific built-in caches making accesses slower.
 /// @file gli/texture.hpp
-/// @date 2013-02-05 / 2013-02-05
-/// @author Christophe Riccio
-///////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
@@ -38,10 +13,11 @@ namespace gli
 	{
 	public:
 		typedef size_t size_type;
-		typedef gli::format format_type;
 		typedef gli::target target_type;
-		typedef storage::dim_type dim_type;
+		typedef gli::format format_type;
+		typedef gli::swizzles swizzles_type;
 		typedef storage::data_type data_type;
+		typedef storage::texelcoord_type texelcoord_type;
 
 		/// Create an empty texture instance
 		texture();
@@ -50,10 +26,11 @@ namespace gli
 		texture(
 			target_type Target,
 			format_type Format,
-			dim_type const & Dimensions,
+			texelcoord_type const & Dimensions,
 			size_type Layers,
 			size_type Faces,
-			size_type Levels);
+			size_type Levels,
+			swizzles_type const & Swizzles = swizzles_type(SWIZZLE_RED, SWIZZLE_GREEN, SWIZZLE_BLUE, SWIZZLE_ALPHA));
 
 		/// Create a texture object by sharing an existing texture storage from another texture instance.
 		/// This texture object is effectively a texture view where the layer, the face and the level allows identifying
@@ -66,7 +43,8 @@ namespace gli
 			format_type Format,
 			size_type BaseLayer, size_type MaxLayer,
 			size_type BaseFace, size_type MaxFace,
-			size_type BaseLevel, size_type MaxLevel);
+			size_type BaseLevel, size_type MaxLevel,
+			swizzles_type const & Swizzles = swizzles_type(SWIZZLE_RED, SWIZZLE_GREEN, SWIZZLE_BLUE, SWIZZLE_ALPHA));
 
 		/// Create a texture object by sharing an existing texture storage from another texture instance.
 		/// This texture object is effectively a texture view where the target and format can be reinterpreted
@@ -74,7 +52,8 @@ namespace gli
 		texture(
 			texture const & Texture,
 			target_type Target,
-			format_type Format);
+			format_type Format,
+			swizzles_type const & Swizzles = swizzles_type(SWIZZLE_RED, SWIZZLE_GREEN, SWIZZLE_BLUE, SWIZZLE_ALPHA));
 
 		virtual ~texture(){}
 
@@ -86,6 +65,8 @@ namespace gli
 
 		/// Return the texture instance format
 		format_type format() const;
+
+		swizzles_type swizzles() const;
 
 		/// Return the base layer of the texture instance, effectively a memory offset in the actual texture storage to identify where to start reading the layers. 
 		size_type base_layer() const;
@@ -115,7 +96,7 @@ namespace gli
 		size_type levels() const;
 
 		/// Return the dimensions of a texture instance: width, height and depth.
-		dim_type dimensions(size_type Level = 0) const;
+		texelcoord_type dimensions(size_type Level = 0) const;
 
 		/// Return the memory size of a texture instance storage in bytes.
 		size_type size() const;
@@ -169,6 +150,14 @@ namespace gli
 		template <typename genType>
 		void clear(genType const & Texel);
 
+		/// Clear a specific image of a texture.
+		template <typename genType>
+		void clear(size_type Layer, size_type Face, size_type Level, genType const & Texel);
+
+		/// Reorder the component in texture memory.
+		template <typename genType>
+		void swizzle(gli::swizzles const & Swizzles);
+
 	protected:
 		/// Compute the relative memory offset to access the data for a specific layer, face and level
 		size_type offset(size_type Layer, size_type Face, size_type Level) const;
@@ -188,6 +177,7 @@ namespace gli
 		size_type const MaxFace;
 		size_type const BaseLevel;
 		size_type const MaxLevel;
+		swizzles_type const Swizzles;
 		cache Cache;
 
 	private:

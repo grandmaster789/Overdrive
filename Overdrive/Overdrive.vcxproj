@@ -58,17 +58,14 @@
     <ClInclude Include="render\shape_cube.h" />
     <ClInclude Include="render\shape_fullquad.h" />
     <ClInclude Include="render\texture.h" />
-    <ClInclude Include="render\texture1D.h" />
     <ClInclude Include="render\texture2D.h" />
-    <ClInclude Include="render\texture2Darray.h" />
-    <ClInclude Include="render\texture2DMultisample.h" />
-    <ClInclude Include="render\texture3D.h" />
-    <ClInclude Include="render\textureBuffer.h" />
     <ClInclude Include="render\vertexarray.h" />
     <ClInclude Include="render\vertexbuffer.h" />
     <ClInclude Include="scene\camera.h" />
+    <ClInclude Include="scene\component.h" />
     <ClInclude Include="scene\entity.h" />
     <ClInclude Include="scene\scene.h" />
+    <ClInclude Include="scene\transform_component.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="util\active.h" />
     <ClInclude Include="util\csv.h" />
@@ -112,17 +109,12 @@
     <ClCompile Include="render\shaderUniform.cpp" />
     <ClCompile Include="render\shape_cube.cpp" />
     <ClCompile Include="render\shape_fullquad.cpp" />
-    <ClCompile Include="render\texture1D.cpp" />
     <ClCompile Include="render\texture2D.cpp" />
-    <ClCompile Include="render\texture2Darray.cpp" />
-    <ClCompile Include="render\texture2DMultisample.cpp" />
-    <ClCompile Include="render\texture3D.cpp" />
-    <ClCompile Include="render\textureBuffer.cpp" />
-    <ClCompile Include="render\textureInfo.cpp" />
     <ClCompile Include="render\vertexarray.cpp" />
     <ClCompile Include="scene\camera.cpp" />
     <ClCompile Include="scene\entity.cpp" />
     <ClCompile Include="scene\scene.cpp" />
+    <ClCompile Include="scene\transform_component.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -150,9 +142,7 @@
     <None Include="render\indexbuffer.inl" />
     <None Include="render\shaderprogram.inl" />
     <ClCompile Include="render\gltypes.cpp" />
-    <None Include="render\texture1D.inl" />
-    <None Include="render\texture2D.inl" />
-    <None Include="render\texture3D.inl" />
+    <None Include="render\texture.inl" />
     <None Include="render\vertexarray.inl" />
     <None Include="render\vertexbuffer.inl" />
     <None Include="shaders\gbuffer.frag" />

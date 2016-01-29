@@ -1,31 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////////
-/// OpenGL Image (gli.g-truc.net)
-///
-/// Copyright (c) 2008 - 2015 G-Truc Creation (www.g-truc.net)
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-///
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-///
-/// @ref core
-/// @file gli/core/load_dds.inl
-/// @date 2010-09-26 / 2015-06-16
-/// @author Christophe Riccio
-///////////////////////////////////////////////////////////////////////////////////
-
 #include "../dx.hpp"
 #include <cstdio>
 #include <cassert>
@@ -33,6 +5,8 @@
 namespace gli{
 namespace detail
 {
+	static char const FOURCC_DDS[] = {'D', 'D', 'S', ' '};
+
 	enum ddsCubemapflag
 	{
 		DDSCAPS2_CUBEMAP				= 0x00000200,
@@ -72,15 +46,14 @@ namespace detail
 	struct ddsPixelFormat
 	{
 		std::uint32_t size; // 32
-		dx::DDPF flags;
-		dx::D3DFORMAT fourCC;
+		dx::ddpf flags;
+		dx::d3dFormat fourCC;
 		std::uint32_t bpp;
 		glm::u32vec4 Mask;
 	};
 
 	struct ddsHeader
 	{
-		char Magic[4];
 		std::uint32_t Size;
 		std::uint32_t Flags;
 		std::uint32_t Height;
@@ -95,7 +68,7 @@ namespace detail
 		std::uint32_t Reserved2[3];
 	};
 
-	static_assert(sizeof(ddsHeader) == 128, "DDS Header size mismatch");
+	static_assert(sizeof(ddsHeader) == 124, "DDS Header size mismatch");
 
 	enum D3D10_RESOURCE_DIMENSION 
 	{
@@ -115,7 +88,7 @@ namespace detail
 		D3D10_RESOURCE_MISC_GDI_COMPATIBLE		= 0x20,
 	};
 
-	enum
+	enum ddsAlphaMode
 	{
 		DDS_ALPHA_MODE_UNKNOWN					= 0x0,
 		DDS_ALPHA_MODE_STRAIGHT					= 0x1,
@@ -131,14 +104,14 @@ namespace detail
 			ResourceDimension(D3D10_RESOURCE_DIMENSION_UNKNOWN),
 			MiscFlag(0),
 			ArraySize(0),
-			Reserved(0)
+			AlphaFlags(DDS_ALPHA_MODE_UNKNOWN)
 		{}
 
 		dx::dxgiFormat				Format;
 		D3D10_RESOURCE_DIMENSION	ResourceDimension;
 		std::uint32_t				MiscFlag; // D3D10_RESOURCE_MISC_GENERATE_MIPS
 		std::uint32_t				ArraySize;
-		std::uint32_t				Reserved;
+		ddsAlphaMode				AlphaFlags; // Should be 0 whenever possible to avoid D3D utility library to fail
 	};
 
 	static_assert(sizeof(ddsHeader10) == 20, "DDS DX10 Extended Header size mismatch");
@@ -170,17 +143,19 @@ namespace detail
 
 	inline texture load_dds(char const * Data, std::size_t Size)
 	{
-		assert(Data && (Size >= sizeof(detail::ddsHeader)));
+		assert(Data && (Size >= sizeof(detail::FOURCC_DDS)));
 
-		detail::ddsHeader const & Header(*reinterpret_cast<detail::ddsHeader const *>(Data));
-
-		if(strncmp(Header.Magic, "DDS ", 4) != 0)
+		if(strncmp(Data, detail::FOURCC_DDS, 4) != 0)
 			return texture();
+		std::size_t Offset = sizeof(detail::FOURCC_DDS);
 
-		size_t Offset = sizeof(detail::ddsHeader);
+		assert(Size >= sizeof(detail::ddsHeader));
+
+		detail::ddsHeader const & Header(*reinterpret_cast<detail::ddsHeader const *>(Data + Offset));
+		Offset += sizeof(detail::ddsHeader);
 
 		detail::ddsHeader10 Header10;
-		if(Header.Format.flags & dx::DDPF_FOURCC && Header.Format.fourCC == dx::D3DFMT_DX10)
+		if((Header.Format.flags & dx::DDPF_FOURCC) && (Header.Format.fourCC == dx::D3DFMT_DX10 || Header.Format.fourCC == dx::D3DFMT_GLI1))
 		{
 			std::memcpy(&Header10, Data + Offset, sizeof(Header10));
 			Offset += sizeof(detail::ddsHeader10);
@@ -189,69 +164,93 @@ namespace detail
 		dx DX;
 
 		gli::format Format(static_cast<gli::format>(gli::FORMAT_INVALID));
-		if((Header.Format.flags & (dx::DDPF_RGB | dx::DDPF_ALPHAPIXELS | dx::DDPF_ALPHA | dx::DDPF_YUV | dx::DDPF_LUMINANCE)) && Format == static_cast<format>(gli::FORMAT_INVALID) && Header.Format.flags != dx::DDPF_FOURCC_ALPHAPIXELS)
+		if((Header.Format.flags & (dx::DDPF_RGB | dx::DDPF_ALPHAPIXELS | dx::DDPF_ALPHA | dx::DDPF_YUV | dx::DDPF_LUMINANCE)) && Format == static_cast<format>(gli::FORMAT_INVALID) && Header.Format.bpp != 0)
 		{
 			switch(Header.Format.bpp)
 			{
+				default:
+					assert(0);
+					break;
 				case 8:
 				{
-					if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_L8_UNORM).Mask)))
-						Format = FORMAT_L8_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_A8_UNORM).Mask)))
-						Format = FORMAT_A8_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_R8_UNORM).Mask)))
-						Format = FORMAT_R8_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RG3B2_UNORM).Mask)))
-						Format = FORMAT_RG3B2_UNORM;
+					if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RG4_UNORM_PACK8).Mask)))
+						Format = FORMAT_RG4_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_L8_UNORM_PACK8).Mask)))
+						Format = FORMAT_L8_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_A8_UNORM_PACK8).Mask)))
+						Format = FORMAT_A8_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_R8_UNORM_PACK8).Mask)))
+						Format = FORMAT_R8_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RG3B2_UNORM_PACK8).Mask)))
+						Format = FORMAT_RG3B2_UNORM_PACK8;
+					else
+						assert(0);
 					break;
 				}
 				case 16:
 				{
-					if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_LA8_UNORM).Mask)))
-						Format = FORMAT_LA8_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RG8_UNORM).Mask)))
-						Format = FORMAT_RG8_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_R5G6B5_UNORM).Mask)))
-						Format = FORMAT_R5G6B5_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_L16_UNORM).Mask)))
-						Format = FORMAT_L16_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_A16_UNORM).Mask)))
-						Format = FORMAT_A16_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_R16_UNORM).Mask)))
-						Format = FORMAT_R16_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RGB5A1_UNORM).Mask)))
-						Format = FORMAT_RGB5A1_UNORM;
+					if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RGBA4_UNORM_PACK16).Mask)))
+						Format = FORMAT_RGBA4_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_BGRA4_UNORM_PACK16).Mask)))
+						Format = FORMAT_BGRA4_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_R5G6B5_UNORM_PACK16).Mask)))
+						Format = FORMAT_R5G6B5_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_B5G6R5_UNORM_PACK16).Mask)))
+						Format = FORMAT_B5G6R5_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RGB5A1_UNORM_PACK16).Mask)))
+						Format = FORMAT_RGB5A1_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_BGR5A1_UNORM_PACK16).Mask)))
+						Format = FORMAT_BGR5A1_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_LA8_UNORM_PACK8).Mask)))
+						Format = FORMAT_LA8_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RG8_UNORM_PACK8).Mask)))
+						Format = FORMAT_RG8_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_L16_UNORM_PACK16).Mask)))
+						Format = FORMAT_L16_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_A16_UNORM_PACK16).Mask)))
+						Format = FORMAT_A16_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_R16_UNORM_PACK16).Mask)))
+						Format = FORMAT_R16_UNORM_PACK16;
+					else
+						assert(0);
 					break;
 				}
 				case 24:
 				{
-					dx::format const & DXFormat = DX.translate(FORMAT_RGB8_UNORM);
-					if(glm::all(glm::equal(Header.Format.Mask, DXFormat.Mask)))
-						Format = FORMAT_RGB8_UNORM;
+					if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RGB8_UNORM_PACK8).Mask)))
+						Format = FORMAT_RGB8_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_BGR8_UNORM_PACK8).Mask)))
+						Format = FORMAT_BGR8_UNORM_PACK8;
+					else
+						assert(0);
 					break;
 				}
 				case 32:
 				{
-					if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_BGRX8_UNORM).Mask)))
-						Format = FORMAT_BGRX8_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_BGRA8_UNORM).Mask)))
-						Format = FORMAT_BGRA8_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RGB10A2_UNORM).Mask)))
-						Format = FORMAT_RGB10A2_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_LA16_UNORM).Mask)))
-						Format = FORMAT_LA16_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RG16_UNORM).Mask)))
-						Format = FORMAT_RG16_UNORM;
-					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_R32_SFLOAT).Mask)))
-						Format = FORMAT_R32_SFLOAT;
+					if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_BGR8_UNORM_PACK32).Mask)))
+						Format = FORMAT_BGR8_UNORM_PACK32;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_BGRA8_UNORM_PACK8).Mask)))
+						Format = FORMAT_BGRA8_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RGBA8_UNORM_PACK8).Mask)))
+						Format = FORMAT_RGBA8_UNORM_PACK8;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RGB10A2_UNORM_PACK32).Mask)))
+						Format = FORMAT_RGB10A2_UNORM_PACK32;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_LA16_UNORM_PACK16).Mask)))
+						Format = FORMAT_LA16_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_RG16_UNORM_PACK16).Mask)))
+						Format = FORMAT_RG16_UNORM_PACK16;
+					else if(glm::all(glm::equal(Header.Format.Mask, DX.translate(FORMAT_R32_SFLOAT_PACK32).Mask)))
+						Format = FORMAT_R32_SFLOAT_PACK32;
+					else
+						assert(0);
+					break;
 				}
-				break;
 			}
 		}
-		else if((Header.Format.flags & dx::DDPF_FOURCC) && (Header.Format.fourCC != dx::D3DFMT_DX10) && (Format == static_cast<format>(gli::FORMAT_INVALID)))
-			Format = DX.find(Header.Format.fourCC);
-		else if((Header.Format.fourCC == dx::D3DFMT_DX10) && (Header10.Format != dx::DXGI_FORMAT_UNKNOWN))
-			Format = DX.find(Header10.Format);
+		else if((Header.Format.flags & dx::DDPF_FOURCC) && (Header.Format.fourCC != dx::D3DFMT_DX10) && (Header.Format.fourCC != dx::D3DFMT_GLI1) && (Format == static_cast<format>(gli::FORMAT_INVALID)))
+			Format = DX.find(Header.Format.fourCC, Header.Format.flags);
+		else if(Header.Format.fourCC == dx::D3DFMT_DX10 || Header.Format.fourCC == dx::D3DFMT_GLI1)
+			Format = DX.find(Header.Format.fourCC, Header10.Format, Header.Format.flags);
 
 		assert(Format != static_cast<format>(gli::FORMAT_INVALID));
 
@@ -266,10 +265,11 @@ namespace detail
 
 		texture Texture(
 			getTarget(Header, Header10), Format,
-			texture::dim_type(Header.Width, Header.Height, DepthCount),
-			std::max<std::size_t>(Header10.ArraySize, 1), FaceCount, MipMapCount);
+			texture::texelcoord_type(Header.Width, Header.Height, DepthCount),
+			std::max<texture::size_type>(Header10.ArraySize, 1), FaceCount, MipMapCount);
 
-		assert(Offset + Texture.size() == Size);
+		std::size_t const SourceSize = Offset + Texture.size();
+		assert(SourceSize == Size);
 
 		std::memcpy(Texture.data(), Data + Offset, Texture.size());
 
