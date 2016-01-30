@@ -4,6 +4,18 @@
 
 namespace overdrive {
 	namespace render {
+		/*
+			Remaining texture parameters:
+			~ TEXTURE_BASE_LEVEL (partially implemented)
+			~ TEXTURE_MAX_LEVEL (barely implemented)
+			DEPTH_STENCIL_TEXTURE_MODE
+			TEXTURE_BORDER_COLOR
+			TEXTURE_COMPARE_FUNC
+			TEXTURE_COMPARE_MODE
+			TEXTURE_LOD_BIAS
+			TEXTURE_MIN_LOD
+			TEXTURE_MAX_LOD
+		*/
 		class Texture2D {
 		public:
 			Texture2D(eTextureFormat format, int width, int height);

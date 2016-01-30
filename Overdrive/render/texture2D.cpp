@@ -137,7 +137,11 @@ namespace overdrive {
 						throw std::runtime_error("Unsupported number of channels found");
 					}
 
-					mData = std::make_unique<gli::texture2D>(fmt, glm::ivec2(imageWidth, imageHeight));
+					mData = std::make_unique<gli::texture2D>(
+						fmt, 
+						glm::ivec2(imageWidth, imageHeight),
+						1 // just 1 level
+					);
 
 					memcpy(
 						(*mData)[0].data(), 
@@ -199,29 +203,48 @@ namespace overdrive {
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 			// set the width/height at a given mip level
-			int width = mData->dimensions().x;
-			int height = mData->dimensions().y;
+			GLsizei width = mData->dimensions().x;
+			GLsizei height = mData->dimensions().y;
 
 			glTexStorage2D(
 				GL_TEXTURE_2D,
 				1, // mip level
 				fmt.Internal,
-				static_cast<GLsizei>(width),
-				static_cast<GLsizei>(height)
+				width,
+				height
 			);
 
 			// submit the data
-			glTexSubImage2D(
-				GL_TEXTURE_2D,
-				0, // current level
-				0, // x offset
-				0, // y offset
-				static_cast<GLsizei>(width),
-				static_cast<GLsizei>(height),
-				fmt.External,
-				fmt.Type,
-				(*mData)[0].data()
-			);
+			for (size_t layer = 0; layer < mData->layers(); ++layer) {
+				for (size_t face = 0; face < mData->faces(); ++face) {
+					for (size_t level = 0; level < mData->levels(); ++level) {
+						if (gli::is_compressed(mData->format()))
+							glCompressedTexSubImage2D(
+								GL_TEXTURE_2D,
+								static_cast<GLint>(level),
+								0, // x offset
+								0, // y offset
+								width,
+								height,
+								fmt.External,
+								fmt.Type,
+								mData->data(layer, face, level)
+							);
+						else
+							glTexSubImage2D(
+								GL_TEXTURE_2D,
+								static_cast<GLint>(level),
+								0, // x offset
+								0, // y offset
+								width,
+								height,
+								fmt.External,
+								fmt.Type,
+								mData->data(layer, face, level)
+							);
+					}
+				}
+			}
 
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
