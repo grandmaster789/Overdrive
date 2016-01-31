@@ -1,5 +1,4 @@
 #pragma once
-
 #include "texture.h"
 
 namespace overdrive {
@@ -11,7 +10,7 @@ namespace overdrive {
 			case eTextureFormatType::STENCIL:		os << "STENCIL"; break;
 			case eTextureFormatType::DEPTH_STENCIL: os << "DEPTH_STENCIL"; break;
 
-			default: os << "Unknown"; 
+			default: os << "Unknown";
 			}
 
 			return os;
@@ -35,7 +34,7 @@ namespace overdrive {
 			switch (value) {
 			case eMinFilter::NEAREST:	os << "NEAREST"; break;
 			case eMinFilter::LINEAR:	os << "LINEAR"; break;
-			
+
 			case eMinFilter::NEAREST_MIPMAP_NEAREST:	os << "NEAREST_MIPMAP_NEAREST"; break;
 			case eMinFilter::NEAREST_MIPMAP_LINEAR:		os << "NEAREST_MIPMAP_LINEAR"; break;
 			case eMinFilter::LINEAR_MIPMAP_NEAREST:		os << "LINEAR_MIPMAP_NEAREST"; break;

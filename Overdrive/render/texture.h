@@ -49,6 +49,10 @@ namespace overdrive {
 			ONE		= GL_ONE
 		};
 
+		namespace detail {
+			static gli::gl gFormatConverter;
+		}
+
 		std::ostream& operator << (std::ostream& os, const eTextureFormatType& value);
 		std::ostream& operator << (std::ostream& os, const eWrapping& value);
 		std::ostream& operator << (std::ostream& os, const eMinFilter& value);

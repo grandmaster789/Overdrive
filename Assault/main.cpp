@@ -24,7 +24,7 @@ class Test :
 public:
 	int counter = 0;
 	render::RenderState mRenderState;
-	std::unique_ptr<render::Texture2D> mTexture;
+	render::Texture2D mTexture;
 	render::ShaderProgram mProgram;
 	scene::Camera mCamera;
 
@@ -104,7 +104,14 @@ public:
 
 		mCube = std::make_unique<render::shape::Cube>(1.0f);
 
-		mTexture = std::make_unique<render::Texture2D>("assets/image/test_pattern_001.png");
+		//mTexture = std::make_unique<render::Texture2D>("assets/image/test_pattern_001.png");
+		mTexture = render::loadTexture2D("assets/image/test_pattern_001.png");
+		/*
+		mTexture->setFilter(render::eMinFilter::LINEAR);
+		mTexture->setFilter(render::eMagFilter::LINEAR);
+		mTexture->setWrapS(render::eWrapping::EDGE);
+		mTexture->setWrapT(render::eWrapping::EDGE);
+		*/
 	}
 
 	virtual void update() override {
@@ -169,7 +176,7 @@ public:
 		mProgram.setUniform("inViewMatrix", mCamera.getView());
 		mProgram.setUniform("inProjectionMatrix", mCamera.getProjection());
 		
-		mTexture->bind(0);
+		mTexture.bind(0);
 		mProgram.setUniform("textureMap", 0);
 		
 		// draw the cube at 100 different locations
