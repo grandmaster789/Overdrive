@@ -148,7 +148,9 @@ public:
 		mainWindow->getMouse()->setCursorState(input::Mouse::eCursorState::DISABLED); // hide that cursor
 
 		mCube = std::make_unique<render::shape::Cube>(1.0f);
-		mSkyBox = std::make_unique<render::shape::Cube>(1.0f);
+		mSkyBox = std::make_unique<render::shape::Cube>(
+			115.0f // far plane should end up at the center of the skybox cube
+		); // [NOTE] the skybox cube should be smaller than the far clipping plane; 
 
 		mTexture = render::loadTexture2D("assets/image/test_pattern_001.png");
 		
@@ -226,9 +228,9 @@ public:
 
 		// render that skybox
 		mSkyBoxProgram.bind();
-		mSkyBoxProgram.setUniform("inViewMatrix", mCamera.getView() * glm::scale(glm::vec3(100.0f, 100.0f, 100.0f)));
+		mSkyBoxProgram.setUniform("inViewMatrix", mCamera.getView());
 		mSkyBoxProgram.setUniform("inProjectionMatrix", mCamera.getProjection());
-		mSkyBoxProgram.setUniform("inModelMatrix", glm::mat4());
+		mSkyBoxProgram.setUniform("inModelMatrix", glm::translate(mCamera.getPosition()));
 		
 		mSkyBoxTexture.bind(0);
 		mSkyBoxProgram.setUniform("inCubeMap", 0);
