@@ -28,7 +28,7 @@ namespace overdrive {
 		public:
 			Texture2D(); // providing an empty default constructor allows us to have Texture2D as a class member with no fuss
 			Texture2D(eTextureFormat fmt, int width, int height);
-			Texture2D(eTextureFormat fmt, int width, int height, unsigned char* rawData); // [NOTE] this assumes that the raw data is actually what you say it is! Doesn't support compressed formats in particular!
+			Texture2D(eTextureFormat fmt, int width, int height, const unsigned char* rawData); // [NOTE] this assumes that the raw data is actually what you say it is! Doesn't support compressed formats in particular!
 			//Texture2D(eTextureFormat fmt, int width, int height, unsigned char* rawData, size_t numBytes); // [NOTE] this does support compressed formats, but still does only minimal checking
 			Texture2D(const gli::texture& tex);
 			~Texture2D();
@@ -41,6 +41,8 @@ namespace overdrive {
 			GLuint getHandle() const;
 			eTextureFormat getFormat() const;
 			eTextureFormatType getFormatType() const;
+			int getWidth() const;
+			int getHeight() const;
 
 			void bind();
 			void unbind();
@@ -51,6 +53,8 @@ namespace overdrive {
 		private:
 			GLuint mHandle;
 			eTextureFormat mFormat;
+			int mWidth;
+			int mHeight;
 		};
 
 		Texture2D loadTexture2D(const std::string& filepath); // should probably become a full path

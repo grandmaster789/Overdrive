@@ -71,5 +71,21 @@ namespace overdrive {
 
 			return os;
 		}
+
+		inline std::ostream& operator << (std::ostream& os, const eCubeFace& value) {
+			switch (value) {
+			case eCubeFace::POSITIVE_X: os << "+X"; break;
+			case eCubeFace::POSITIVE_Y: os << "+Y"; break;
+			case eCubeFace::POSITIVE_Z: os << "+Z"; break;
+			case eCubeFace::NEGATIVE_X: os << "-X"; break;
+			case eCubeFace::NEGATIVE_Y: os << "-Y"; break;
+			case eCubeFace::NEGATIVE_Z: os << "-Z"; break;
+				
+			default:
+				os << "Unknown";
+			}
+
+			return os;
+		}
 	}
 }

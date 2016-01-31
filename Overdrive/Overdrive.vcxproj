@@ -59,6 +59,7 @@
     <ClInclude Include="render\shape_fullquad.h" />
     <ClInclude Include="render\texture.h" />
     <ClInclude Include="render\texture2D.h" />
+    <ClInclude Include="render\textureCube.h" />
     <ClInclude Include="render\vertexarray.h" />
     <ClInclude Include="render\vertexbuffer.h" />
     <ClInclude Include="scene\camera.h" />
@@ -69,6 +70,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="util\active.h" />
     <ClInclude Include="util\csv.h" />
+    <ClInclude Include="util\deleters.h" />
     <ClInclude Include="util\enum_bitfield.h" />
     <ClInclude Include="util\exception.h" />
     <ClInclude Include="util\exception_windows.h" />
@@ -110,6 +112,7 @@
     <ClCompile Include="render\shape_cube.cpp" />
     <ClCompile Include="render\shape_fullquad.cpp" />
     <ClCompile Include="render\texture2D.cpp" />
+    <ClCompile Include="render\textureCube.cpp" />
     <ClCompile Include="render\vertexarray.cpp" />
     <ClCompile Include="scene\camera.cpp" />
     <ClCompile Include="scene\entity.cpp" />
@@ -148,6 +151,7 @@
     <None Include="shaders\gbuffer.frag" />
     <None Include="shaders\gbuffer.vert" />
     <None Include="util\csv.inl" />
+    <None Include="util\deleters.inl" />
     <None Include="util\enum_bitfield.inl" />
     <None Include="util\supports.inl" />
     <None Include="util\tuple.inl" />

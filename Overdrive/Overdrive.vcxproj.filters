@@ -238,6 +238,12 @@
     <ClInclude Include="render\texture2D.h">
       <Filter>render\texture</Filter>
     </ClInclude>
+    <ClInclude Include="render\textureCube.h">
+      <Filter>render\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="util\deleters.h">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -368,6 +374,9 @@
     <ClCompile Include="render\texture2D.cpp">
       <Filter>render\texture</Filter>
     </ClCompile>
+    <ClCompile Include="render\textureCube.cpp">
+      <Filter>render\texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="core\engine.inl">
@@ -429,6 +438,9 @@
     </None>
     <None Include="render\texture.inl">
       <Filter>render\texture</Filter>
+    </None>
+    <None Include="util\deleters.inl">
+      <Filter>util</Filter>
     </None>
   </ItemGroup>
 </Project>

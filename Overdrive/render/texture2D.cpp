@@ -2,19 +2,29 @@
 #include "texture2D.h"
 #include "gltypes.h"
 #include "../core/logger.h"
+#include "../util/deleters.h"
 
 #include <cstdio>
 
 namespace overdrive {
 	namespace render {
 		Texture2D::Texture2D():
-			mHandle(0)
+			mHandle(0),
+			mFormat(gli::FORMAT_UNDEFINED),
+			mWidth(0),
+			mHeight(0)
 		{
 		}
 
-		Texture2D::Texture2D(eTextureFormat fmt, int width, int height):
+		Texture2D::Texture2D(
+			eTextureFormat fmt, 
+			int width, 
+			int height
+		):
 			mHandle(0),
-			mFormat(fmt)
+			mFormat(fmt),
+			mWidth(width),
+			mHeight(height)
 		{
 			glGenTextures(1, &mHandle);
 			if (mHandle == 0)
@@ -48,9 +58,16 @@ namespace overdrive {
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
-		Texture2D::Texture2D(eTextureFormat fmt, int width, int height, unsigned char* rawData):
+		Texture2D::Texture2D(
+			eTextureFormat fmt, 
+			int width, 
+			int height, 
+			const unsigned char* rawData
+		):
 			mHandle(0),
-			mFormat(fmt)
+			mFormat(fmt),
+			mWidth(width),
+			mHeight(height)
 		{
 			glGenTextures(1, &mHandle);
 			if (mHandle == 0)
@@ -89,7 +106,9 @@ namespace overdrive {
 
 		Texture2D::Texture2D(const gli::texture& tex):
 			mHandle(0),
-			mFormat(tex.format())
+			mFormat(tex.format()),
+			mWidth(tex.dimensions().x),
+			mHeight(tex.dimensions().y)
 		{
 			if (tex.target() != gli::TARGET_2D)
 				throw std::runtime_error("GLI texture does not have a 2D target");
@@ -157,7 +176,9 @@ namespace overdrive {
 
 		Texture2D::Texture2D(Texture2D&& t):
 			mHandle(t.mHandle),
-			mFormat(t.mFormat)
+			mFormat(t.mFormat),
+			mWidth(t.mWidth),
+			mHeight(t.mHeight)
 		{
 			t.mHandle = 0;
 		}
@@ -168,6 +189,8 @@ namespace overdrive {
 
 			mHandle = t.mHandle;
 			mFormat = t.mFormat;
+			mWidth = t.mWidth;
+			mHeight = t.mHeight;
 
 			t.mHandle = 0;
 
@@ -467,6 +490,14 @@ namespace overdrive {
 			}
 		}
 
+		int Texture2D::getWidth() const {
+			return mWidth;
+		}
+
+		int Texture2D::getHeight() const {
+			return mHeight;
+		}
+
 		void Texture2D::bind() {
 			glBindTexture(GL_TEXTURE_2D, mHandle);
 		}
@@ -485,13 +516,7 @@ namespace overdrive {
 		}
 
 		Texture2D loadTexture2D(const std::string& filename) {
-			struct FCloseHelper {
-				void operator()(FILE* handle) {
-					std::fclose(handle);
-				}
-			};
-
-			std::unique_ptr<FILE, FCloseHelper> file(
+			std::unique_ptr<FILE, util::FCloseHelper> file(
 				std::fopen(filename.c_str(), "rb")
 			);
 
@@ -518,14 +543,8 @@ namespace overdrive {
 				int width = 0;
 				int height = 0;
 				int numChannels = 0;
-
-				struct FreeHelper {
-					void operator()(void* buffer) {
-						free(buffer);
-					}
-				};
-
-				std::unique_ptr<stbi_uc[], FreeHelper> rawTexture(
+				
+				std::unique_ptr<stbi_uc[], util::FreeHelper> rawTexture(
 					stbi_load_from_memory(
 						reinterpret_cast<const stbi_uc*>(&rawData[0]), 
 						static_cast<int>(rawData.size()), 

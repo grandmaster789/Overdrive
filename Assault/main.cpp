@@ -1,5 +1,6 @@
 #include "overdrive.h"
 
+
 #include "render/renderstate.h"
 #include "render/shaderprogram.h"
 #include "render/vertexbuffer.h"
@@ -9,6 +10,7 @@
 #include "scene/camera.h"
 #include "render/shape_cube.h"
 #include "render/texture2d.h"
+#include "render/texturecube.h"
 
 #include <iostream>
 #include <boost/math/constants/constants.hpp>
@@ -26,6 +28,11 @@ public:
 	render::RenderState mRenderState;
 	render::Texture2D mTexture;
 	render::ShaderProgram mProgram;
+	
+	render::TextureCube mSkyBoxTexture;
+	render::ShaderProgram mSkyBoxProgram;
+	std::unique_ptr<render::shape::Cube> mSkyBox;
+
 	scene::Camera mCamera;
 
 	float mCameraPitch = 0.0f;
@@ -58,7 +65,7 @@ public:
 			out vec4		vtxColor;
 			smooth out vec2 vtxTexCoord;
 
-						void main() {
+			void main() {
 				gl_Position = 
 					inProjectionMatrix * 
 					inViewMatrix * 
@@ -88,11 +95,49 @@ public:
 			}
 		)";
 
+		const char* skybox_vertex_shader = R"(
+			#version 400
+			uniform mat4 inModelMatrix;
+			uniform mat4 inViewMatrix;
+			uniform mat4 inProjectionMatrix;
+
+			in vec3 inVertexPosition;
+
+			smooth out vec3 cubemap_texcoords;
+
+			void main() {
+				gl_Position = 
+					inProjectionMatrix * 
+					inViewMatrix * 
+					inModelMatrix * 
+					vec4(inVertexPosition, 1.0);
+
+				cubemap_texcoords = inVertexPosition;
+			}
+		)";
+
+		const char* skybox_fragment_shader = R"(
+			#version 400			
+
+			uniform samplerCube inCubeMap;
+			smooth in vec3 cubemap_texcoords;
+
+			out vec4 outColor;
+		
+			void main() {
+				outColor = texture(inCubeMap, cubemap_texcoords);
+			}
+		)";
+
 		mProgram.attachShader(vertex_shader, render::eShaderType::VERTEX);
 		mProgram.attachShader(fragment_shader, render::eShaderType::FRAGMENT);
-
 		mProgram.link();
 		mProgram.bind();
+
+		mSkyBoxProgram.attachShader(skybox_vertex_shader, render::eShaderType::VERTEX);
+		mSkyBoxProgram.attachShader(skybox_fragment_shader, render::eShaderType::FRAGMENT);
+		mSkyBoxProgram.link();
+		mSkyBoxProgram.bind();
 
 		mCamera.setPosition(0.0f, 0.0f, 1.0f);
 		mCamera.setProjection(boost::math::float_constants::pi * 0.25f, 1.0f, 0.1f, 100.0f);
@@ -103,15 +148,20 @@ public:
 		mainWindow->getMouse()->setCursorState(input::Mouse::eCursorState::DISABLED); // hide that cursor
 
 		mCube = std::make_unique<render::shape::Cube>(1.0f);
+		mSkyBox = std::make_unique<render::shape::Cube>(1.0f);
 
-		//mTexture = std::make_unique<render::Texture2D>("assets/image/test_pattern_001.png");
 		mTexture = render::loadTexture2D("assets/image/test_pattern_001.png");
-		/*
-		mTexture->setFilter(render::eMinFilter::LINEAR);
-		mTexture->setFilter(render::eMagFilter::LINEAR);
-		mTexture->setWrapS(render::eWrapping::EDGE);
-		mTexture->setWrapT(render::eWrapping::EDGE);
-		*/
+		
+		mSkyBoxTexture = render::loadTextureCube(
+			"assets/image/skybox_px.png",
+			"assets/image/skybox_py.png",
+			"assets/image/skybox_pz.png",
+			"assets/image/skybox_nx.png",
+			"assets/image/skybox_ny.png",
+			"assets/image/skybox_nz.png"
+		);		
+		
+		//mSkyBoxTexture = render::loadTextureCube("assets/image/skybox_px.png");
 	}
 
 	virtual void update() override {
@@ -173,6 +223,20 @@ public:
 		mCamera.update();
 
 		mRenderState.clear();
+
+		// render that skybox
+		mSkyBoxProgram.bind();
+		mSkyBoxProgram.setUniform("inViewMatrix", mCamera.getView() * glm::scale(glm::vec3(100.0f, 100.0f, 100.0f)));
+		mSkyBoxProgram.setUniform("inProjectionMatrix", mCamera.getProjection());
+		mSkyBoxProgram.setUniform("inModelMatrix", glm::mat4());
+		
+		mSkyBoxTexture.bind(0);
+		mSkyBoxProgram.setUniform("inCubeMap", 0);
+		
+		mSkyBox->draw();
+
+		// render the cubes
+		mProgram.bind();
 		mProgram.setUniform("inViewMatrix", mCamera.getView());
 		mProgram.setUniform("inProjectionMatrix", mCamera.getProjection());
 		

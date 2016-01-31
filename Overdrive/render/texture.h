@@ -49,6 +49,15 @@ namespace overdrive {
 			ONE		= GL_ONE
 		};
 
+		enum class eCubeFace : GLenum {
+			POSITIVE_X = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+			POSITIVE_Y = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+			POSITIVE_Z = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+			NEGATIVE_X = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+			NEGATIVE_Y = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+			NEGATIVE_Z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+		};
+
 		namespace detail {
 			static gli::gl gFormatConverter;
 		}
@@ -58,6 +67,7 @@ namespace overdrive {
 		std::ostream& operator << (std::ostream& os, const eMinFilter& value);
 		std::ostream& operator << (std::ostream& os, const eMagFilter& value);
 		std::ostream& operator << (std::ostream& os, const eSwizzle& value);
+		std::ostream& operator << (std::ostream& os, const eCubeFace& value);
 	}
 }
 

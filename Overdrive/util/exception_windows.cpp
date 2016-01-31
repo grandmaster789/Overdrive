@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "exception_windows.h"
+#include "deleters.h"
 
 #if OVERDRIVE_PLATFORM == OVERDRIVE_PLATFORM_WINDOWS
 
@@ -8,13 +9,6 @@
 namespace overdrive {
 	namespace util {
 		namespace {
-			// ::FormatMessage uses ::LocalAlloc to allocate memory (and doesn't free it)
-			struct LocalFreeHelper {
-				void operator()(LPSTR buffer) {
-					::LocalFree(buffer);
-				}
-			};
-
 			std::string winErrorToString(DWORD errorcode) {
 				std::unique_ptr<char[], LocalFreeHelper> buffer;
 				LPSTR ptr = nullptr;
