@@ -11,9 +11,7 @@
 *.lai
 *.la
 *.a
-*.vcxproj
 *.sdf
-*.sln
 /Debug
 *.suo
 *.log
@@ -38,3 +36,4 @@ Release
 /OverdriveTest/x64
 /Overdrive.VC.VC.opendb
 /Overdrive.VC.db
+/Assault/*.user
