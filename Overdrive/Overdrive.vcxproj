@@ -43,6 +43,7 @@
     <ClInclude Include="preprocessor.h" />
     <ClInclude Include="render\buffer.h" />
     <ClInclude Include="render\common_vertex_formats.h" />
+    <ClInclude Include="render\defaultShaders.h" />
     <ClInclude Include="render\drawable.h" />
     <ClInclude Include="render\framebuffer.h" />
     <ClInclude Include="render\indexbuffer.h" />
@@ -74,7 +75,9 @@
     <ClInclude Include="util\enum_bitfield.h" />
     <ClInclude Include="util\exception.h" />
     <ClInclude Include="util\exception_windows.h" />
+    <ClInclude Include="util\spinlock.h" />
     <ClInclude Include="util\supports.h" />
+    <ClInclude Include="util\threadsafeQueue.h" />
     <ClInclude Include="util\tuple.h" />
     <ClInclude Include="video\monitor.h" />
     <ClInclude Include="video\oculusvr.h" />
@@ -125,6 +128,7 @@
     <ClCompile Include="util\active.cpp" />
     <ClCompile Include="util\exception.cpp" />
     <ClCompile Include="util\exception_windows.cpp" />
+    <ClCompile Include="util\spinlock.cpp" />
     <ClCompile Include="video\monitor.cpp" />
     <ClCompile Include="video\oculusvr.cpp" />
     <ClCompile Include="video\video.cpp" />
@@ -142,6 +146,7 @@
     <None Include="core\system.inl" />
     <None Include="math\clamp.inl" />
     <None Include="render\buffer.inl" />
+    <None Include="render\defaultShaders.inl" />
     <None Include="render\indexbuffer.inl" />
     <None Include="render\shaderprogram.inl" />
     <ClCompile Include="render\gltypes.cpp" />
@@ -154,6 +159,7 @@
     <None Include="util\deleters.inl" />
     <None Include="util\enum_bitfield.inl" />
     <None Include="util\supports.inl" />
+    <None Include="util\threadsafeQueue.inl" />
     <None Include="util\tuple.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

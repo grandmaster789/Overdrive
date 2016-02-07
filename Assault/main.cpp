@@ -11,6 +11,7 @@
 #include "render/shape_cube.h"
 #include "render/texture2d.h"
 #include "render/texturecube.h"
+#include "render/defaultShaders.h"
 
 #include <iostream>
 #include <boost/math/constants/constants.hpp>
@@ -54,34 +55,34 @@ public:
 
 		const char* vertex_shader = R"(
 			#version 400
-			uniform mat4 inModelMatrix;
-			uniform mat4 inViewMatrix;
-			uniform mat4 inProjectionMatrix;
+			uniform mat4 uModel;
+			uniform mat4 uView;
+			uniform mat4 uProjection;
 
-			in vec3 inVertexPosition;
-			in vec3 inVertexNormal;
-			in vec2 inTexCoord;
+			in vec3 aVertexPosition;
+			in vec3 aVertexNormal;
+			in vec2 aTexCoord;
 			
 			out vec4		vtxColor;
 			smooth out vec2 vtxTexCoord;
 
 			void main() {
 				gl_Position = 
-					inProjectionMatrix * 
-					inViewMatrix * 
-					inModelMatrix * 
-					vec4(inVertexPosition, 1.0);
+					uProjection * 
+					uView * 
+					uModel * 
+					vec4(aVertexPosition, 1.0);
 
-				vec3 rescaled_normal = (inVertexNormal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f;
+				vec3 rescaled_normal = (aVertexNormal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f;
 
 				vtxColor = vec4(rescaled_normal, 1.0f);
-				vtxTexCoord = inTexCoord;
+				vtxTexCoord = aTexCoord;
 			}
 		)";
 
 		const char* fragment_shader = R"(
 			#version 400
-			uniform sampler2D textureMap;
+			uniform sampler2D uTexture;
 
 			in vec4 vtxColor;
 			in vec2 vtxTexCoord;
@@ -91,46 +92,46 @@ public:
 			void main() {
 				//outColor = vtxColor;
 				//outColor = vec4(vtxTexCoord.x, vtxTexCoord.y, 0.0f, 1.0f);
-				outColor = texture(textureMap, vtxTexCoord) * vtxColor;
+				outColor = texture(uTexture, vtxTexCoord) * vtxColor;
 			}
 		)";
 
 		const char* skybox_vertex_shader = R"(
 			#version 400
-			uniform mat4 inModelMatrix;
-			uniform mat4 inViewMatrix;
-			uniform mat4 inProjectionMatrix;
+			uniform mat4 uModel;
+			uniform mat4 uView;
+			uniform mat4 uProjection;
 
-			in vec3 inVertexPosition;
+			in vec3 aVertexPosition;
 
 			smooth out vec3 cubemap_texcoords;
 
 			void main() {
 				gl_Position = 
-					inProjectionMatrix * 
-					inViewMatrix * 
-					inModelMatrix * 
-					vec4(inVertexPosition, 1.0);
+					uProjection * 
+					uView * 
+					uModel * 
+					vec4(aVertexPosition, 1.0);
 
-				cubemap_texcoords = inVertexPosition;
+				cubemap_texcoords = aVertexPosition;
 			}
 		)";
 
 		const char* skybox_fragment_shader = R"(
 			#version 400			
 
-			uniform samplerCube inCubeMap;
+			uniform samplerCube uCubeMap;
 			smooth in vec3 cubemap_texcoords;
 
 			out vec4 outColor;
 		
 			void main() {
-				outColor = texture(inCubeMap, cubemap_texcoords);
+				outColor = texture(uCubeMap, cubemap_texcoords);
 			}
 		)";
 
-		mProgram.attachShader(vertex_shader, render::eShaderType::VERTEX);
-		mProgram.attachShader(fragment_shader, render::eShaderType::FRAGMENT);
+		mProgram.attachShader(render::DefaultShader<render::attributes::PositionNormalTexCoord>::getVertexShader(), render::eShaderType::VERTEX);
+		mProgram.attachShader(render::DefaultShader<render::attributes::PositionNormalTexCoord>::getFragmentShader(), render::eShaderType::FRAGMENT);
 		mProgram.link();
 		mProgram.bind();
 
@@ -164,6 +165,7 @@ public:
 		);		
 		
 		//mSkyBoxTexture = render::loadTextureCube("assets/image/skybox_px.png");
+		gLog << mProgram;
 	}
 
 	virtual void update() override {
@@ -228,27 +230,31 @@ public:
 
 		// render that skybox
 		mSkyBoxProgram.bind();
-		mSkyBoxProgram.setUniform("inViewMatrix", mCamera.getView());
-		mSkyBoxProgram.setUniform("inProjectionMatrix", mCamera.getProjection());
-		mSkyBoxProgram.setUniform("inModelMatrix", glm::translate(mCamera.getPosition()));
+		mSkyBoxProgram.setUniform("uView", mCamera.getView());
+		mSkyBoxProgram.setUniform("uProjection", mCamera.getProjection());
+		mSkyBoxProgram.setUniform("uModel", glm::translate(mCamera.getPosition()));
 		
 		mSkyBoxTexture.bind(0);
-		mSkyBoxProgram.setUniform("inCubeMap", 0);
+		mSkyBoxProgram.setUniform("uCubeMap", 0);
 		
 		mSkyBox->draw();
 
 		// render the cubes
 		mProgram.bind();
-		mProgram.setUniform("inViewMatrix", mCamera.getView());
-		mProgram.setUniform("inProjectionMatrix", mCamera.getProjection());
+		mProgram.setUniform("uView", mCamera.getView());
+		mProgram.setUniform("uProjection", mCamera.getProjection());
+
+		mProgram.setUniform("uLightDirection", glm::vec4(0.2, -1, 0.5, 1));
+		mProgram.setUniform("uLightAmbient", glm::vec4(0.1, 0.1, 0.1, 1.0));
+		mProgram.setUniform("uLightDiffuse", glm::vec4(0.85, 0.85, 0.85, 1.0));
 		
 		mTexture.bind(0);
-		mProgram.setUniform("textureMap", 0);
+		mProgram.setUniform("uTexture", 0);
 		
 		// draw the cube at 100 different locations
 		for (int i = 0; i < 10; ++i)
 			for (int j = 0; j < 10; ++j) {
-				mProgram.setUniform("inModelMatrix", glm::translate(glm::vec3(2 * (i - 5), 0, 2 * (j - 5))));
+				mProgram.setUniform("uModel", glm::translate(glm::vec3(2 * (i - 5), 0, 2 * (j - 5))));
 
 				mCube->draw();
 			}

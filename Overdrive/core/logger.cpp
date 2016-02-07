@@ -59,12 +59,13 @@ namespace overdrive {
 		void Logger::flush(const LogMessage* message) {
 			std::string msg = message->mBuffer.str();
 
-			/*
+			
+			// [NOTE] at this stage, single threaded is actually preferable
 			// Singlethreaded version:
 			for (auto&& sink: mSinks)
-			sink.write(message.mMeta, msg);
-			*/
-
+				sink.write(message->mMeta, msg);
+			/*
+			// Threadsafe background writer
 			auto&& sinks = mSinks;
 			auto&& meta = message->mMeta;
 
@@ -72,6 +73,7 @@ namespace overdrive {
 				for (auto&& sink : sinks)
 					sink.write(meta, msg);
 			});
+			*/
 		}
 
 		Logger& Logger::instance() {

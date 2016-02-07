@@ -244,6 +244,15 @@
     <ClInclude Include="util\deleters.h">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="util\threadsafeQueue.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\spinlock.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="render\defaultShaders.h">
+      <Filter>render\shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -377,6 +386,9 @@
     <ClCompile Include="render\textureCube.cpp">
       <Filter>render\texture</Filter>
     </ClCompile>
+    <ClCompile Include="util\spinlock.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="core\engine.inl">
@@ -441,6 +453,12 @@
     </None>
     <None Include="util\deleters.inl">
       <Filter>util</Filter>
+    </None>
+    <None Include="util\threadsafeQueue.inl">
+      <Filter>util</Filter>
+    </None>
+    <None Include="render\defaultShaders.inl">
+      <Filter>render\shader</Filter>
     </None>
   </ItemGroup>
 </Project>
