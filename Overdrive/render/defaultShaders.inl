@@ -188,14 +188,7 @@ namespace overdrive {
 				void main() {
 					gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
 					
-					float diffuseFactor = clamp(
-						dot(
-							-aNormal, 
-							normalize(uLightDirection.xyz)
-						), 
-						0.0, 
-						1.0
-					);
+					float diffuseFactor = clamp(dot(-aNormal, normalize(uLightDirection.xyz)), 0.0, 1.0);
 
 					vec4 lightColor = uLightAmbient + uLightDiffuse * diffuseFactor;
 					
@@ -244,14 +237,7 @@ namespace overdrive {
 				void main() {
 					gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
 					
-					float diffuseFactor = clamp(
-						dot(
-							-aNormal, 
-							normalize(uLightDirection.xyz)
-						), 
-						0.0, 
-						1.0
-					);
+					float diffuseFactor = clamp(dot(-aNormal, normalize(uLightDirection.xyz)), 0.0, 1.0);
 
 					vtxColor = uLightAmbient + uLightDiffuse * diffuseFactor;
 					vtxTexCoord = aTexCoord;
@@ -305,14 +291,7 @@ namespace overdrive {
 				void main() {
 					gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
 					
-					float diffuseFactor = clamp(
-						dot(
-							-aNormal, 
-							normalize(uLightDirection.xyz)
-						), 
-						0.0, 
-						1.0
-					);
+					float diffuseFactor = clamp(dot(-aNormal, normalize(uLightDirection.xyz)), 0.0, 1.0);
 
 					vtxColor = aColor * (uLightAmbient + uLightDiffuse * diffuseFactor);
 					vtxTexCoord = aTexCoord;

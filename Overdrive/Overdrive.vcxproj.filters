@@ -253,6 +253,9 @@
     <ClInclude Include="render\defaultShaders.h">
       <Filter>render\shader</Filter>
     </ClInclude>
+    <ClInclude Include="render\shape_sphere.h">
+      <Filter>render\shapes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\engine.cpp">
@@ -388,6 +391,9 @@
     </ClCompile>
     <ClCompile Include="util\spinlock.cpp">
       <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shape_sphere.cpp">
+      <Filter>render\shapes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@
 #include "video/video.h"
 #include "scene/camera.h"
 #include "render/shape_cube.h"
+#include "render/shape_sphere.h"
 #include "render/texture2d.h"
 #include "render/texturecube.h"
 #include "render/defaultShaders.h"
@@ -40,6 +41,7 @@ public:
 	float mCameraYaw = 0.0f;
 
 	std::unique_ptr<render::shape::Cube> mCube;
+	std::unique_ptr<render::shape::Sphere> mSphere;
 
 	Test():
 		Application("Test")
@@ -52,49 +54,6 @@ public:
 		
 		mRenderState.setClearColor(0.2f, 0.2f, 0.0f);
 		mRenderState.enable(render::eRenderOptions::DEPTH_TEST);
-
-		const char* vertex_shader = R"(
-			#version 400
-			uniform mat4 uModel;
-			uniform mat4 uView;
-			uniform mat4 uProjection;
-
-			in vec3 aVertexPosition;
-			in vec3 aVertexNormal;
-			in vec2 aTexCoord;
-			
-			out vec4		vtxColor;
-			smooth out vec2 vtxTexCoord;
-
-			void main() {
-				gl_Position = 
-					uProjection * 
-					uView * 
-					uModel * 
-					vec4(aVertexPosition, 1.0);
-
-				vec3 rescaled_normal = (aVertexNormal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f;
-
-				vtxColor = vec4(rescaled_normal, 1.0f);
-				vtxTexCoord = aTexCoord;
-			}
-		)";
-
-		const char* fragment_shader = R"(
-			#version 400
-			uniform sampler2D uTexture;
-
-			in vec4 vtxColor;
-			in vec2 vtxTexCoord;
-
-			out vec4 outColor;
-			
-			void main() {
-				//outColor = vtxColor;
-				//outColor = vec4(vtxTexCoord.x, vtxTexCoord.y, 0.0f, 1.0f);
-				outColor = texture(uTexture, vtxTexCoord) * vtxColor;
-			}
-		)";
 
 		const char* skybox_vertex_shader = R"(
 			#version 400
@@ -149,6 +108,8 @@ public:
 		mainWindow->getMouse()->setCursorState(input::Mouse::eCursorState::DISABLED); // hide that cursor
 
 		mCube = std::make_unique<render::shape::Cube>(1.0f);
+		mSphere = std::make_unique<render::shape::Sphere>();
+
 		mSkyBox = std::make_unique<render::shape::Cube>(
 			115.0f // far plane should end up at the center of the skybox cube
 		); // [NOTE] the skybox cube should be smaller than the far clipping plane; 
@@ -256,7 +217,8 @@ public:
 			for (int j = 0; j < 10; ++j) {
 				mProgram.setUniform("uModel", glm::translate(glm::vec3(2 * (i - 5), 0, 2 * (j - 5))));
 
-				mCube->draw();
+				mSphere->draw();
+				//mCube->draw();
 			}
 	}
 
