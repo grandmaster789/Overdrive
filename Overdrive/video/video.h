@@ -4,7 +4,6 @@
 #include "../core/channel.h"
 #include "monitor.h"
 #include "window.h"
-#include "oculusvr.h"
 
 namespace overdrive {
 	class Video:
@@ -57,7 +56,6 @@ namespace overdrive {
 			unsigned int mHeight = 600;
 			bool mFullscreen = false;
 			bool mBorderless = false;
-			bool mOculusRift = false;
 		} mMainWindowSettings;
 
 		MonitorList mMonitorList;
@@ -65,7 +63,5 @@ namespace overdrive {
 
 		video::WindowHints mWindowHints;
 		WindowList mWindowList;
-
-		std::unique_ptr<video::OculusVR> mRift;
 	};
 }

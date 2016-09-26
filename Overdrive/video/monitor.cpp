@@ -42,7 +42,7 @@ namespace overdrive {
 		double Monitor::getDPI() const {
 			auto currentMode = getCurrentVideoMode();
 
-			return currentMode.mWidth / (mPhysicalWidth / 25.4);
+			return currentMode.mWidth * 25.4 / mPhysicalWidth;
 		}
 
 		VideoMode Monitor::getCurrentVideoMode() const {

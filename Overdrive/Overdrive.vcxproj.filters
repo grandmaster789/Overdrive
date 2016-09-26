@@ -181,9 +181,6 @@
     <ClInclude Include="render\shaderprogram.h">
       <Filter>render\shader</Filter>
     </ClInclude>
-    <ClInclude Include="video\oculusvr.h">
-      <Filter>video</Filter>
-    </ClInclude>
     <ClInclude Include="scene\camera.h">
       <Filter>scene</Filter>
     </ClInclude>
@@ -348,9 +345,6 @@
     </ClCompile>
     <ClCompile Include="render\shaderProgram.cpp">
       <Filter>render\shader</Filter>
-    </ClCompile>
-    <ClCompile Include="video\oculusvr.cpp">
-      <Filter>video</Filter>
     </ClCompile>
     <ClCompile Include="math\plane.cpp">
       <Filter>math</Filter>

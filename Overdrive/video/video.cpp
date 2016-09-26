@@ -67,7 +67,6 @@ namespace overdrive {
 		registerSetting("Height", &mMainWindowSettings.mHeight);
 		registerSetting("Fullscreen", &mMainWindowSettings.mFullscreen);
 		registerSetting("Borderless", &mMainWindowSettings.mBorderless);
-		registerSetting("OculusRift", &mMainWindowSettings.mOculusRift);
 	}
 
 	void Video::initialize() {
@@ -85,7 +84,6 @@ namespace overdrive {
 			<< ", "
 			<< std::boolalpha
 			<< mMainWindowSettings.mFullscreen;
-		gLog << "Rift mode: " << std::boolalpha << mMainWindowSettings.mOculusRift;
 
 		// [NOTE] These settings *could* be configurable, but I'm keeping it straightforward for now
 		using video::eClientAPI;
@@ -124,10 +122,6 @@ namespace overdrive {
 		gLogDebug << mWindowHints;
 
 		mWindowHints.apply();
-
-		if (mMainWindowSettings.mOculusRift) {
-			mRift = std::make_unique<video::OculusVR>();
-		}
 
 		// create the main window
 		if (mMainWindowSettings.mFullscreen) {
