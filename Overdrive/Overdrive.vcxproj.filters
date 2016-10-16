@@ -241,9 +241,6 @@
     <ClInclude Include="util\deleters.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="util\threadsafeQueue.h">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="util\spinlock.h">
       <Filter>util</Filter>
     </ClInclude>
@@ -252,6 +249,9 @@
     </ClInclude>
     <ClInclude Include="render\shape_sphere.h">
       <Filter>render\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="util\typemap.h">
+      <Filter>util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -454,11 +454,11 @@
     <None Include="util\deleters.inl">
       <Filter>util</Filter>
     </None>
-    <None Include="util\threadsafeQueue.inl">
-      <Filter>util</Filter>
-    </None>
     <None Include="render\defaultShaders.inl">
       <Filter>render\shader</Filter>
+    </None>
+    <None Include="util\typemap.inl">
+      <Filter>util</Filter>
     </None>
   </ItemGroup>
 </Project>

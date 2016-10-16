@@ -24,6 +24,7 @@
 	#include <glm/gtc/quaternion.hpp>
 	#include <glm/gtc/type_ptr.hpp>
 	#include <glm/gtx/transform2.hpp>
+	#include <glm/ext.hpp>
 #undef GLM_META_PROG_HELPERS
 #undef GLM_FORCE_RADIANS
 
@@ -59,3 +60,14 @@
 #if OVERDRIVE_PLATFORM == OVERDRIVE_PLATFORM_WINDOWS
 	#pragma warning(pop)
 #endif
+
+// additional ostream operators for glm
+namespace glm {
+	std::ostream& operator << (std::ostream& os, const vec2& v);
+	std::ostream& operator << (std::ostream& os, const vec3& v);
+	std::ostream& operator << (std::ostream& os, const vec4& v);
+
+	std::ostream& operator << (std::ostream& os, const mat2& m);
+	std::ostream& operator << (std::ostream& os, const mat3& m);
+	std::ostream& operator << (std::ostream& os, const mat4& m);
+}

@@ -80,6 +80,7 @@
     <ClInclude Include="util\supports.h" />
     <ClInclude Include="util\threadsafeQueue.h" />
     <ClInclude Include="util\tuple.h" />
+    <ClInclude Include="util\typemap.h" />
     <ClInclude Include="video\monitor.h" />
     <ClInclude Include="video\video.h" />
     <ClInclude Include="video\videomode.h" />
@@ -161,6 +162,7 @@
     <None Include="util\supports.inl" />
     <None Include="util\threadsafeQueue.inl" />
     <None Include="util\tuple.inl" />
+    <None Include="util\typemap.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BF895ABB-A2C9-4AA2-856B-1DF4FCB78212}</ProjectGuid>

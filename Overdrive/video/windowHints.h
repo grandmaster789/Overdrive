@@ -7,24 +7,24 @@ namespace overdrive {
 	class Video;
 
 	namespace video {
-		enum class eClientAPI: int {
+		enum class eClientAPI {
 			OPENGL,
 			OPENGL_ES
 		};
 
-		enum class eContextRobustness: int {
+		enum class eContextRobustness {
 			NO_ROBUSTNESS,
 			NO_RESET_NOTIFICATION,
 			LOSE_CONTEXT_ON_RESET
 		};
 
-		enum class eContextReleaseBehavior: int {
+		enum class eContextReleaseBehavior {
 			ANY,		// the default behavior of the context creation API will be used
 			FLUSH,		// the pipeline will be flushed whenever the context is released from being the current one
 			NONE		// the pipeline will not be flushed on release
 		};
 
-		enum class eOpenGLProfile: int {
+		enum class eOpenGLProfile {
 			ANY,
 			COMPATIBILITY,
 			CORE

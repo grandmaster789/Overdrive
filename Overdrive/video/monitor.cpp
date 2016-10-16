@@ -45,6 +45,14 @@ namespace overdrive {
 			return currentMode.mWidth * 25.4 / mPhysicalWidth;
 		}
 
+		double Monitor::getAspectRatio() const {
+			assert(mPhysicalHeight != 0);
+			
+			return 
+				static_cast<double>(mPhysicalWidth) / 
+				static_cast<double>(mPhysicalHeight);
+		}
+
 		VideoMode Monitor::getCurrentVideoMode() const {
 			return glfwGetVideoMode(mHandle);
 		}

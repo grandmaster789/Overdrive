@@ -63,7 +63,7 @@ namespace overdrive {
 			glfwWindowHint(GLFW_FOCUSED, mFocused ? GL_TRUE : GL_FALSE);
 			glfwWindowHint(GLFW_AUTO_ICONIFY, mAutoIconify ? GL_TRUE : GL_FALSE);
 			glfwWindowHint(GLFW_FLOATING, mFloating ? GL_TRUE : GL_FALSE);
-
+			
 			glfwWindowHint(GLFW_RED_BITS, mRedBits);
 			glfwWindowHint(GLFW_GREEN_BITS, mGreenBits);
 			glfwWindowHint(GLFW_BLUE_BITS, mBlueBits);

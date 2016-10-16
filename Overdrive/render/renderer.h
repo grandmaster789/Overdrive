@@ -12,9 +12,7 @@
 
 namespace overdrive {
 	namespace render {
-
-		class Renderer
-		{
+		class Renderer {
 		public:
 			Renderer(video::Window* associatedWindow);
 

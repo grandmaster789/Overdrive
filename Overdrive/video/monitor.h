@@ -30,7 +30,8 @@ namespace overdrive {
 
 			std::pair<int, int> getPosition() const; // virtual screen coordinates of the upper left corner of the monitor
 			std::pair<int, int> getPhysicalSize() const; // in mm's as reported by the OS
-			double getDPI() const;
+			double getDPI() const; // horizontal DPI that is
+			double getAspectRatio() const; // uses the physical size to determine an aspect ratio
 			
 			VideoMode getCurrentVideoMode() const;
 			const std::vector<VideoMode>& getSupportedVideoModes() const;

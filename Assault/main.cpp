@@ -54,6 +54,7 @@ public:
 		
 		mRenderState.setClearColor(0.2f, 0.2f, 0.0f);
 		mRenderState.enable(render::eRenderOptions::DEPTH_TEST);
+		mRenderState.apply();
 
 		const char* skybox_vertex_shader = R"(
 			#version 400
@@ -123,7 +124,7 @@ public:
 			"assets/image/skybox_nx.png",
 			"assets/image/skybox_ny.png",
 			"assets/image/skybox_nz.png"
-		);		
+		);
 		
 		//mSkyBoxTexture = render::loadTextureCube("assets/image/skybox_px.png");
 		gLog << mProgram;
