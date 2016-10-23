@@ -199,6 +199,75 @@ namespace overdrive {
 			return os;
 		}
 
+		std::ostream& operator << (std::ostream& os, const eBlendFunctionFactor& factor) {
+			switch (factor) {
+			case eBlendFunctionFactor::ZERO:
+				os << "(0)"; 
+				break;
+
+			case eBlendFunctionFactor::ONE: 
+				os << "(1)"; 
+				break;
+
+			case eBlendFunctionFactor::SRC_COLOR: 
+				os << "(src color)"; 
+				break;
+
+			case eBlendFunctionFactor::ONE_MINUS_SRC_COLOR:
+				os << "(1 - src color)";
+				break;
+
+			case eBlendFunctionFactor::DST_COLOR:
+				os << "(dst color)";
+				break;
+
+			case eBlendFunctionFactor::ONE_MINUS_DST_COLOR:
+				os << "(1 - dst color)";
+				break;
+
+			case eBlendFunctionFactor::SRC_ALPHA:
+				os << "(src alpha)";
+				break;
+
+			case eBlendFunctionFactor::ONE_MINUS_SRC_ALPHA:
+				os << "(1 - src alpha)";
+				break;
+
+			case eBlendFunctionFactor::DST_ALPHA:
+				os << "(dst alpha)";
+				break;
+
+			case eBlendFunctionFactor::ONE_MINUS_DST_ALPHA:
+				os << "(1 - dst alpha)";
+				break;
+
+			case eBlendFunctionFactor::CONSTANT_COLOR:
+				os << "(constant color)";
+				break;
+
+			case eBlendFunctionFactor::ONE_MINUS_CONSTANT_COLOR:
+				os << "(1 - constant color)";
+				break;
+
+			case eBlendFunctionFactor::CONSTANT_ALPHA:
+				os << "(constant alpha)";
+				break;
+
+			case eBlendFunctionFactor::ONE_MINUS_CONSTANT_ALPHA:
+				os << "(1 - constant alpha)";
+				break;
+			}
+
+			return os;
+		}
+
+		std::ostream& operator << (std::ostream& os, const BlendFunction& fn) {
+			os 
+				<< "Source factor: " << fn.mSourceFactor << ", "
+				<< "Destination factor: " << fn.mDestinationFactor;
+			return os;
+		}
+
 		std::ostream& operator << (std::ostream& os, const RenderState& state) {
 			os
 				<< "RenderState:\n"

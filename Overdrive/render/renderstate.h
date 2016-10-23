@@ -16,7 +16,7 @@ namespace overdrive {
 			ALL				= (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
 		};
 
-		enum class eBlendFunction : GLenum {
+		enum class eBlendFunctionFactor : GLenum {
 			ZERO						= GL_ZERO, 
 			ONE							= GL_ONE, 
 			SRC_COLOR					= GL_SRC_COLOR,
@@ -31,6 +31,11 @@ namespace overdrive {
 			ONE_MINUS_CONSTANT_COLOR	= GL_ONE_MINUS_CONSTANT_COLOR, 
 			CONSTANT_ALPHA				= GL_CONSTANT_ALPHA,
 			ONE_MINUS_CONSTANT_ALPHA	= GL_ONE_MINUS_CONSTANT_ALPHA
+		};
+
+		struct BlendFunction {
+			eBlendFunctionFactor mSourceFactor;
+			eBlendFunctionFactor mDestinationFactor;
 		};
 
 		enum class eCullMode : GLenum {
@@ -88,6 +93,8 @@ namespace overdrive {
 		std::ostream& operator << (std::ostream& os, const eClearOptions& option);
 		std::ostream& operator << (std::ostream& os, const eRenderOptions& option);
 		std::ostream& operator << (std::ostream& os, const eCullMode& mode);
+		std::ostream& operator << (std::ostream& os, const eBlendFunctionFactor& factor);
+		std::ostream& operator << (std::ostream& os, const BlendFunction& fn);
 		std::ostream& operator << (std::ostream& os, const RenderState& state);
 	}
 }
