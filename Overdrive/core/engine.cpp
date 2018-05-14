@@ -61,8 +61,10 @@ namespace overdrive {
 				mSystemLookup[s->getName()] = s.get();
 				mSystems.push_back(std::move(s));
 			}
-			else
-				throw std::runtime_error(std::string("Duplicate system added: ") + s->getName());
+			else {
+				auto ptr = s.release();
+				throw std::runtime_error(std::string("Duplicate system added: ") + ptr->getName());
+			}
 		}
 
 		void Engine::remove(const std::string& systemName) {
